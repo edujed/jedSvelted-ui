@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS temp files
+tmp/
+.cache/
+
+# Generated types/configs
+.svelte-kit/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Local development overrides (if used)
+.local/
