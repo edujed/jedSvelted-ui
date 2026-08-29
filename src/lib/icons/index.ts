@@ -1,0 +1,19 @@
+// Barrel file para icons
+export { default as Icon } from './Icon.svelte';
+export { default as IconBank } from './IconBank.svelte';
+export { default as ChevronDownIcon } from './ChevronDownIcon.svelte';
+export { default as CircleIcon } from './CircleIcon.svelte';
+export { default as FilterIcon } from './FilterIcon.svelte';
+export { default as IconCheck } from './IconCheck.svelte';
+export { default as IconChevronRight } from './IconChevronRight.svelte';
+export { default as IconClock } from './IconClock.svelte';
+export { default as IconEdit } from './IconEdit.svelte';
+export { default as IconEye } from './IconEye.svelte';
+export { default as IconMore } from './IconMore.svelte';
+export { default as IconTrash } from './IconTrash.svelte';
+export { default as IconUser } from './IconUser.svelte';
+export { default as IconWallet } from './IconWallet.svelte';
+export { default as IconX } from './IconX.svelte';
+export { default as SearchIcon } from './SearchIcon.svelte';
+export { default as SettingsIcon } from './SettingsIcon.svelte';
+export { default as UserIcon } from './UserIcon.svelte';
