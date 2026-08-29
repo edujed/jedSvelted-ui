@@ -2,8 +2,8 @@
 	import { Popover } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
-	import { filterData, sortData } from '../useTableState';
-	import type { TableAction, TableCol } from '../tableTypes';
+	import { filterData, sortData } from './tableTypes';
+	import type { TableAction, TableCol } from './tableTypes';
 
 	let {
 		caption = '',
@@ -38,12 +38,15 @@
 	let filterValues = $state<Record<number, string>>({});
 
 	/** Filtered data (reactive) */
-	let filteredData = $derived.by(() => filterData(data, columns, filterValues));
+	let filteredData = $derived.by(() => filterData(data, columns, filterValues)) as Record<
+		string,
+		unknown
+	>[];
 
 	//** Sorted data (reactive) */
 	let sortedData = $derived.by(() =>
 		sortData(filteredData, columns, sortColumnIndex, sortDirection)
-	);
+	) as Record<string, unknown>[];
 
 	/** Handlers */
 	function handleSort(colIndex: number): void {

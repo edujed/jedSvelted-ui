@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Toast } from '../../lib/toast';
+	import type { Toast } from './toast';
 
 	let { toast, onClose }: { toast: Toast; onClose?: (id: string) => void } = $props();
 

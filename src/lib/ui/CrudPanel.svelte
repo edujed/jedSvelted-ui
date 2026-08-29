@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Table from '../table/Table.svelte';
 	import DetailPanel from './DetailPanel.svelte';
-	import type { TableCol, TableAction } from '../../lib/tableTypes';
+	import type { TableCol, TableAction } from '../table';
 
 	let {
 		title = '',

@@ -2,8 +2,8 @@
 	import ThemeSelector from '../theme/ThemeSelector.svelte';
 	import { toggleMode, modeStore } from '../theme';
 
-	let { titulo = '', onMenuClick = () => {} } = $props<{
-		titulo?: string;
+	let { title = '', onMenuClick = () => {} } = $props<{
+		title?: string;
 		onMenuClick?: () => void;
 	}>();
 
@@ -51,7 +51,7 @@
 	</div>
 
 	<div class="navbar-center">
-		<h1 class="navbar-title">{titulo}</h1>
+		<h1 class="navbar-title">{title}</h1>
 	</div>
 
 	<div class="navbar-right">

@@ -3,9 +3,9 @@
  * Suporta rotas aninhadas: /Pessoas/14/Contato/3/edit
  */
 
-type RouteHandler = (params: Record<string, string>) => void;
+export type RouteHandler = (params: Record<string, string>) => void;
 
-interface Route {
+export interface Route {
 	pattern: string; // ex: "/Pessoas/:id/Contato/:cid/edit"
 	handler: RouteHandler;
 	regex: RegExp;
@@ -110,7 +110,7 @@ export class HashRouter {
 		this.currentPath = path;
 
 		// Chama o handler da rota matched
-		let found = false;
+		// let found = false;
 		for (const route of this.routes) {
 			const match = path.match(route.regex);
 			if (match) {
@@ -119,7 +119,7 @@ export class HashRouter {
 					params[key] = match[i + 1] ?? '';
 				});
 				route.handler(params);
-				found = true;
+				// found = true;
 				break;
 			}
 		}
@@ -167,5 +167,3 @@ export class HashRouter {
 		this.currentPath = '';
 	}
 }
-
-export const router = new HashRouter();

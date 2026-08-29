@@ -80,7 +80,7 @@ describe('toast', () => {
 
 	it('shortcut methods work correctly', () => {
 		// Assuremos limpeza antes do teste
-		toastModule._clearAllToastsForTests && toastModule._clearAllToastsForTests();
+		toastModule._clearAllToastsForTests();
 		toastModule.toast.success('Success!');
 		toastModule.toast.error('Error!', undefined, 5000);
 		toastModule.toast.info('Info!');

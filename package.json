@@ -32,41 +32,85 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
+		"./container": {
+			"types": "./dist/container/index.d.ts",
+			"svelte": "./dist/container/index.js"
+		},
 		"./container/*": {
 			"types": "./dist/container/*.d.ts",
 			"svelte": "./dist/container/*.svelte"
+		},
+		"./forms": {
+			"types": "./dist/forms/index.d.ts",
+			"svelte": "./dist/forms/index.js"
 		},
 		"./forms/*": {
 			"types": "./dist/forms/*.d.ts",
 			"svelte": "./dist/forms/*.svelte"
 		},
+		"./icons": {
+			"types": "./dist/icons/index.d.ts",
+			"svelte": "./dist/icons/index.js"
+		},
 		"./icons/*": {
 			"types": "./dist/icons/*.d.ts",
 			"svelte": "./dist/icons/*.svelte"
+		},
+		"./info": {
+			"types": "./dist/info/index.d.ts",
+			"svelte": "./dist/info/index.js"
 		},
 		"./info/*": {
 			"types": "./dist/info/*.d.ts",
 			"svelte": "./dist/info/*.svelte"
 		},
+		"./nav": {
+			"types": "./dist/nav/index.d.ts",
+			"svelte": "./dist/nav/index.js"
+		},
 		"./nav/*": {
 			"types": "./dist/nav/*.d.ts",
 			"svelte": "./dist/nav/*.svelte"
+		},
+		"./pages": {
+			"types": "./dist/pages/index.d.ts",
+			"svelte": "./dist/pages/index.js"
 		},
 		"./pages/*": {
 			"types": "./dist/pages/*.d.ts",
 			"svelte": "./dist/pages/*.svelte"
 		},
+		"./router": {
+			"types": "./dist/router/index.d.ts",
+			"svelte": "./dist/router/index.js"
+		},
+		"./table": {
+			"types": "./dist/table/index.d.ts",
+			"svelte": "./dist/table/index.js"
+		},
 		"./table/*": {
 			"types": "./dist/table/*.d.ts",
 			"svelte": "./dist/table/*.svelte"
+		},
+		"./tabs": {
+			"types": "./dist/tabs/index.d.ts",
+			"svelte": "./dist/tabs/index.js"
 		},
 		"./tabs/*": {
 			"types": "./dist/tabs/*.d.ts",
 			"svelte": "./dist/tabs/*.svelte"
 		},
+		"./theme": {
+			"types": "./dist/theme/index.d.ts",
+			"svelte": "./dist/theme/index.js"
+		},
 		"./theme/*": {
 			"types": "./dist/theme/*.d.ts",
 			"svelte": "./dist/theme/*.svelte"
+		},
+		"./ui": {
+			"types": "./dist/ui/index.d.ts",
+			"svelte": "./dist/ui/index.js"
 		},
 		"./ui/*": {
 			"types": "./dist/ui/*.d.ts",

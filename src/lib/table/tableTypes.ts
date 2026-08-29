@@ -1,3 +1,14 @@
+/** Type definition for a table action button. */
+export interface TableAction<T extends Record<string, unknown> = Record<string, unknown>> {
+	title: string;
+	hint?: string;
+	icon?: string;
+	onClick?: (row: T) => void;
+}
+
+/** Re-export alias for direct import convenience. */
+export type TableCol<T extends Record<string, unknown> = Record<string, unknown>> = TableColBase<T>;
+
 /**
  * Pure utilities for table sorting and filtering.
  *
@@ -5,7 +16,7 @@
  * Reactive state must be created in the calling .svelte component.
  */
 
-export interface TableCol<T = unknown> {
+export interface TableColBase<T = unknown> {
 	key: keyof T | number;
 	title: string;
 	align?: 'left' | 'right' | 'center';
@@ -19,21 +30,22 @@ export interface UseTableStateOptions<T> {
 	/** Chave única da linha para keyed each */
 	rowKey?: keyof T;
 	/** Custom filter function (optional). */
-	filterFn?: (row: T, filterValues: Record<number, string>, columns: TableCol<T>[]) => boolean;
+	filterFn?: (row: T, filterValues: Record<number, string>, columns: TableColBase<T>[]) => boolean;
 	/** Função customizada de ordenação */
-	sortFn?: (a: T, b: T, column: TableCol<T>, direction: 'asc' | 'desc' | 'none') => number;
+	sortFn?: (a: T, b: T, column: TableColBase<T>, direction: 'asc' | 'desc' | 'none') => number;
 }
 
 /**
  * Filters data based on per-column filter values.
  */
 
-export function filterData<T>(
-	data: T[],
-	columns: TableCol<T>[],
+/** Filter data based on per-column filter values. */
+export function filterData(
+	data: any[],
+	columns: TableCol<any>[],
 	filterValues: Record<number, string>,
-	filterFn?: (row: T, filterValues: Record<number, string>, columns: TableCol<T>[]) => boolean
-): T[] {
+	filterFn?: (row: any, filterValues: Record<number, string>, columns: TableCol<any>[]) => boolean
+): unknown[] {
 	if (columns.length === 0) return [];
 
 	if (filterValues && Object.keys(filterValues).length > 0) {
@@ -73,13 +85,14 @@ export function filterData<T>(
 /**
  * Sorts data based on the specified column and sort direction.
  */
-export function sortData<T>(
-	data: T[],
-	columns: TableCol<T>[],
+/** Sort data based on column and direction. */
+export function sortData(
+	data: any[],
+	columns: TableCol<any>[],
 	sortColumnIndex: number,
 	sortDirection: 'asc' | 'desc' | 'none',
-	sortFn?: (a: T, b: T, column: TableCol<T>, direction: 'asc' | 'desc' | 'none') => number
-): T[] {
+	sortFn?: (a: any, b: any, column: TableCol<any>, direction: 'asc' | 'desc' | 'none') => number
+): unknown[] {
 	if (sortColumnIndex < 0 || sortDirection === 'none') return data;
 
 	const col = columns[sortColumnIndex];

@@ -81,7 +81,7 @@ describe('HashRouter', () => {
 
 	it('should register listeners via onRouteChange', () => {
 		const listener = vi.fn();
-		router._resetForTests && router._resetForTests(); // limpa estado anterior
+		router._resetForTests(); // limpa estado anterior
 		router.onRouteChange(listener);
 		// Não chamamos init() aqui — queremos que o listener seja chamado apenas pela navegação.
 		// Se fosse necessário inicializar, o usuário chamaria init() explicitamente.

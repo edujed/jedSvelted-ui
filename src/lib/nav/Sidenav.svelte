@@ -1,39 +1,41 @@
 <script lang="ts">
-	import { router } from '../router';
+	import { HashRouter } from '../router';
 	import type { MenuGroup } from './menuConfig';
 
 	let {
-		abrir = false,
+		isOpen = false,
 		onOverlayClick = () => {},
-		menuConfig = [] as unknown as MenuGroup[]
+		menuConfig = [] as unknown as MenuGroup[],
+		router
 	}: {
-		abrir?: boolean;
+		isOpen?: boolean;
 		onOverlayClick?: () => void;
 		menuConfig?: MenuGroup[];
+		router: HashRouter;
 	} = $props();
 
-	let aberto = $state(false);
+	let opened = $state(false);
 
 	$effect(() => {
-		if (abrir && !aberto) {
-			aberto = true;
+		if (isOpen && !opened) {
+			opened = true;
 		}
 	});
 
 	function fechar(): void {
-		aberto = false;
+		opened = false;
 		onOverlayClick();
 	}
 
 	const menuItems = $derived.by(() => menuConfig);
 
 	function navegar(path: string): void {
-		router.navigate(path);
+		if (router) router.navigate(path);
 		fechar();
 	}
 </script>
 
-{#if aberto}
+{#if opened}
 	<div class="sidenav-overlay" role="presentation" onclick={fechar}>
 		<div class="sidenav" role="dialog" aria-label="Navigation menu">
 			<div class="sidenav-header">

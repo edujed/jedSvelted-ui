@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { toasts, removeToast } from '../toast';
+	import { toasts, removeToast } from './toast';
 	import ToastComponent from './Toast.svelte';
 </script>
 
