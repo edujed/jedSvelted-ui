@@ -5,11 +5,11 @@ A collection of reusable UI components built for applications using **Svelte 5**
 ## 📦 Installation
 
 ```bash
-npm install jedsvelted-ui
+npm install @edujed/jedsvelted-ui
 # ou
-pnpm add jedsvelted-ui
+pnpm add @edujed/jedsvelted-ui
 # ou
-yarn add jedsvelted-ui
+yarn add @edujed/jedsvelted-ui
 ```
 
 ## ⚙️ Requisitos
@@ -37,8 +37,8 @@ yarn add jedsvelted-ui
 
 ```svelte
 <script lang="ts">
-	import { CrudPanel } from 'jedsvelted-ui/ui/CrudPanel';
-	import { Navbar } from 'jedsvelted-ui/nav/Navbar';
+	import { CrudPanel } from '@edujed/jedsvelted-ui/ui/CrudPanel';
+	import { Navbar } from '@edujed/jedsvelted-ui/nav/Navbar';
 </script>
 
 <Navbar />
@@ -50,8 +50,8 @@ yarn add jedsvelted-ui
 Each component can be imported individually:
 
 ```ts
-import { Table } from 'jedsvelted-ui/table/Table';
-import { ToastContainer } from 'jedsvelted-ui/info/ToastContainer';
+import { Table } from '@edujed/jedsvelted-ui/table/Table';
+import { ToastContainer } from '@edujed/jedsvelted-ui/info/ToastContainer';
 ```
 
 ## 🛠 Local development
@@ -60,12 +60,10 @@ import { ToastContainer } from 'jedsvelted-ui/info/ToastContainer';
 git clone https://github.com/edujed/jedSvelted-ui.git
 cd jedSvelted-ui
 npm install
-npm run dev        # start development server
 npm run build      # compile the library into dist/
 npm run check      # type-check
 ```
 
-## 📄 Licência
 ## 📄 License
 
 This project is licensed under the [GNU General Public License v3](./LICENSE).
