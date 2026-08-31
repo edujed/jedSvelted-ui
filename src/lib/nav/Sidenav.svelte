@@ -1,25 +1,52 @@
 <script lang="ts">
-	import { HashRouter } from '../router';
-	import type { MenuGroup } from './menuConfig';
+    import { untrack } from 'svelte'; // 1. Importação necessária
+	import type { HashRouter, RouteState } from '../router';
+	import type { MenuItem } from './types';
 
 	let {
+		title = 'DemoApp',
+		logo = '💼',
 		isOpen = false,
 		onOverlayClick = () => {},
-		menuConfig = [] as unknown as MenuGroup[],
 		router
 	}: {
+		title?: string;
+		logo?: string;
 		isOpen?: boolean;
 		onOverlayClick?: () => void;
-		menuConfig?: MenuGroup[];
 		router: HashRouter;
 	} = $props();
 
+	let routeState: RouteState = $state(untrack(() => router.getState()));
 	let opened = $state(false);
 
+	// Sincroniza estado local com prop externa.
+	// Dependência automática via reatividade runas — nada além disso.
 	$effect(() => {
-		if (isOpen && !opened) {
-			opened = true;
+		if (isOpen && !opened) opened = true;
+		else if (!isOpen && opened) fechar();
+
+		const listener = () => {
+			routeState = router.getState();
+			paginaAtual = routeState?.paginaAtual || "";
 		}
+		router.addRouterListener(listener);
+		// listener();
+	});
+
+	let paginaAtual = $state(untrack(() => routeState.paginaAtual));
+
+	/**
+	 * Scroll automático ao item ativo:
+	 * - Quando o menu é aberto
+	 * - Quando o módulo atual muda (ex: navegando entre páginas)
+	 */
+	$effect(() => {
+		if (!opened || !routeState?.paginaAtual) return;
+		requestAnimationFrame(() => {
+			const activeItem = document.querySelector('.menu-item.active');
+			activeItem?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+		});
 	});
 
 	function fechar(): void {
@@ -27,10 +54,49 @@
 		onOverlayClick();
 	}
 
-	const menuItems = $derived.by(() => menuConfig);
+	/**
+	 * Verifica se um path corresponde à uma rota registrada,
+	 * considerando parâmetros e wildcards.
+	 */
+	function isRouteActive(pattern: string, currentPath: string): boolean {
+		const cleanPattern = pattern.replace(/(\/:\w+\??)*$/g, ''); // remove params/wildcard do fim
+		const normalizedCurrent =
+			currentPath.endsWith('/') && currentPath !== '/' ? currentPath.slice(0, -1) : currentPath;
+		return (
+			normalizedCurrent.toLowerCase() === cleanPattern.toLowerCase() ||
+			normalizedCurrent.toLowerCase().startsWith(cleanPattern.toLowerCase() + '/')
+		);
+	}
+
+	/**
+	 * Limpa padrões de rotas removendo segmentos com parâmetros (:id) e wildcards (*).
+	 * Exemplo: "/users/:id/posts" → "/users"
+	 */
+	function cleanPattern(pattern: string): string {
+		return pattern
+			.replace(/(\/:\w+\??|\*)/g, '')
+			.replace(/\/+(?!$)/g, '/')
+			.slice(0, 1) === '/'
+			? pattern
+			: pattern.startsWith('/')
+				? pattern
+				: '/' + pattern;
+	}
+
+	const menuItems = $derived.by((): MenuItem[] => {
+		if (!router?.registeredRoutes.length) return [];
+		return router.registeredRoutes.map((r): MenuItem => ({
+			pattern: r.pattern,
+			path: r.pattern === '/' ? '/' : cleanPattern(r.pattern),
+			title: r.title,
+			moduleName: r.moduleName,
+			label: r.title ?? '',
+			icon: r.icon ?? ''
+		}));
+	});
 
 	function navegar(path: string): void {
-		if (router) router.navigate(path);
+		router?.navigate(path);
 		fechar();
 	}
 </script>
@@ -48,8 +114,8 @@
 						if (e.key === 'Enter' || e.key === ' ') navegar('/');
 					}}
 				>
-					<span class="sidenav-logo">💼</span>
-					<span class="sidenav-title">Financeiro</span>
+					<span class="sidenav-logo">{logo}</span>
+					<span class="sidenav-title">{title}</span>
 				</span>
 				<button class="sidenav-close" aria-label="Close menu" onclick={fechar}>
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -60,28 +126,23 @@
 			</div>
 
 			<nav class="sidenav-content">
-				{#each menuItems as group (group.group)}
-					<div class="menu-group">
-						<h3 class="menu-group-title">{group.group}</h3>
-						<ul class="menu-list">
-							{#each group.items as item (item.path)}
-								<li>
-									<a
-										class="menu-item"
-										href="#{item.path}"
-										onclick={(e) => {
-											e.preventDefault();
-											navegar(item.path);
-										}}
-									>
-										<span class="menu-icon">{item.icon}</span>
-										<span class="menu-label">{item.label}</span>
-									</a>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				{/each}
+				<ul class="menu-list">
+					{#each menuItems as item, i (i)}
+						<li>
+							<a
+								class={'menu-item' + (isRouteActive(item.path, paginaAtual) ? ' active' : '')}
+								href="#{item.path}"
+								onclick={(e) => {
+									e.preventDefault();
+									navegar(item.path);
+								}}
+							>
+								<span class="menu-icon">{item.icon}</span>
+								<span class="menu-label">{item.label}</span>
+							</a>
+						</li>
+					{/each}
+				</ul>
 			</nav>
 		</div>
 	</div>
@@ -180,21 +241,6 @@
 		-webkit-overflow-scrolling: touch;
 	}
 
-	.menu-group {
-		margin-bottom: var(--spacing-sm);
-	}
-
-	.menu-group-title {
-		font-size: var(--font-size-xs);
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--color-on-surface);
-		opacity: 0.6;
-		padding: var(--spacing-sm) var(--spacing-md);
-		margin: 0;
-	}
-
 	.menu-list {
 		list-style: none;
 		padding: 0;
@@ -215,6 +261,13 @@
 
 	.menu-item:hover {
 		background: var(--color-sidenav-hover);
+	}
+
+	.menu-item.active {
+		background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+		border-left: 3px solid var(--color-primary);
+		padding-left: calc(var(--spacing-md) - 3px);
+		font-weight: 600;
 	}
 
 	.menu-icon {

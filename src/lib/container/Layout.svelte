@@ -1,18 +1,15 @@
 <script lang="ts">
-	import { HashRouter } from '../router';
 	import Navbar from '../nav/Navbar.svelte';
 	import Sidenav from '../nav/Sidenav.svelte';
-
+	import { HashRouter } from '../router';
 	import type { Snippet } from 'svelte';
 
 	let {
-		title = '',
 		children,
 		router = new HashRouter()
 	}: {
-		title?: string;
 		children?: Snippet;
-		router: HashRouter;
+		router?: HashRouter;
 	} = $props();
 
 	let sidenavAberto = $state(false);
@@ -24,7 +21,7 @@
 
 <Sidenav isOpen={sidenavAberto} onOverlayClick={fecharSidenav} {router} />
 
-<Navbar {title} onMenuClick={() => (sidenavAberto = !sidenavAberto)} />
+<Navbar {router} onMenuClick={() => (sidenavAberto = !sidenavAberto)} />
 
 <main class="main-content">
 	{@render children?.()}

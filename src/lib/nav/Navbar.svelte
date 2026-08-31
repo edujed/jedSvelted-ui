@@ -1,11 +1,18 @@
 <script lang="ts">
 	import ThemeSelector from '../theme/ThemeSelector.svelte';
 	import { toggleMode, modeStore } from '../theme';
+	import type { HashRouter } from '../router';
 
-	let { title = '', onMenuClick = () => {} } = $props<{
-		title?: string;
+	let {
+		router,
+		onMenuClick = () => {}
+	}: {
+		router?: HashRouter;
 		onMenuClick?: () => void;
-	}>();
+	} = $props();
+
+	// Título dinâmico — derivado do router se disponível.
+	const tituloAtual = $derived(router?.getState()?.title || '');
 
 	// Syncs theme mode via reactive store (auto-subscription in Svelte 5)
 	let modoAtual = $derived($modeStore);
@@ -51,7 +58,7 @@
 	</div>
 
 	<div class="navbar-center">
-		<h1 class="navbar-title">{title}</h1>
+		<h1 class="navbar-title">{tituloAtual || 'DemoApp'}</h1>
 	</div>
 
 	<div class="navbar-right">
