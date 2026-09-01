@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { untrack } from 'svelte'; // 1. Importação necessária
-	import type { HashRouter, RouteState } from '../router';
+    	import type { HashRouter, RouteState } from '../router';
 	import type { MenuItem } from './types';
 
 	let {
@@ -17,24 +16,17 @@
 		router: HashRouter;
 	} = $props();
 
-	let routeState: RouteState = $state(untrack(() => router.getState()));
+	let routeState: RouteState = $derived(router?.getState() ?? {});
 	let opened = $state(false);
 
 	// Sincroniza estado local com prop externa.
-	// Dependência automática via reatividade runas — nada além disso.
+	// A reatividade de $derived já escuta mudanças no router — não precisamos mais de listeners manuais.
 	$effect(() => {
 		if (isOpen && !opened) opened = true;
 		else if (!isOpen && opened) fechar();
-
-		const listener = () => {
-			routeState = router.getState();
-			paginaAtual = routeState?.paginaAtual || "";
-		}
-		router.addRouterListener(listener);
-		// listener();
 	});
 
-	let paginaAtual = $state(untrack(() => routeState.paginaAtual));
+	let paginaAtual = $derived(routeState?.paginaAtual || '');
 
 	/**
 	 * Scroll automático ao item ativo:

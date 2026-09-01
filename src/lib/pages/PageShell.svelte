@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SearchPanel from '$lib/container/SearchPanel.svelte';
 	import type { Snippet } from 'svelte';
 
 	let {
@@ -121,12 +122,11 @@
 </script>
 
 <div class="page-shell">
-	<header class="shell-header">
-		<h1>{title}</h1>
-		{#if showDetail}
-			<button class="btn-close" onclick={closeDetail}>&times;</button>
-		{/if}
-	</header>
+	{#if filter}
+		<SearchPanel {title} {showDetail} {closeDetail}>
+			{@render filter(pageState)}
+		</SearchPanel>
+	{/if}
 
 	<main class="shell-content">
 		<!-- Global loading state -->
@@ -136,9 +136,6 @@
 			<div class="error">{error}</div>
 		{:else}
 			<!-- Optional filter/search section -->
-			{#if filter}
-				{@render filter(pageState)}
-			{/if}
 
 			<!-- Main content (table/list) -->
 			{#if content}
@@ -168,32 +165,11 @@
 		height: 100%;
 	}
 
-	.shell-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1rem 1.5rem;
-		border-bottom: 1px solid var(--border);
-		background-color: var(--bg-surface);
-	}
-
-	.btn-close {
-		background: none;
-		border: none;
-		font-size: 1.5rem;
-		cursor: pointer;
-		color: var(--text-main);
-		opacity: 0.7;
-		transition: opacity 0.2s ease;
-	}
-	.btn-close:hover {
-		opacity: 1;
-	}
-
 	.shell-content {
 		flex: 1;
 		overflow-y: auto;
-		padding: 1rem;
+		padding-top: 1rem;
+		width: 100%;
 	}
 
 	.loading,

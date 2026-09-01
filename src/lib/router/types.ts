@@ -18,6 +18,7 @@ export interface RouteState {
 	rotaParams: Record<string, string>;
 	title: string;
 	path: string;
+	moduleName?: string;
 }
 
 export interface Route extends RouteMetadata {

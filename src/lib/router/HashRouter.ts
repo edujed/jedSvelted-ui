@@ -6,6 +6,7 @@ export class HashRouter {
 	private _isEmitting = false; // evita reentrada quando popstate + hashchange colidem
 	private currentPath = '';
 	private listeners: (() => void)[] = [];
+	private registeredEvents: Set<string> = new Set();
 
 	// Propriedades públicas expostas ao template — atualizadas em cada emit().
 	public path = '';
@@ -67,12 +68,12 @@ export class HashRouter {
 
 	/** Gets the current path without the leading '#'. */
 	getCurrentPath(): string {
-		// Prioriza destino pendente se houver — evita problemas quando hashchange
-		// ainda não propagou ao ambiente (ex: JSDOM).
-		let path = this._pendingNavigate ?? '';
-		if (!path) {
-			const hash = window.location.hash.slice(1);
-			path = hash || '';
+		// Prioriza hash cru do DOM como fonte única de verdade.
+		// _pendingNavigate existe só para casos onde o hash ainda não chegou
+		// ao ambiente (ex: JSDOM). Em produção real, o hash sempre vence.
+		let path = window.location.hash.slice(1);
+		if (!path && this._pendingNavigate) {
+			path = this._pendingNavigate;
 		}
 		// Normaliza: removes trailing slash (except root "/")
 		return path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
@@ -99,7 +100,15 @@ export class HashRouter {
 
 	/** Registers a change listener for route changes. */
 	addRouterListener(listener: () => void): void {
-		this.listeners.push(listener);
+		if (!this.listeners.includes(listener)) {
+			this.listeners.push(listener);
+		}
+	}
+
+	/** Removes a previously registered router listener. */
+	removeRouterListener(listener: () => void): void {
+		const idx = this.listeners.indexOf(listener);
+		if (idx !== -1) this.listeners.splice(idx, 1);
 	}
 
 	/** Triggers all listeners and the matched route's handler. */
@@ -157,21 +166,25 @@ export class HashRouter {
 		this.listeners.forEach((fn) => console.log('calling:', fn, fn()));
 	}
 
-  private register(event: string) {
-    try {
+	private register(event: string) {
+		// Evita duplicação se init() é chamado múltiplas vezes (ex: HMR)
+		if (this.registeredEvents.has(event)) return;
+		this.registeredEvents.add(event);
+
+		try {
 			window.addEventListener(event, () => {
-			  console.log('[Router.init()] ' + event +' fired');
+				console.log('[Router.init()] ' + event + ' fired');
 				this.emit();
-        });
+			});
 		} catch (e) {
-			console.warn('[HashRouter] Failed to add '+ event + ' listener:', e);
+			console.warn('[HashRouter] Failed to add ' + event + ' listener:', e);
 		}
-  }
+	}
 
 	/** Initializes the router and listens for hash changes. */
-  init(): void {
-    this.register('hashchange');
-    this.register('popstate');
+  	init(): void {
+		this.register('hashchange');
+		this.register('popstate');
 
 		// Tenta resolver imediatamente ao carregar
 		const initialPath = this.getCurrentPath();
@@ -232,7 +245,8 @@ export class HashRouter {
       path,
       paginaAtual: route?.moduleName || 'home',
       title: route?.title || '',
-      rotaParams : this.resolve() ?? {}
+      moduleName: route?.moduleName,
+      rotaParams: this.resolve() ?? {}
     }
     console.log('getState: ', JSON.stringify(result));
     return result;
