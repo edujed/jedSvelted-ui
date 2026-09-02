@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Panel from './Panel.svelte';
+	import Button from '../ui/Button.svelte';
 
 	let {
 		title = 'Search',
@@ -23,20 +24,9 @@
 	</div>
 
 	<div class="search-actions">
-		<button class="btn btn-search" onclick={onSearch}>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-				<circle cx="11" cy="11" r="8" />
-				<line x1="21" y1="21" x2="16.65" y2="16.65" />
-			</svg>
-			Search
-		</button>
-		<button class="btn btn-clear" onclick={onClear}>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-				<line x1="18" y1="6" x2="6" y2="18" />
-				<line x1="6" y1="6" x2="18" y2="18" />
-			</svg>
-			Clear
-		</button>
+		<Button variant="search" size="md" icon="search" iconSize={14} onclick={onSearch}>Search</Button
+		>
+		<Button variant="clear" size="md" icon="x" iconSize={14} onclick={onClear}>Clear</Button>
 	</div>
 </Panel>
 
@@ -49,10 +39,5 @@
 		display: flex;
 		gap: var(--spacing-sm);
 		justify-content: flex-end;
-	}
-
-	.btn-icon {
-		width: 16px;
-		height: 16px;
 	}
 </style>

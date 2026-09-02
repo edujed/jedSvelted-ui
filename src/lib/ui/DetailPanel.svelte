@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
-	import Icon from '../icons/Icon.svelte';
+	import Button from './Button.svelte';
 	import type { Snippet } from 'svelte';
 
 	let {
@@ -22,9 +22,13 @@
 	<div class="detail-overlay" transition:fade={{ duration: 200 }}>
 		<div class="detail-panel" transition:fly={{ x: '100%', duration: 300 }}>
 			<header class="detail-header">
-				<button class="btn-back" onclick={onClose} title="Close">
-					<Icon name="chevron-right" size={20} />
-				</button>
+				<Button
+					variant="ghost"
+					icon="chevron-right"
+					iconSize={20}
+					onclick={onClose}
+					title="Close"
+				/>
 				<h2 class="detail-title">{title}</h2>
 				{#if headerActions}
 					<div class="header-actions">
@@ -73,24 +77,6 @@
 		color: var(--color-navbar-text);
 		border-bottom: 1px solid var(--color-border);
 		flex-shrink: 0;
-	}
-
-	.btn-back {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 32px;
-		height: 32px;
-		background: transparent;
-		border: none;
-		color: var(--color-navbar-text);
-		cursor: pointer;
-		border-radius: var(--radius-sm);
-		transition: background var(--transition-fast);
-	}
-
-	.btn-back:hover {
-		background: color-mix(in srgb, var(--color-navbar-text) 15%, transparent);
 	}
 
 	.detail-title {

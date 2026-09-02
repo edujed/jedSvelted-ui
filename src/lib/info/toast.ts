@@ -33,7 +33,7 @@ export function addToast(message: string, type: ToastType = 'info', duration: nu
 	const now = Date.now();
 	const lastTime = lastToastByType[type] || 0;
 
-	// Se mesmo tipo nos últimos 2s, atualiza o toast existente e retorna
+	// If same type within the last 2s, updates the existing toast and returns
 	if (now - lastTime < 2000) {
 		toasts.update((t) => {
 			const existing = t.find((toast) => toast.type === type);
@@ -87,14 +87,14 @@ export const toast = {
 };
 
 /** Getter for retrieving the current list of toasts (useful for testing). */
-// Usamos subscribe aqui porque Svelte stores não expõem .get() diretamente.
-// O callback recebe o valor inicial síncronamente na primeira subscrição.
+// We use subscribe here because Svelte stores do not expose .get() directly.
+// The callback receives the initial value synchronously on the first subscription.
 export function getToasts(): Toast[] {
 	let current: Toast[] | undefined;
 	const unsub = toasts.subscribe((val) => {
 		current = val;
 	});
-	unsub(); // desubscribimos imediatamente — só queremos o snapshot
+	unsub(); // unsubscribe immediately — we only want the snapshot
 	return current ?? [];
 }
 

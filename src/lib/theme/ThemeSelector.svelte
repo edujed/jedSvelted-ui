@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { DropdownMenu } from 'bits-ui';
 	import { THEMES, applyTheme, themeStore, type ThemeId } from './index';
+	import { ChevronDownIcon } from '../icons';
 
 	let temaAtual = $derived($themeStore);
 
@@ -22,9 +23,7 @@
 		<DropdownMenu.Trigger class="theme-btn">
 			<span class="theme-icon">{temaInfo?.icon ?? '🔵'}</span>
 			<span class="theme-label">{temaInfo?.label ?? 'Theme'}</span>
-			<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M6 9l6 6 6-6" />
-			</svg>
+			<ChevronDownIcon size={14} class="chevron" />
 		</DropdownMenu.Trigger>
 
 		<DropdownMenu.Content class="theme-list">
@@ -68,12 +67,6 @@
 
 	.theme-icon {
 		font-size: 1rem;
-	}
-
-	.chevron {
-		width: 14px;
-		height: 14px;
-		opacity: 0.7;
 	}
 
 	:global(.theme-list) {

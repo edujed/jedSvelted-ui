@@ -1,5 +1,30 @@
 <script lang="ts">
-	import Icon from '../icons/Icon.svelte';
+	import Button from './Button.svelte';
+
+	type IconName =
+		| 'eye'
+		| 'edit'
+		| 'trash'
+		| 'user'
+		| 'more'
+		| 'chevron-right'
+		| 'check'
+		| 'x'
+		| 'wallet'
+		| 'bank'
+		| 'clock'
+		| 'menu'
+		| 'download'
+		| 'sun'
+		| 'moon'
+		| 'sort'
+		| 'plus'
+		| 'chevron-down'
+		| 'circle'
+		| 'filter'
+		| 'search'
+		| 'settings'
+		| 'user-alt';
 
 	let {
 		onSave,
@@ -15,22 +40,20 @@
 		saveLabel?: string;
 		cancelLabel?: string;
 		showCancel?: boolean;
-		saveIcon?: string;
-		cancelIcon?: string;
+		saveIcon?: IconName;
+		cancelIcon?: IconName;
 	} = $props();
+
+	$effect(() => {
+		console.log('FormActions saveIcon:', saveIcon, 'cancelIcon:', cancelIcon);
+	});
 </script>
 
 <div class="form-actions">
 	{#if onSave}
-		<button class="btn btn-primary" onclick={onSave}>
-			<Icon name={saveIcon} size={16} />
-			{saveLabel}
-		</button>
+		<Button variant="primary" icon={saveIcon} onclick={onSave}>{saveLabel}</Button>
 	{/if}
 	{#if showCancel && onCancel}
-		<button class="btn btn-secondary" onclick={onCancel}>
-			<Icon name={cancelIcon} size={16} />
-			{cancelLabel}
-		</button>
+		<Button variant="secondary" icon={cancelIcon} onclick={onCancel}>{cancelLabel}</Button>
 	{/if}
 </div>

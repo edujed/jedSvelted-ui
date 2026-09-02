@@ -10,8 +10,20 @@
 	import IconWallet from './IconWallet.svelte';
 	import IconBank from './IconBank.svelte';
 	import IconClock from './IconClock.svelte';
+	import IconMenu from './IconMenu.svelte';
+	import IconDownload from './IconDownload.svelte';
+	import IconSun from './IconSun.svelte';
+	import IconMoon from './IconMoon.svelte';
+	import IconSort from './IconSort.svelte';
+	import IconPlus from './IconPlus.svelte';
+	import ChevronDownIcon from './ChevronDownIcon.svelte';
+	import CircleIcon from './CircleIcon.svelte';
+	import FilterIcon from './FilterIcon.svelte';
+	import SearchIcon from './SearchIcon.svelte';
+	import SettingsIcon from './SettingsIcon.svelte';
+	import UserIcon from './UserIcon.svelte';
 
-	/** Registry de ícones — adicione novos ícones aqui */
+	/** Icon registry — add new icons here */
 	const ICON_MAP = {
 		eye: IconEye,
 		edit: IconEdit,
@@ -23,7 +35,19 @@
 		x: IconX,
 		wallet: IconWallet,
 		bank: IconBank,
-		clock: IconClock
+		clock: IconClock,
+		menu: IconMenu,
+		download: IconDownload,
+		sun: IconSun,
+		moon: IconMoon,
+		sort: IconSort,
+		plus: IconPlus,
+		'chevron-down': ChevronDownIcon,
+		circle: CircleIcon,
+		filter: FilterIcon,
+		search: SearchIcon,
+		settings: SettingsIcon,
+		'user-alt': UserIcon
 	} as const;
 
 	let {
@@ -36,7 +60,7 @@
 		class?: string;
 	} = $props();
 
-	// Seleciona o componente do ícone baseado no nome
+	// Selects the icon component based on the name
 	const IconComponent = $derived(ICON_MAP[name as keyof typeof ICON_MAP] ?? IconEye);
 </script>
 

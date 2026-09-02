@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { HashRouter, RouteState } from '../router';
 	import type { MenuItem } from './types';
+	import { IconX } from '../icons';
 
 	let {
 		title = 'DemoApp',
@@ -110,10 +111,7 @@
 					<span class="sidenav-title">{title}</span>
 				</span>
 				<button class="sidenav-close" aria-label="Close menu" onclick={close}>
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<line x1="18" y1="6" x2="6" y2="18" />
-						<line x1="6" y1="6" x2="18" y2="18" />
-					</svg>
+					<IconX size={18} />
 				</button>
 			</div>
 
@@ -219,11 +217,6 @@
 
 	.sidenav-close:hover {
 		background: var(--color-sidenav-hover);
-	}
-
-	.sidenav-close svg {
-		width: 18px;
-		height: 18px;
 	}
 
 	.sidenav-content {

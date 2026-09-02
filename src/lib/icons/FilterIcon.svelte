@@ -1,20 +1,24 @@
 <script lang="ts">
-	let { size = '24' }: { size?: string } = $props();
+	let { size = 16, class: className = '' }: { size?: number; class?: string } = $props();
 </script>
 
 <svg
+	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 24 24"
 	fill="none"
 	stroke="currentColor"
 	stroke-width="2"
-	class="icon"
-	style="width:{size};height:{size}"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	width={size}
+	height={size}
+	class={className}
 >
 	<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
 </svg>
 
 <style>
-	.icon {
+	svg {
 		display: block;
 	}
 </style>

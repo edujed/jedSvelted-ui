@@ -1,17 +1,17 @@
-/** Tipos compartilhados entre router e componentes de navegação. */
+/** Types shared between the router and navigation components. */
 
 export interface RegisteredRouteItem {
-	/** Padrão original da rota (ex: "/users/:id") */
+	/** Original route pattern (e.g.: "/users/:id") */
 	pattern: string;
-	/** Título exibido no menu */
+	/** Title displayed in the menu */
 	title?: string;
-	/** Identificador do módulo/página correspondente */
+	/** Identifier of the corresponding module/page */
 	moduleName?: string;
-	/** Ícone opcional para renderização no menu */
+	/** Optional icon for rendering in the menu */
 	icon?: string;
 }
 
 export interface MenuItem extends RegisteredRouteItem {
-	path: string; // versão limpa do pattern (sem parâmetros/wildcard)
+	path: string; // clean version of the pattern (no parameters/wildcard)
 	label: string;
 }

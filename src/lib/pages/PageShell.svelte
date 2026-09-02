@@ -60,9 +60,9 @@
 			{/if}
 
 			<!-- Side panel for details when selected -->
-				{#if detailContent && renderDetail}
-					{@render detailContent(instance)}
-				{/if}
+			{#if detailContent && renderDetail}
+				{@render detailContent(instance)}
+			{/if}
 		{/if}
 	</main>
 </div>

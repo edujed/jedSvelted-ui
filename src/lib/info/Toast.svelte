@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Toast } from './toast';
+	import Button from '../ui/Button.svelte';
 
 	let { toast, onClose }: { toast: Toast; onClose?: (id: string) => void } = $props();
 
@@ -46,7 +47,14 @@
 		<span class="toast-message">{toast.message}</span>
 	</div>
 	{#if onClose}
-		<button class="toast-close" onclick={() => onClose(toast.id)}>✕</button>
+		<Button
+			variant="ghost"
+			size="sm"
+			icon="x"
+			iconSize={14}
+			class="toast-close"
+			onclick={() => onClose(toast.id)}
+		/>
 	{/if}
 </div>
 
@@ -98,23 +106,6 @@
 
 	.toast-message {
 		line-height: 1.4;
-	}
-
-	.toast-close {
-		flex-shrink: 0;
-		background: none;
-		border: none;
-		color: var(--color-on-surface);
-		opacity: 0.4;
-		cursor: pointer;
-		padding: 0;
-		font-size: 0.85rem;
-		line-height: 1;
-		transition: opacity var(--transition-fast);
-	}
-
-	.toast-close:hover {
-		opacity: 0.8;
 	}
 
 	/* Success */

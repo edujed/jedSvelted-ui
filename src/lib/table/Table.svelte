@@ -2,6 +2,8 @@
 	import { Popover } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
+	import { IconSort } from '../icons';
+	import Button from '../ui/Button.svelte';
 	import { filterData, sortData } from './tableTypes';
 	import type { TableAction, TableCol } from './tableTypes';
 
@@ -109,36 +111,22 @@
 			<span class="caption-title">{caption}</span>
 			<span class="caption-actions">
 				{#if data.length > 0}
-					<button class="btn-export" onclick={exportCSV} title="Export CSV">
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							width="16"
-							height="16"
-						>
-							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-							<polyline points="7 10 12 15 17 10" />
-							<line x1="12" y1="15" x2="12" y2="3" />
-						</svg>
-						CSV
-					</button>
-				{/if}
-				<button class="btn-add" onclick={onAdd} title="Add new record">
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						width="14"
-						height="14"
+					<Button
+						variant="secondary"
+						size="sm"
+						icon="download"
+						onclick={exportCSV}
+						title="Export CSV">CSV</Button
 					>
-						<line x1="12" y1="5" x2="12" y2="19" />
-						<line x1="5" y1="12" x2="19" y2="12" />
-					</svg>
-					{addLabel}
-				</button>
+				{/if}
+				<Button
+					variant="primary"
+					size="sm"
+					icon="plus"
+					iconSize={14}
+					onclick={onAdd}
+					title="Add new record">{addLabel}</Button
+				>
 				{@render header?.()}
 			</span>
 		</div>
@@ -154,23 +142,7 @@
 								<span class="th-label">{col.title}</span>
 								{#if col.sortable}
 									<button class="th-sort" onclick={() => handleSort(idx)} title="Sort">
-										<svg
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											width="14"
-											height="14"
-										>
-											{#if sortColumnIndex === idx && sortDirection === 'asc'}
-												<polyline points="18 15 12 9 6 15" />
-											{:else if sortColumnIndex === idx && sortDirection === 'desc'}
-												<polyline points="6 9 12 15 18 9" />
-											{:else}
-												<polyline points="6 9 12 15 18 9" />
-												<polyline points="6 15 12 9 18 15" opacity="0.3" />
-											{/if}
-										</svg>
+										<IconSort size={14} />
 									</button>
 								{/if}
 							</th>

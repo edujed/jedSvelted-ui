@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Icon from '../icons/Icon.svelte';
 	import DetailPanel from '../ui/DetailPanel.svelte';
 
 	/**
@@ -63,14 +62,15 @@
 	// without removing the DetailShell from the DOM (which would skip the
 	// exit transition). Resets to true whenever a new item is selected.
 	let _show = $state(true);
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	$effect(() => {
-		// Reseta para true quando um item é selecionado OU quando o item
-		// é limpo (close) — garante que a próxima abertura funcione.
+		// Resets to true when an item is selected OR when the item
+		// is cleared (close) — ensures the next open works.
 		_show = !!item;
 	});
 
-	// Garante que qualquer onClose (botão chevron, Cancel, etc.)
-	// passe pelo _show = false antes de notificar o parent.
+	// Ensures any onClose (chevron button, Cancel, etc.)
+	// goes through _show = false before notifying the parent.
 	function wrappedOnClose() {
 		_show = false;
 		onClose?.();

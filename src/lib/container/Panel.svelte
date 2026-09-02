@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { SearchIcon, SettingsIcon, UserIcon, FilterIcon, ChevronDownIcon } from '../icons';
+	import Icon from '../icons/Icon.svelte';
+	import { ChevronDownIcon } from '../icons';
 
 	let {
 		title = '',
@@ -10,7 +11,7 @@
 		onToggle
 	}: {
 		title?: string;
-		iconName?: 'search' | 'settings' | 'user' | 'filter' | string;
+		iconName?: string;
 		isOpen?: boolean;
 		children?: Snippet;
 		onToggle?: () => void;
@@ -25,15 +26,7 @@
 			onToggle?.();
 		}}
 	>
-		{#if iconName === 'search'}
-			<SearchIcon />
-		{:else if iconName === 'settings'}
-			<SettingsIcon />
-		{:else if iconName === 'user'}
-			<UserIcon />
-		{:else if iconName === 'filter'}
-			<FilterIcon />
-		{/if}
+		<Icon name={iconName} />
 		<span class="panel-title">{title}</span>
 		<ChevronDownIcon />
 	</button>

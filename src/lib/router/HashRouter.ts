@@ -131,7 +131,7 @@ export class HashRouter {
 		const path = this.getCurrentPath();
 		this.currentPath = path;
     // console.log('[Router.emit()]', 'path:', path, 'routes.length:', this.routes.length);
-		// Chama o handler da rota matched
+		// Calls the handler of the matched route
 		let found = false;
 		for (const route of this.routes) {
 			const match = path.match(route.regex);
@@ -141,7 +141,7 @@ export class HashRouter {
 				route.keys.forEach((key, i) => {
 					params[key] = match[i + 1] ?? '';
 				});
-				// Exponha os valores públicos para consumo externo
+				// Exposes the public values for external consumption
 				this.path = path;
 				this.params = params;
 				this.title = route.title || '';

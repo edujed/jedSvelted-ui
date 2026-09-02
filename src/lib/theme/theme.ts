@@ -30,8 +30,8 @@ const DEFAULT_PREFIX = 's-';
 let _prefix = DEFAULT_PREFIX;
 
 /** Sets the prefix used in localStorage keys.
- * Útil quando uma página tem múltiplas instâncias da lib.
- * Ex: `setThemeKeyPrefix('app2')` → usa `app2-theme` / `app2-mode`
+ * Useful when a page has multiple instances of the lib.
+ * E.g.: `setThemeKeyPrefix('app2')` → uses `app2-theme` / `app2-mode`
  */
 export function setThemeKeyPrefix(prefix?: string): void {
 	_prefix = prefix ?? DEFAULT_PREFIX;
@@ -39,7 +39,7 @@ export function setThemeKeyPrefix(prefix?: string): void {
 
 /** Returns object with current key names. Useful for internal tests. */
 export const getKeys = (): { THEME_KEY: string; MODE_KEY: string } => {
-	// Garante separação consistente por hífen
+	// Ensures consistent hyphen separation
 	const sep = _prefix.endsWith('-') ? '' : '-';
 	return {
 		THEME_KEY: `${_prefix}${sep}theme`,

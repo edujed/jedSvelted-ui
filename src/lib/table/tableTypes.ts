@@ -27,11 +27,11 @@ export interface TableColBase<T = unknown> {
 }
 
 export interface UseTableStateOptions<T> {
-	/** Chave única da linha para keyed each */
+	/** Unique row key for keyed each */
 	rowKey?: keyof T;
 	/** Custom filter function (optional). */
 	filterFn?: (row: T, filterValues: Record<number, string>, columns: TableColBase<T>[]) => boolean;
-	/** Função customizada de ordenação */
+	/** Custom sorting function */
 	sortFn?: (a: T, b: T, column: TableColBase<T>, direction: 'asc' | 'desc' | 'none') => number;
 }
 
@@ -41,20 +41,24 @@ export interface UseTableStateOptions<T> {
 
 /** Filter data based on per-column filter values. */
 export function filterData(
-	data: any[],
-	columns: TableCol<any>[],
+	data: Record<string, unknown>[],
+	columns: TableCol<Record<string, unknown>>[],
 	filterValues: Record<number, string>,
-	filterFn?: (row: any, filterValues: Record<number, string>, columns: TableCol<any>[]) => boolean
+	filterFn?: (
+		row: Record<string, unknown>,
+		filterValues: Record<number, string>,
+		columns: TableCol<Record<string, unknown>>[]
+	) => boolean
 ): unknown[] {
 	if (columns.length === 0) return [];
 
 	if (filterValues && Object.keys(filterValues).length > 0) {
 		return data.filter((row) => {
-			// Custom filterFn sempre executado primeiro — permite filtrar sem depender de colunas individuais.
+			// Custom filterFn always runs first — allows filtering without relying on individual columns.
 			if (filterFn !== undefined) {
 				if (filterFn(row, filterValues, columns) === false) return false;
 			} else if (columns.length > 0) {
-				// Se não há filtro personalizado, aplica o texto por coluna.
+				// If there is no custom filter, applies per-column text.
 				let hasAnyFilter = false;
 				for (const idx in filterValues) {
 					const col = columns[Number(idx)];
@@ -64,7 +68,7 @@ export function filterData(
 					if (!filterText) continue;
 					hasAnyFilter = true;
 
-					// Filtro padrão: busca case-insensitive no valor da coluna
+					// Default filter: case-insensitive search on the column value
 					const value = String(
 						col.key != null ? ((row as Record<string, unknown>)?.[String(col.key)] ?? '') : ''
 					).toLowerCase();
@@ -72,7 +76,7 @@ export function filterData(
 						return false;
 					}
 				}
-				// Se nenhuma coluna tinha filtro ativo E não existe filtro global → mantém a fila.
+				// If no column had an active filter AND there is no global filter → keeps the list.
 				if (!hasAnyFilter && filterFn === undefined) return true;
 			}
 			return true;
@@ -87,11 +91,16 @@ export function filterData(
  */
 /** Sort data based on column and direction. */
 export function sortData(
-	data: any[],
-	columns: TableCol<any>[],
+	data: Record<string, unknown>[],
+	columns: TableCol<Record<string, unknown>>[],
 	sortColumnIndex: number,
 	sortDirection: 'asc' | 'desc' | 'none',
-	sortFn?: (a: any, b: any, column: TableCol<any>, direction: 'asc' | 'desc' | 'none') => number
+	sortFn?: (
+		a: Record<string, unknown>,
+		b: Record<string, unknown>,
+		column: TableCol<Record<string, unknown>>,
+		direction: 'asc' | 'desc' | 'none'
+	) => number
 ): unknown[] {
 	if (sortColumnIndex < 0 || sortDirection === 'none') return data;
 
@@ -101,7 +110,7 @@ export function sortData(
 	const direction = sortDirection === 'asc' ? 1 : -1;
 
 	return [...data].sort((a, b) => {
-		// Usa função customizada se fornecida
+		// Uses the custom function if provided
 		if (sortFn) {
 			return sortFn(a, b, col, sortDirection);
 		}
@@ -123,8 +132,8 @@ export function sortData(
 			return (aVal - bVal) * direction;
 		}
 
-		// Usa 'en-US' para comportamento consistente entre ambientes (PT-BR ordena diferente).
-		// Força comparação numérica quando ambos são números strings que parecem numéricos.
+		// Uses 'en-US' for consistent behavior across environments (PT-BR sorts differently).
+		// Forces numeric comparison when both are numeric-looking strings.
 		const strA = String(aVal);
 		const strB = String(bVal);
 		const numA = parseFloat(strA);

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Select } from 'bits-ui';
 	import FieldHint from '../info/FieldHint.svelte';
+	import { ChevronDownIcon } from '../icons';
 
 	let {
 		label = '',
@@ -53,15 +54,7 @@
 					{options.find((o: { key: string; label: string }) => o.key === value)?.label ??
 						placeholder}
 				</span>
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					class="select-chevron"
-				>
-					<path d="M6 9l6 6 6-6" />
-				</svg>
+				<ChevronDownIcon size={16} class="select-chevron" />
 			</Select.Trigger>
 		</div>
 
@@ -125,13 +118,6 @@
 		box-shadow:
 			0 2px 6px var(--color-shadow),
 			0 0 0 3px var(--color-primary-light);
-	}
-
-	.select-chevron {
-		width: 16px;
-		height: 16px;
-		flex-shrink: 0;
-		opacity: 0.6;
 	}
 
 	:global(.select-content) {

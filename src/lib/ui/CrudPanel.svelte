@@ -3,6 +3,8 @@
 	import Table from '../table/Table.svelte';
 	import DetailPanel from './DetailPanel.svelte';
 	import type { TableCol, TableAction } from '../table';
+	import { IconTrash } from '../icons';
+	import Button from './Button.svelte';
 
 	let {
 		title = '',
@@ -127,7 +129,7 @@
 				caption={title}
 				{data}
 				{columns}
-				actions={actions}
+				{actions}
 				rowKey="id"
 				{csvFileName}
 				{addLabel}
@@ -152,22 +154,7 @@
 		<DetailPanel show={true} title={`Delete ${title}`} onClose={cancelDelete}>
 			<div class="delete-confirm">
 				<div class="delete-icon">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						width="48"
-						height="48"
-					>
-						<polyline points="3 6 5 6 21 6" />
-						<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-						<line x1="10" y1="11" x2="10" y2="17" />
-						<line x1="14" y1="11" x2="14" y2="17" />
-					</svg>
+					<IconTrash size={48} />
 				</div>
 				<div class="delete-content">
 					<h3 class="delete-title">Confirm Deletion</h3>
@@ -175,42 +162,8 @@
 					<p class="delete-warning">This action cannot be undone.</p>
 				</div>
 				<div class="delete-actions">
-					<button class="btn btn-danger" onclick={confirmDelete}>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							width="16"
-							height="16"
-						>
-							<polyline points="3 6 5 6 21 6" />
-							<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-							<line x1="10" y1="11" x2="10" y2="17" />
-							<line x1="14" y1="11" x2="14" y2="17" />
-						</svg>
-						Delete
-					</button>
-					<button class="btn btn-secondary" onclick={cancelDelete}>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							width="16"
-							height="16"
-						>
-							<line x1="18" y1="6" x2="6" y2="18" />
-							<line x1="6" y1="6" x2="18" y2="18" />
-						</svg>
-						Cancel
-					</button>
+					<Button variant="danger" icon="trash" onclick={confirmDelete}>Delete</Button>
+					<Button variant="secondary" icon="x" onclick={cancelDelete}>Cancel</Button>
 				</div>
 			</div>
 		</DetailPanel>
@@ -230,7 +183,7 @@
 				caption={title}
 				{data}
 				{columns}
-				actions={actions}
+				{actions}
 				rowKey="id"
 				{csvFileName}
 				{addLabel}
@@ -307,25 +260,5 @@
 		display: flex;
 		gap: var(--spacing-md);
 		margin-top: var(--spacing-md);
-	}
-
-	.btn-danger {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: var(--spacing-sm) var(--spacing-md);
-		border: 1px solid var(--color-error);
-		border-radius: var(--radius-sm);
-		background: var(--color-error);
-		color: white;
-		font-size: var(--font-size-md);
-		font-weight: 600;
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.btn-danger:hover {
-		background: color-mix(in srgb, var(--color-error) 80%, transparent);
-		border-color: var(--color-error);
 	}
 </style>

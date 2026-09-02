@@ -20,28 +20,37 @@ yarn add @edujed/jedsvelted-ui
 
 ## 🧩 Available Components
 
-| Module        | Description                                                                   |
-| ------------- | ----------------------------------------------------------------------------- |
-| `container/*` | Layout and panels (`Layout`, `Panel`, `SearchPanel`)                          |
-| `forms/*`     | Form controls (`EditField`, `SelectField`)                                    |
-| `icons/*`     | SVG icons (`Icon`, `IconCheck`, etc.)                                         |
-| `info/*`      | Visual feedback (`ToastContainer`, `Toast`, `FieldHint`)                      |
-| `nav/*`       | Navigation (`Navbar`, `Sidenav`, `menuConfig`, `routeMap`)                    |
-| `pages/*`     | Page shells (`PageShell`, `DetailShell`)                                      |
-| `table/*`     | Interactive tables (`Table`)                                                  |
-| `tabs/*`      | Tab system (`Tabs`)                                                           |
-| `ui/*`        | General UI components (`CrudPanel`, `InfoGrid`, `FormActions`, `DetailPanel`) |
-| `theme/*`     | Theme management (`ThemeSelector`)                                            |
+| Module        | Description                                                                             |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `container/*` | Layout and panels (`Layout`, `Panel`, `SearchPanel`)                                    |
+| `forms/*`     | Form controls (`EditField`, `SelectField`)                                              |
+| `icons/*`     | SVG icons (`Icon`, `IconCheck`, etc.)                                                   |
+| `info/*`      | Visual feedback (`ToastContainer`, `Toast`, `FieldHint`)                                |
+| `nav/*`       | Navigation (`Navbar`, `Sidenav`, `menuConfig`, `routeMap`)                              |
+| `pages/*`     | Page shells (`PageShell`, `DetailShell`)                                                |
+| `table/*`     | Interactive tables (`Table`)                                                            |
+| `tabs/*`      | Tab system (`Tabs`)                                                                     |
+| `ui/*`        | General UI components (`Button`, `CrudPanel`, `InfoGrid`, `FormActions`, `DetailPanel`) |
+| `theme/*`     | Theme management (`ThemeSelector`)                                                      |
+
+### Demo Application
+
+```bash
+git clone https://github.com/edujed/jedSvelted-demo-app.git
+```
 
 ### Usage example
 
 ```svelte
 <script lang="ts">
+	import { Button } from '@edujed/jedsvelted-ui/ui/Button';
 	import { CrudPanel } from '@edujed/jedsvelted-ui/ui/CrudPanel';
 	import { Navbar } from '@edujed/jedsvelted-ui/nav/Navbar';
 </script>
 
 <Navbar />
+<Button variant="primary" icon="plus">Add</Button>
+<Button variant="danger" icon="trash">Delete</Button>
 <CrudPanel title="Example" />
 ```
 
