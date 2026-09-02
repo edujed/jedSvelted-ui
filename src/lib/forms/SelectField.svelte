@@ -5,7 +5,7 @@
 	let {
 		label = '',
 		value = $bindable(''),
-		options = [] as Array<{ valor: string; label: string }>,
+		options = [] as Array<{ key: string; label: string }>,
 		placeholder = 'Selecione...',
 		disabled = false,
 		colSpan = 2,
@@ -14,7 +14,7 @@
 	} = $props<{
 		label?: string;
 		value?: string;
-		options?: Array<{ valor: string; label: string }>;
+		options?: Array<{ key: string; label: string }>;
 		placeholder?: string;
 		disabled?: boolean;
 		colSpan?: number;
@@ -50,7 +50,7 @@
 		<div class="select-trigger-wrapper" id={generatedId}>
 			<Select.Trigger {disabled}>
 				<span class="select-value">
-					{options.find((o: { valor: string; label: string }) => o.valor === value)?.label ??
+					{options.find((o: { key: string; label: string }) => o.key === value)?.label ??
 						placeholder}
 				</span>
 				<svg
@@ -67,8 +67,8 @@
 
 		<Select.Content class="select-content">
 			<Select.Viewport class="select-viewport">
-				{#each options as option (option.valor)}
-					<Select.Item class="select-item" value={option.valor}>
+				{#each options as option (option.key)}
+					<Select.Item class="select-item" value={option.key}>
 						{option.label}
 					</Select.Item>
 				{/each}

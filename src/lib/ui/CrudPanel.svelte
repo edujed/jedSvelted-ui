@@ -16,8 +16,8 @@
 		onEdit,
 		onDelete,
 		onView,
-		salvar: childSalvar,
-		cancelar: childCancelar,
+		onSave: childOnSave,
+		onCancel: childOnCancel,
 		renderForm,
 		renderView
 	}: {
@@ -32,13 +32,13 @@
 		onEdit?: (...args: unknown[]) => void;
 		onDelete?: (...args: unknown[]) => void;
 		onView?: (...args: unknown[]) => void;
-		salvar?: () => void;
-		cancelar?: () => void;
+		onSave?: () => void;
+		onCancel?: () => void;
 		renderForm: (props: {
 			showForm: boolean;
 			editId: number | null;
-			salvar: () => void;
-			cancelar: () => void;
+			onSave: () => void;
+			onCancel: () => void;
 		}) => Snippet;
 		renderView?: (row: Record<string, unknown>) => Snippet;
 	} = $props();
@@ -93,23 +93,23 @@
 		onView?.(row);
 	}
 
-	function salvar(): void {
+	function onSave(): void {
 		// No-op: child component handles its own save logic
 	}
 
-	function cancelar(): void {
+	function onCancel(): void {
 		showForm = false;
 		editId = null;
 	}
 
-	const _salvar = () => childSalvar?.() ?? salvar();
-	const _cancelar = () => {
-		childCancelar?.();
+	const _onSave = () => childOnSave?.() ?? onSave();
+	const _onCancel = () => {
+		childOnCancel?.();
 		showForm = false;
 		editId = null;
 	};
 
-	const acoes: TableAction[] = [
+	const actions: TableAction[] = [
 		{ title: 'View', hint: 'View details', icon: 'eye' as const, onClick: handleView },
 		{ title: 'Edit', hint: 'Edit', icon: 'edit' as const, onClick: handleEdit },
 		{ title: 'Delete', hint: 'Delete', icon: 'trash' as const, onClick: handleDelete }
@@ -123,11 +123,11 @@
 		</header>
 		<main class="crud-content">
 			<Table
-				id={`tabela-${title.toLowerCase().replace(/\s+/g, '-')}`}
+				id={`table-${title.toLowerCase().replace(/\s+/g, '-')}`}
 				caption={title}
 				{data}
 				{columns}
-				actions={acoes}
+				actions={actions}
 				rowKey="id"
 				{csvFileName}
 				{addLabel}
@@ -218,26 +218,26 @@
 
 	{#if showForm && renderForm}
 		<!-- eslint-disable-next-line no-constant-binary-expression -->
-		<DetailPanel show={true} title={editId ? `Edit ${title}` : `New ${title}`} onClose={_cancelar}>
-			{renderForm({ showForm, editId: Number(editId) || 0, salvar: _salvar, cancelar: _cancelar })}
+		<DetailPanel show={true} title={editId ? `Edit ${title}` : `New ${title}`} onClose={_onCancel}>
+			{renderForm({ showForm, editId: Number(editId) || 0, onSave: _onSave, onCancel: _onCancel })}
 		</DetailPanel>
 	{/if}
 {:else}
 	<DetailPanel show={true} {title} {onClose}>
 		<main class="crud-content">
 			<Table
-				id={`tabela-${title.toLowerCase().replace(/\s+/g, '-')}`}
+				id={`table-${title.toLowerCase().replace(/\s+/g, '-')}`}
 				caption={title}
 				{data}
 				{columns}
-				actions={acoes}
+				actions={actions}
 				rowKey="id"
 				{csvFileName}
 				{addLabel}
 				onAdd={handleAdd}
 			/>
 			<!-- eslint-disable-next-line no-constant-binary-expression -->
-			{renderForm({ showForm, editId: Number(editId) ?? 0, salvar: _salvar, cancelar: _cancelar })}
+			{renderForm({ showForm, editId: Number(editId) ?? 0, onSave: _onSave, onCancel: _onCancel })}
 		</main>
 	</DetailPanel>
 {/if}

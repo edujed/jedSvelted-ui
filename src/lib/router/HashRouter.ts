@@ -3,41 +3,41 @@ import type { Route, RouteHandler, RouteMetadata, RouteState } from './types';
 export class HashRouter {
 	private routes: Route[] = [];
 	private _pendingNavigate?: string;
-	private _isEmitting = false; // evita reentrada quando popstate + hashchange colidem
+	private _isEmitting = false; // prevents re-entry when popstate + hashchange collide
 	private currentPath = '';
 	private listeners: (() => void)[] = [];
 	private registeredEvents: Set<string> = new Set();
 
-	// Propriedades públicas expostas ao template — atualizadas em cada emit().
+	// Public properties exposed to the template — updated on every emit().
 	public path = '';
 	public params: Record<string, string> = {};
 	public title = '';
 
 	/**
-	 * Registra uma rota com parâmetros nomeados e metadados opcionais.
-	 * @param pattern   Padrão de rota (ex: "/users/:id")
-	 * @param handler   Callback executado ao navegar para essa rota
-	 * @param options   Metadados opcionais (title, moduleName)
+	 * Registers a route with named parameters and optional metadata.
+	 * @param pattern   Route pattern (e.g.: "/users/:id")
+	 * @param handler   Callback executed when navigating to this route
+	 * @param options   Optional metadata (title, moduleName)
 	 */
 	add(pattern: string, handler: RouteHandler, options: RouteMetadata = {}): void {
 		const keys: string[] = [];
 		let regexSource = pattern;
-		// 1) Parâmetros opcionais :param?
+		// 1) Optional parameters :param?
 		regexSource = regexSource.replace(/:(\w+)\?/g, (match, key) => {
 			keys.push(key);
 			return '__OPT__';
 		});
-		// 2) Parâmetros obrigatórios :param
+		// 2) Required parameters :param
 		regexSource = regexSource.replace(/:(\w+)/g, (match, key) => {
 			keys.push(key);
 			return '__REQ__';
 		});
 		// 3) Wildcard *
 		regexSource = regexSource.replace(/\*/g, '__WILD__');
-		// 4) Converter marcadores para regex
+		// 4) Convert markers to regex
 		regexSource = regexSource
-			.replace(/__OPT__/g, '(?:\\/([^/]*))?') // segmento /:param opcional inteiro
-			.replace(/__REQ__/g, '([^/]+)') // valor do param
+			.replace(/__OPT__/g, '(?:\\/([^/]*))?') // entire optional /:param segment
+			.replace(/__REQ__/g, '([^/]+)') // param value
 			.replace(/__WILD__/g, '(.*)'); // wildcard
 
 		this.routes.push({
@@ -53,29 +53,29 @@ export class HashRouter {
 	navigate(path: string): void {
 		const currentHash = window.location.hash.slice(1);
 		if (currentHash !== path) {
-			// Guarda destino antes de mudar hash — assim emit() sempre usa o valor mais recente.
+			// Store destination before changing hash — so emit() always uses the latest value.
 			this._pendingNavigate = path;
 			try {
 				window.location.hash = path;
 			} catch (e) {
 				console.warn('[HashRouter] Failed to set hash:', e);
 			}
-			// Dispara manualmente o handler e listeners — necessário pois navegação
-			// programática pode não disparar 'hashchange' no JSDOM.
+			// Manually trigger handler and listeners — necessary because programmatic
+			// navigation may not fire 'hashchange' in JSDOM.
 			this.emit();
 		}
 	}
 
 	/** Gets the current path without the leading '#'. */
 	getCurrentPath(): string {
-		// Prioriza hash cru do DOM como fonte única de verdade.
-		// _pendingNavigate existe só para casos onde o hash ainda não chegou
-		// ao ambiente (ex: JSDOM). Em produção real, o hash sempre vence.
+		// Prioritizes the raw DOM hash as the single source of truth.
+		// _pendingNavigate exists only for cases where the hash hasn't reached
+		// the environment yet (e.g.: JSDOM). In real production, the hash always wins.
 		let path = window.location.hash.slice(1);
 		if (!path && this._pendingNavigate) {
 			path = this._pendingNavigate;
 		}
-		// Normaliza: removes trailing slash (except root "/")
+		// Normalize: removes trailing slash (except root "/")
 		return path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
 	}
 
@@ -113,7 +113,7 @@ export class HashRouter {
 
 	/** Triggers all listeners and the matched route's handler. */
 	private emit(): void {
-		if (this._isEmitting) return; // protege contra reentrada
+		if (this._isEmitting) return; // guards against re-entry
 		try {
 			this._isEmitting = true;
 			this.doEmit();
@@ -124,11 +124,10 @@ export class HashRouter {
 
 	private doEmit(): void {
 		console.log('[Router.emit()] START, currentPath:', this.currentPath);
-		// Resolve a rota atual antes de emitir
-    this.resolve();
+		// Resolve the current route before emitting
+		this.resolve();
 
-
-    /*
+		/*
 		const path = this.getCurrentPath();
 		this.currentPath = path;
     // console.log('[Router.emit()]', 'path:', path, 'routes.length:', this.routes.length);
@@ -162,12 +161,12 @@ export class HashRouter {
 		}
 		*/
 
-		// Chama listeners sempre, independente se uma rota foi encontrada
+		// Always calls listeners, regardless of whether a route was found
 		this.listeners.forEach((fn) => console.log('calling:', fn, fn()));
 	}
 
 	private register(event: string) {
-		// Evita duplicação se init() é chamado múltiplas vezes (ex: HMR)
+		// Avoids duplication if init() is called multiple times (e.g.: HMR)
 		if (this.registeredEvents.has(event)) return;
 		this.registeredEvents.add(event);
 
@@ -182,11 +181,11 @@ export class HashRouter {
 	}
 
 	/** Initializes the router and listens for hash changes. */
-  	init(): void {
+	init(): void {
 		this.register('hashchange');
 		this.register('popstate');
 
-		// Tenta resolver imediatamente ao carregar
+		// Tries to resolve immediately on load
 		const initialPath = this.getCurrentPath();
 		console.log('[Router.init()] initialPath:', initialPath);
 		if (initialPath && initialPath !== '/') {
@@ -201,21 +200,19 @@ export class HashRouter {
 	}
 
 	/**
-	 * Resolve o moduleName da página atual baseado nas rotas registradas.
-	 * Útil para carregamento condicional de componentes/páginas.
+	 * Resolves the moduleName of the current page based on registered routes.
+	 * Useful for conditional loading of components/pages.
 	 */
-  public getRouteByName(path?: string) : Route | undefined {
-    const p = path ?? this.getCurrentPath();
-		for (const route of this.routes)
-      if (route.regex.test(p))
-        return route;
-    return undefined;
+	public getRouteByName(path?: string): Route | undefined {
+		const p = path ?? this.getCurrentPath();
+		for (const route of this.routes) if (route.regex.test(p)) return route;
+		return undefined;
 	}
 
 	/**
-	 * Retorna os itens do menu derivados das rotas registradas.
-	 * Filtra automaticamente rotas marcadas como não-mostráveis no menu.
-	 * Cada item inclui pattern limpo, título e ícone se disponível.
+	 * Returns menu items derived from registered routes.
+	 * Automatically filters routes marked as not shown in the menu.
+	 * Each item includes the clean pattern, title, and icon if available.
 	 */
 	public get registeredRoutes(): ReadonlyArray<{
 		pattern: string;
@@ -234,21 +231,21 @@ export class HashRouter {
 	}
 
 	/**
-	 * Retorna o estado atual da aplicação como um único objeto.
-	 * Útil para centralizar a inicialização e atualização do estado no App.
+	 * Returns the current application state as a single object.
+	 * Useful for centralizing state initialization and updates in the App.
 	 */
-  public getState(): RouteState {
-    const path = this.getPath();
-    const route = this.getRouteByName();
+	public getState(): RouteState {
+		const path = this.getPath();
+		const route = this.getRouteByName();
 
-    const result: RouteState = {
-      path,
-      paginaAtual: route?.moduleName || 'home',
-      title: route?.title || '',
-      moduleName: route?.moduleName,
-      rotaParams: this.resolve() ?? {}
-    }
-    console.log('getState: ', JSON.stringify(result));
-    return result;
-		}
+		const result: RouteState = {
+			path,
+			currentPage: route?.moduleName || 'home',
+			title: route?.title || '',
+			moduleName: route?.moduleName,
+			routeParams: this.resolve() ?? {}
+		};
+		console.log('getState: ', JSON.stringify(result));
+		return result;
+	}
 }

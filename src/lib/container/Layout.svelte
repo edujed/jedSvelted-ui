@@ -12,16 +12,16 @@
 		router?: HashRouter;
 	} = $props();
 
-	let sidenavAberto = $state(false);
+	let sidenavOpen = $state(false);
 
-	function fecharSidenav(): void {
-		sidenavAberto = false;
+	function closeSidenav(): void {
+		sidenavOpen = false;
 	}
 </script>
 
-<Sidenav isOpen={sidenavAberto} onOverlayClick={fecharSidenav} {router} />
+<Sidenav isOpen={sidenavOpen} onOverlayClick={closeSidenav} {router} />
 
-<Navbar {router} onMenuClick={() => (sidenavAberto = !sidenavAberto)} />
+<Navbar {router} onMenuClick={() => (sidenavOpen = !sidenavOpen)} />
 
 <main class="main-content">
 	{@render children?.()}

@@ -1,28 +1,28 @@
-/** Metadados opcionais associados a uma rota registrada. */
+/** Optional metadata associated with a registered route. */
 export interface RouteMetadata {
-	/** Título exibido na navbar quando esta rota está ativa */
+	/** Title displayed in the navbar when this route is active */
 	title?: string;
-	/** Identificador do módulo/página correspondente */
+	/** Identifier of the corresponding module/page */
 	moduleName?: string;
-	/** Ícono visual (emoji ou nome) usado no menu lateral */
+	/** Visual icon (emoji or name) used in the side menu */
 	icon?: string;
-	/** Se true, a rota aparece no menu lateral (Sidenav). Por padrão é false — só registra explicitamente o que quer mostrar. */
+	/** If true, the route appears in the side menu (Sidenav). Defaults to false — only explicitly registered routes are shown. */
 	showInMenu?: boolean;
 }
 
 export type RouteHandler = (params: Record<string, string>) => void;
 
-/** Estado completo de uma rota — útil para agrupar tudo junto ao App */
+/** Complete state of a route — useful for grouping everything together in the App */
 export interface RouteState {
-	paginaAtual: string;
-	rotaParams: Record<string, string>;
+	currentPage: string;
+	routeParams: Record<string, string>;
 	title: string;
 	path: string;
 	moduleName?: string;
 }
 
 export interface Route extends RouteMetadata {
-	pattern: string; // ex: "/Pessoas/14/Contato/3/edit"
+	pattern: string; // e.g.: "/people/14/contact/3/edit"
 	handler: RouteHandler;
 	regex: RegExp;
 	keys: string[];

@@ -33,7 +33,7 @@
 		item,
 		mode = $bindable('detail' as 'detail' | 'edit' | 'delete'),
 		formFields = {},
-		entityName = 'Registro',
+		entityName = 'Record',
 		onClose,
 		onAction,
 		children
@@ -58,6 +58,23 @@
 	let _mode = $derived(mode ?? ('detail' as const));
 	let _selectedItem = $derived(item);
 	let _formState = $derived(formFields ? structuredClone(formFields) : {});
+
+	// Internal show state — allows the close button to hide the overlay
+	// without removing the DetailShell from the DOM (which would skip the
+	// exit transition). Resets to true whenever a new item is selected.
+	let _show = $state(true);
+	$effect(() => {
+		// Reseta para true quando um item é selecionado OU quando o item
+		// é limpo (close) — garante que a próxima abertura funcione.
+		_show = !!item;
+	});
+
+	// Garante que qualquer onClose (botão chevron, Cancel, etc.)
+	// passe pelo _show = false antes de notificar o parent.
+	function wrappedOnClose() {
+		_show = false;
+		onClose?.();
+	}
 
 	// Derived title
 	let title = $derived(
@@ -85,8 +102,8 @@
 		handleAction('save');
 	}
 
-	function handleCancel(): void {
-		onClose?.();
+	function handleCancel() {
+		wrappedOnClose();
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,49 +136,8 @@
 	}
 </script>
 
-<DetailPanel show={true} {title} {onClose}>
-	{#snippet headerActions()}
-		{#if _mode === 'detail' && _selectedItem?.id}
-			<button class="btn-action btn-edit" onclick={() => handleAction('edit')} title="Edit">
-				<Icon name="edit" size={16} />
-				<span>Edit</span>
-			</button>
-			<button class="btn-action btn-delete" onclick={() => handleAction('delete')} title="Delete">
-				<Icon name="trash" size={16} />
-				<span>Delete</span>
-			</button>
-		{/if}
-	{/snippet}
-
+<DetailPanel show={_show && !!item} {title} onClose={wrappedOnClose}>
 	{#if children}
 		{@render children(detailState, isMode)}
 	{/if}
 </DetailPanel>
-
-<style>
-	.btn-action {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		padding: 0.375rem 0.75rem;
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-sm);
-		background: var(--color-surface);
-		color: var(--color-on-surface);
-		font-size: var(--font-size-sm);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.btn-action:hover {
-		background: var(--color-primary-light);
-		border-color: var(--color-primary);
-		color: var(--color-primary);
-	}
-
-	.btn-action.btn-delete:hover {
-		background: var(--color-error);
-		border-color: var(--color-error);
-		color: white;
-	}
-</style>

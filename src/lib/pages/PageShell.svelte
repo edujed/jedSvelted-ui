@@ -1,159 +1,68 @@
 <script lang="ts">
 	import SearchPanel from '$lib/container/SearchPanel.svelte';
 	import type { Snippet } from 'svelte';
+	import { PageState } from './PageState.svelte';
 
 	let {
 		title = '',
-		autoOpenId,
-		// Optional snippets — each section is independent
+		onSearch,
+		onClear,
 		filter,
 		content,
 		detailContent
 	}: {
 		title?: string;
-		/** ID of record to open detail panel on mount — externally controlled. */
-		autoOpenId?: number;
-		/** Optional section for filters/search above table. */
-		filter?: Snippet<[PageState]>;
-		/** Main content (table/list). */
-		content?: Snippet<[PageState]>;
-		/** Optional side panel content when a detail item is selected. */
-		detailContent?: Snippet<[PageState]>;
+		onSearch?: () => void;
+		onClear?: () => void;
+		/** Called by child when it wants to open detail panel automatically (e.g., after loading a single row). */
+		filter?: Snippet<[PageState]> | undefined;
+		content?: Snippet<[PageState]> | undefined;
+		detailContent?: Snippet<[PageState]> | undefined;
 	} = $props();
 
-	export interface PageState {
-		showDetail: boolean;
-		selectedItem: Record<string, unknown> | undefined;
-		detailAction: 'detail' | 'edit' | 'delete';
-		loading: boolean;
-		setLoading: (value: boolean) => void;
-		error: string;
-		setError: (value: string) => void;
-		handleDetail: (row: Record<string, unknown>) => void;
-		handleEdit: (row: Record<string, unknown>) => void;
-		handleDelete: (row: Record<string, unknown>) => void;
-		closeDetail: () => void;
+	const instance = new PageState();
+
+	// Derive reactive bindings so the template sees updates automatically.
+	const showLoading = $derived(instance.loading);
+	const showError = $derived(instance.error);
+	const isLoading = $derived(showLoading && !showError);
+	const hasError = $derived(!isLoading && !!instance.error);
+	const renderDetail = $derived(instance.showDetail && !!detailContent);
+
+	export function showDetail(row: Record<string, unknown>): void {
+		instance.show(row);
 	}
 
-	// Exposed reactive properties as public props.
-	// The page can read directly: shell.showDetail, shell.selectedItem, etc.
-	let showDetail = $state(false);
-	let selectedItem = $state<Record<string, unknown> | undefined>(undefined);
-	let detailAction = $state<'detail' | 'edit' | 'delete'>('detail');
-	let loading = $state(false);
-	let error = $state('');
-
-	/** Opens the details panel for a table row. */
-	function handleDetail(row: Record<string, unknown>): void {
-		selectedItem = row;
-		detailAction = 'detail';
-		showDetail = true;
+	export function closeDetail(): void {
+		instance.close();
 	}
-
-	/** Prepares the item for editing in the side panel. */
-	function handleEdit(row: Record<string, unknown>): void {
-		selectedItem = row;
-		detailAction = 'edit';
-		showDetail = true;
-	}
-
-	/** Prepares the item for deletion confirmation. */
-	function handleDelete(row: Record<string, unknown>): void {
-		selectedItem = row;
-		detailAction = 'delete';
-		showDetail = true;
-	}
-
-	/** Closes the detail panel. */
-	function closeDetail(): void {
-		showDetail = false;
-		selectedItem = undefined;
-		detailAction = 'detail';
-	}
-
-	// Track IDs that have been processed to avoid re-triggering
-	const handledAutoOpenIds = $state(new Set<number>());
-
-	/** Automatically opens the detail panel when an ID is passed externally.
-	 * Only runs once per ID — won't reopen after closing even if the ID remains on the prop.
-	 */
-	$effect(() => {
-		if (autoOpenId !== undefined && autoOpenId > 0) {
-			if (!handledAutoOpenIds.has(autoOpenId)) {
-				console.log('[PageShell] Auto-opening detail for id:', autoOpenId);
-				// The page must ensure selectedItem is populated before this runs.
-				// This typically happens in the page's own $effect after receiving getById().
-				if (selectedItem && Number(selectedItem.id) === autoOpenId) {
-					handleDetail(selectedItem);
-					handledAutoOpenIds.add(autoOpenId);
-				}
-			}
-		}
-	});
-
-	// Object exposed as parameter for content snippets.
-	const pageState: PageState = {
-		get showDetail() {
-			return showDetail;
-		},
-		get selectedItem() {
-			return selectedItem;
-		},
-		get detailAction() {
-			return detailAction;
-		},
-		get loading() {
-			return loading;
-		},
-		setLoading(v: boolean) {
-			loading = v;
-		},
-		get error() {
-			return error;
-		},
-		setError(v: string) {
-			error = v;
-		},
-		handleDetail,
-		handleEdit,
-		handleDelete,
-		closeDetail
-	};
 </script>
 
 <div class="page-shell">
 	{#if filter}
-		<SearchPanel {title} {showDetail} {closeDetail}>
-			{@render filter(pageState)}
+		<SearchPanel {title} {onSearch} {onClear}>
+			{@render filter(instance)}
 		</SearchPanel>
 	{/if}
 
 	<main class="shell-content">
 		<!-- Global loading state -->
-		{#if loading}
+		{#if isLoading}
 			<div class="loading">Loading...</div>
-		{:else if error}
-			<div class="error">{error}</div>
+		{:else if hasError}
+			<div class="error">{instance.error}</div>
 		{:else}
-			<!-- Optional filter/search section -->
-
 			<!-- Main content (table/list) -->
 			{#if content}
-				{@render content(pageState)}
+				{@render content(instance)}
 			{:else if !filter && !content}
 				<p class="empty-state">Nothing to display.</p>
 			{/if}
 
 			<!-- Side panel for details when selected -->
-			{#if showDetail && selectedItem}
-				<aside class="detail-panel">
-					{#if detailContent}
-						{@render detailContent(pageState)}
-					{:else}
-						<p class="empty-state">No detail content configured.</p>
-					{/if}
-				</aside>
-			{/if}
+				{#if detailContent && renderDetail}
+					{@render detailContent(instance)}
+				{/if}
 		{/if}
 	</main>
 </div>
@@ -196,17 +105,8 @@
 	@media (min-width: 1024px) {
 		.shell-content {
 			display: grid;
-			grid-template-columns: minmax(300px, 1fr) minmax(400px, 1fr);
+			grid-template-columns: 1fr;
 			gap: 1rem;
-		}
-
-		.detail-panel {
-			position: sticky;
-			top: 0;
-			max-height: calc(100vh - 80px);
-			overflow-y: auto;
-			border-left: 1px solid var(--border);
-			padding-left: 1rem;
 		}
 	}
 </style>

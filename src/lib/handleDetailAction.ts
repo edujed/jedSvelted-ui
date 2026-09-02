@@ -4,36 +4,36 @@
  *
  * Usage:
  * ```ts
- * const { handleSave, handleDelete, handleDetalheAction } = createHandleDetalhe({
+ * const { handleSave, handleDelete, handleDetailAction } = createHandleDetail({
  *   dataRef: handlerRef,
  *   toast,
- *   itemName: 'Pessoa',
- *   displayFields: ['nome']
+ *   itemName: 'Person',
+ *   displayFields: ['name']
  * });
  * ```
  */
 
-export interface HandleDetalheOptions<T extends { id?: number }> {
+export interface HandleDetailOptions<T extends { id?: number }> {
 	/** Mutable reference to the data array — allows updates without recreating the handler. */
 	dataRef: { data: T[] };
 	/** Toast function for user-facing feedback messages. */
 	toast: { success: (msg: string) => void; warning: (msg: string) => void };
 	/** Item name used in confirmation messages. */
 	itemName: string;
-	/** Fields displayed in message (e.g., ['nome', 'label']). */
+	/** Fields displayed in message (e.g., ['name', 'label']). */
 	displayFields?: string[];
 }
 
 /**
  * Creates a generic handler for detail actions.
- * Returns handleSave, handleDelete and handleDetalheAction (unified wrapper).
+ * Returns handleSave, handleDelete and handleDetailAction (unified wrapper).
  */
-export function createHandleDetalhe<T extends { id?: number }>(
-	options: HandleDetalheOptions<T>
+export function createHandleDetail<T extends { id?: number }>(
+	options: HandleDetailOptions<T>
 ): {
 	handleSave: (item: T) => void;
 	handleDelete: (item: T) => void;
-	handleDetalheAction: (action: string, item: T | undefined) => void;
+	handleDetailAction: (action: string, item: T | undefined) => void;
 	/** Exposed for unit tests — not part of the public API. */
 	dataRef: (typeof options)['dataRef'];
 } {
@@ -62,7 +62,7 @@ export function createHandleDetalhe<T extends { id?: number }>(
 	}
 
 	/** Unified wrapper that dispatches actions to the correct handlers. */
-	function handleDetalheAction(action: string, item: T | undefined): void {
+	function handleDetailAction(action: string, item: T | undefined): void {
 		if (!item) return;
 		if (action === 'save') return handleSave(item);
 		if (action === 'confirm-delete') return handleDelete(item);
@@ -90,7 +90,7 @@ export function createHandleDetalhe<T extends { id?: number }>(
 	return {
 		handleSave,
 		handleDelete,
-		handleDetalheAction,
+		handleDetailAction,
 		// Exposed for unit tests — not part of the public API.
 		dataRef
 	};

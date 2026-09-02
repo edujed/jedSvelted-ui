@@ -1,5 +1,5 @@
 <script lang="ts">
-    	import type { HashRouter, RouteState } from '../router';
+	import type { HashRouter, RouteState } from '../router';
 	import type { MenuItem } from './types';
 
 	let {
@@ -19,39 +19,39 @@
 	let routeState: RouteState = $derived(router?.getState() ?? {});
 	let opened = $state(false);
 
-	// Sincroniza estado local com prop externa.
-	// A reatividade de $derived já escuta mudanças no router — não precisamos mais de listeners manuais.
+	// Syncs local state with external prop.
+	// $derived reactivity already listens to router changes — no manual listeners needed.
 	$effect(() => {
 		if (isOpen && !opened) opened = true;
-		else if (!isOpen && opened) fechar();
+		else if (!isOpen && opened) close();
 	});
 
-	let paginaAtual = $derived(routeState?.paginaAtual || '');
+	let currentPage = $derived(routeState?.currentPage || '');
 
 	/**
-	 * Scroll automático ao item ativo:
-	 * - Quando o menu é aberto
-	 * - Quando o módulo atual muda (ex: navegando entre páginas)
+	 * Auto-scroll to the active item:
+	 * - When the menu is opened
+	 * - When the current module changes (e.g.: navigating between pages)
 	 */
 	$effect(() => {
-		if (!opened || !routeState?.paginaAtual) return;
+		if (!opened || !routeState?.currentPage) return;
 		requestAnimationFrame(() => {
 			const activeItem = document.querySelector('.menu-item.active');
 			activeItem?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 		});
 	});
 
-	function fechar(): void {
+	function close(): void {
 		opened = false;
 		onOverlayClick();
 	}
 
 	/**
-	 * Verifica se um path corresponde à uma rota registrada,
-	 * considerando parâmetros e wildcards.
+	 * Checks if a path matches a registered route,
+	 * considering parameters and wildcards.
 	 */
 	function isRouteActive(pattern: string, currentPath: string): boolean {
-		const cleanPattern = pattern.replace(/(\/:\w+\??)*$/g, ''); // remove params/wildcard do fim
+		const cleanPattern = pattern.replace(/(\/:\w+\??)*$/g, ''); // removes params/wildcard from the end
 		const normalizedCurrent =
 			currentPath.endsWith('/') && currentPath !== '/' ? currentPath.slice(0, -1) : currentPath;
 		return (
@@ -61,8 +61,8 @@
 	}
 
 	/**
-	 * Limpa padrões de rotas removendo segmentos com parâmetros (:id) e wildcards (*).
-	 * Exemplo: "/users/:id/posts" → "/users"
+	 * Cleans route patterns by removing segments with parameters (:id) and wildcards (*).
+	 * Example: "/users/:id/posts" → "/users"
 	 */
 	function cleanPattern(pattern: string): string {
 		return pattern
@@ -87,29 +87,29 @@
 		}));
 	});
 
-	function navegar(path: string): void {
+	function navigate(path: string): void {
 		router?.navigate(path);
-		fechar();
+		close();
 	}
 </script>
 
 {#if opened}
-	<div class="sidenav-overlay" role="presentation" onclick={fechar}>
+	<div class="sidenav-overlay" role="presentation" onclick={close}>
 		<div class="sidenav" role="dialog" aria-label="Navigation menu">
 			<div class="sidenav-header">
 				<span
 					role="link"
 					tabindex="0"
 					class="sidenav-brand"
-					onclick={() => navegar('/')}
+					onclick={() => navigate('/')}
 					onkeydown={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') navegar('/');
+						if (e.key === 'Enter' || e.key === ' ') navigate('/');
 					}}
 				>
 					<span class="sidenav-logo">{logo}</span>
 					<span class="sidenav-title">{title}</span>
 				</span>
-				<button class="sidenav-close" aria-label="Close menu" onclick={fechar}>
+				<button class="sidenav-close" aria-label="Close menu" onclick={close}>
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<line x1="18" y1="6" x2="6" y2="18" />
 						<line x1="6" y1="6" x2="18" y2="18" />
@@ -122,11 +122,11 @@
 					{#each menuItems as item, i (i)}
 						<li>
 							<a
-								class={'menu-item' + (isRouteActive(item.path, paginaAtual) ? ' active' : '')}
+								class={'menu-item' + (isRouteActive(item.path, currentPage) ? ' active' : '')}
 								href="#{item.path}"
 								onclick={(e) => {
 									e.preventDefault();
-									navegar(item.path);
+									navigate(item.path);
 								}}
 							>
 								<span class="menu-icon">{item.icon}</span>
