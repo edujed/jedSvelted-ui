@@ -17,7 +17,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--spacing-sm);
-		z-index: 500;
+		z-index: 2000;
 		pointer-events: none;
 	}
 

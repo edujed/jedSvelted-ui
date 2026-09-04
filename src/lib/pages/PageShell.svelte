@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SearchPanel from '$lib/container/SearchPanel.svelte';
 	import type { Snippet } from 'svelte';
-	import { PageState } from './PageState.svelte';
+	import { PageState } from './PageState';
 
 	let {
 		title = '',
@@ -22,12 +22,27 @@
 
 	const instance = new PageState();
 
-	// Derive reactive bindings so the template sees updates automatically.
-	const showLoading = $derived(instance.loading);
-	const showError = $derived(instance.error);
-	const isLoading = $derived(showLoading && !showError);
-	const hasError = $derived(!isLoading && !!instance.error);
-	const renderDetail = $derived(instance.showDetail && !!detailContent);
+	// Reactive state that mirrors PageState via subscription
+	let _loading = $state(false);
+	let _error = $state('');
+	let _showDetail = $state(false);
+
+	$effect(() => {
+		const unsubscribe = instance.subscribe(() => {
+			_loading = instance.loading;
+			_error = instance.error;
+			_showDetail = instance.showDetail;
+		});
+		// Initial sync
+		_loading = instance.loading;
+		_error = instance.error;
+		_showDetail = instance.showDetail;
+		return unsubscribe;
+	});
+
+	const isLoading = $derived(_loading && !_error);
+	const hasError = $derived(!isLoading && !!_error);
+	const renderDetail = $derived(_showDetail && !!detailContent);
 
 	export function showDetail(row: Record<string, unknown>): void {
 		instance.show(row);
@@ -50,7 +65,7 @@
 		{#if isLoading}
 			<div class="loading">Loading...</div>
 		{:else if hasError}
-			<div class="error">{instance.error}</div>
+			<div class="error">{_error}</div>
 		{:else}
 			<!-- Main content (table/list) -->
 			{#if content}

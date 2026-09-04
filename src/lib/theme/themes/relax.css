@@ -1,0 +1,57 @@
+/* ============================================
+   Tema: Relax (Pastel, fundo verde claro, contornos verdes)
+   ============================================ */
+:root[data-theme='relax'] {
+	--color-primary: #558b2f;
+	--color-primary-light: #f1f8e9;
+	--color-primary-dark: #33691e;
+	--color-accent: #8bc34a;
+	--color-on-primary: #ffffff;
+	--color-surface: #f9faf5;
+	--color-background: #e8f5e9;
+	--color-on-surface: #2e4a1e;
+	--color-on-background: #2e4a1e;
+	--color-error: #c62828;
+	--color-on-error: #ffffff;
+	--color-border: #c5e1a5;
+	--color-shadow: rgba(46, 74, 30, 0.08);
+	--color-navbar-bg: #558b2f;
+	--color-navbar-text: #ffffff;
+	--color-sidenav-bg: #f9faf5;
+	--color-sidenav-hover: #f1f8e9;
+	--color-sidenav-active: #dcedc8;
+	--color-card-bg: #ffffff;
+	--color-card-shadow: 0 2px 4px rgba(46, 74, 30, 0.06);
+	--color-input-bg: #ffffff;
+	--color-input-border: #aed581;
+	--color-input-focus: #558b2f;
+	--color-overlay: rgba(46, 74, 30, 0.5);
+	--color-popover-bg: #ffffff;
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 14px;
+	--radius-xl: 20px;
+	--font-family: 'Quicksand', 'Segoe UI', system-ui, sans-serif;
+	--font-size-xs: 0.7rem;
+	--font-size-sm: 0.8rem;
+	--font-size-base: 0.9rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.15rem;
+	--font-size-xl: 1.4rem;
+	--font-size-2xl: 1.75rem;
+	--spacing-xxs: 0.125rem;
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+	--navbar-height: 56px;
+	--sidenav-width: 280px;
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.25s ease;
+	--transition-slow: 0.4s ease;
+
+	/* Toast warning */
+	--color-warning: #f9a11a;
+}

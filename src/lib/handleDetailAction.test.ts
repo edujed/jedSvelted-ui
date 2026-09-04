@@ -70,15 +70,22 @@ describe('createHandleDetail', () => {
 	});
 
 	describe('handleDetailAction', () => {
-		it('routes save action to handleSave', () => {
+		it('routes create action to handleSave (new item)', () => {
 			const h = createHandleDetail<Item>({ ...opts, displayFields: ['name'] });
-			h.handleDetailAction('save', { id: 1, name: 'Item' });
+			h.handleDetailAction('create', { name: 'Item' });
 			expect(opts.toast.success.mock.calls[0][0]).toContain('Item');
 		});
 
-		it('routes confirm-delete action to handleDelete', () => {
+		it('routes update action to handleSave (existing item)', () => {
+			const h = createHandleDetail<Item>({ ...opts, displayFields: ['name'] });
+			h.dataRef.data.push({ id: 1, name: 'Original' });
+			h.handleDetailAction('update', { id: 1, name: 'Item' });
+			expect(opts.toast.success.mock.calls[0][0]).toContain('Item');
+		});
+
+		it('routes delete action to handleDelete', () => {
 			handler.dataRef.data.push({ id: 1, name: 'To delete' });
-			handler.handleDetailAction('confirm-delete', { id: 1 } as Item);
+			handler.handleDetailAction('delete', { id: 1 } as Item);
 			expect(handler.dataRef.data.length).toBe(0);
 		});
 

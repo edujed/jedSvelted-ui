@@ -141,7 +141,12 @@
 							<th class:col-right={col.align === 'right'} class:col-center={col.align === 'center'}>
 								<span class="th-label">{col.title}</span>
 								{#if col.sortable}
-									<button class="th-sort" onclick={() => handleSort(idx)} title="Sort">
+									<button
+										class="th-sort"
+										class:sort-active={sortColumnIndex === idx && sortDirection !== 'none'}
+										onclick={() => handleSort(idx)}
+										title="Sort"
+									>
 										<IconSort size={14} />
 									</button>
 								{/if}
@@ -251,20 +256,137 @@
 		font-size: var(--font-size-sm);
 	}
 
+	.table-caption {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: var(--spacing-md);
+		background: var(--color-primary-light);
+		border-bottom: 1px solid var(--color-border);
+		font-weight: 600;
+		font-size: var(--font-size-sm);
+		color: var(--color-primary);
+	}
+
+	.caption-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+	}
+
+	.filter-input {
+		width: 100%;
+		padding: var(--spacing-xs) var(--spacing-sm);
+		background: var(--color-input-bg);
+		border: 1px solid var(--color-input-border);
+		border-radius: var(--radius-sm);
+		color: var(--color-on-surface);
+		font-size: var(--font-size-xs);
+		font-family: inherit;
+		outline: none;
+		transition: border-color var(--transition-fast);
+	}
+
+	.filter-input:focus {
+		border-color: var(--color-input-focus);
+	}
+
+	:global(.actions-popover) {
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		box-shadow: 0 4px 20px var(--color-shadow);
+		padding: var(--spacing-xs);
+		min-width: 160px;
+		z-index: 100;
+	}
+
+	:global(.actions-popover .action-item) {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		width: 100%;
+		padding: var(--spacing-sm) var(--spacing-md);
+		background: none;
+		border: none;
+		border-radius: var(--radius-sm);
+		color: var(--color-on-surface);
+		font-size: var(--font-size-sm);
+		font-family: inherit;
+		cursor: pointer;
+		text-align: left;
+		transition: all var(--transition-fast);
+	}
+
+	:global(.actions-popover .action-item:hover) {
+		background: var(--color-sidenav-hover);
+		color: var(--color-primary);
+	}
+
+	:global(.actions-popover .action-icon) {
+		flex-shrink: 0;
+		color: var(--color-on-surface);
+		opacity: 0.6;
+		transition: all var(--transition-fast);
+	}
+
+	:global(.actions-popover .action-item:hover .action-icon) {
+		opacity: 1;
+		color: var(--color-primary);
+	}
+
+	:global(.actions-popover .action-text) {
+		flex: 1;
+	}
+
 	thead {
 		background: var(--color-background);
+	}
+
+	thead th {
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-bottom: 2px solid var(--color-border);
+		border-right: 1px solid var(--color-border);
+		text-align: left;
+		font-weight: 600;
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		color: var(--color-on-surface);
+		opacity: 0.8;
+		white-space: nowrap;
 	}
 
 	.th-label {
 		display: inline;
 	}
 
+	.th-sort {
+		display: inline-flex;
+		align-items: center;
+		margin-left: var(--spacing-xs);
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		color: var(--color-primary);
+		opacity: 0.5;
+		transition: opacity var(--transition-fast);
+	}
+
 	.th-sort:hover {
 		opacity: 1;
 	}
 
-	.filter-input:focus {
-		border-color: var(--color-input-focus);
+	.th-sort.sort-active {
+		opacity: 1;
+		color: var(--color-primary);
+	}
+
+	.filter-row th {
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border-bottom: 1px solid var(--color-border);
+		border-right: 1px solid var(--color-border);
 	}
 
 	tbody tr {
@@ -288,6 +410,13 @@
 	}
 
 	.col-center {
+		text-align: center;
+	}
+
+	.col-actions-cell {
+		width: 48px;
+		min-width: 48px;
+		padding: var(--spacing-sm);
 		text-align: center;
 	}
 
@@ -318,12 +447,25 @@
 		color: var(--color-primary);
 	}
 
+	tfoot td {
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-top: 2px solid var(--color-border);
+		background: var(--color-background);
+		font-size: var(--font-size-xs);
+		color: var(--color-on-surface);
+		opacity: 0.7;
+	}
+
 	.tfoot-cell {
 		justify-content: space-between;
 		align-items: center;
 	}
 
 	@media (max-width: 600px) {
+		.data-table {
+			font-size: var(--font-size-xs);
+		}
+
 		thead th,
 		tbody td {
 			padding: var(--spacing-xs) var(--spacing-sm);

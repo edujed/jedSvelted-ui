@@ -2,9 +2,9 @@
 	import type { Snippet } from 'svelte';
 	import Table from '../table/Table.svelte';
 	import DetailPanel from './DetailPanel.svelte';
+	import DeleteConfirm from './DeleteConfirm.svelte';
 	import type { TableCol, TableAction } from '../table';
-	import { IconTrash } from '../icons';
-	import Button from './Button.svelte';
+	import type { ActionEvent } from '../handleDetailAction';
 
 	let {
 		title = '',
@@ -14,12 +14,7 @@
 		inline = false,
 		columns,
 		data,
-		onAdd,
-		onEdit,
-		onDelete,
-		onView,
-		onSave: childOnSave,
-		onCancel: childOnCancel,
+		onAction,
 		renderForm,
 		renderView
 	}: {
@@ -30,56 +25,46 @@
 		inline?: boolean;
 		columns: TableCol[];
 		data: Record<string, unknown>[];
-		onAdd?: () => void;
-		onEdit?: (...args: unknown[]) => void;
-		onDelete?: (...args: unknown[]) => void;
-		onView?: (...args: unknown[]) => void;
-		onSave?: () => void;
-		onCancel?: () => void;
-		renderForm: (props: {
-			showForm: boolean;
-			editId: number | null;
-			onSave: () => void;
-			onCancel: () => void;
-		}) => Snippet;
-		renderView?: (row: Record<string, unknown>) => Snippet;
+		/**
+		 * Single event contract: (action, item). Fired only on confirmed
+		 * mutations — 'create'/'update' when the form is saved, 'delete'
+		 * when the user confirms the deletion. Opening a panel does NOT
+		 * fire an event.
+		 */
+		onAction?: (action: ActionEvent, item: Record<string, unknown>) => void;
+		renderForm: Snippet;
+		renderView?: Snippet<[row: Record<string, unknown>]>;
 	} = $props();
 
+	// Panel visibility state
 	let showForm = $state(false);
 	let editId: number | null = $state(null);
-	let viewRowData: Record<string, unknown> | null = $state(null);
-	let deleteRowData: Record<string, unknown> | null = $state(null);
+	let viewRowData = $state<Record<string, unknown> | null>(null);
+	let deleteRowData = $state<Record<string, unknown> | null>(null);
 
 	function handleAdd(): void {
 		showForm = true;
 		editId = null;
 		viewRowData = null;
 		deleteRowData = null;
-		onAdd?.();
 	}
 
 	function handleEdit(row: Record<string, unknown>): void {
 		showForm = true;
-		if ('id' in row) {
-			editId = Number((row as { id?: unknown }).id ?? 0);
-		} else {
-			editId = Date.now();
-		}
+		editId = row.id != null ? Number(row.id) : null;
 		viewRowData = null;
 		deleteRowData = null;
-		onEdit?.(row);
 	}
 
 	function handleDelete(row: Record<string, unknown>): void {
 		deleteRowData = row;
 		viewRowData = null;
 		showForm = false;
-		onDelete?.(row);
 	}
 
 	function confirmDelete(): void {
 		if (deleteRowData) {
-			onDelete?.(deleteRowData);
+			onAction?.('delete', deleteRowData);
 		}
 		deleteRowData = null;
 	}
@@ -92,24 +77,12 @@
 		viewRowData = row;
 		showForm = false;
 		deleteRowData = null;
-		onView?.(row);
 	}
 
-	function onSave(): void {
-		// No-op: child component handles its own save logic
-	}
-
-	function onCancel(): void {
+	function _onCancel(): void {
 		showForm = false;
 		editId = null;
 	}
-
-	const _onSave = () => childOnSave?.() ?? onSave();
-	const _onCancel = () => {
-		childOnCancel?.();
-		showForm = false;
-		editId = null;
-	};
 
 	const actions: TableAction[] = [
 		{ title: 'View', hint: 'View details', icon: 'eye' as const, onClick: handleView },
@@ -146,33 +119,23 @@
 				viewRowData = null;
 			}}
 		>
-			{renderView(viewRowData)}
+			{@render renderView(viewRowData)}
 		</DetailPanel>
 	{/if}
 
 	{#if deleteRowData}
 		<DetailPanel show={true} title={`Delete ${title}`} onClose={cancelDelete}>
-			<div class="delete-confirm">
-				<div class="delete-icon">
-					<IconTrash size={48} />
-				</div>
-				<div class="delete-content">
-					<h3 class="delete-title">Confirm Deletion</h3>
-					<p class="delete-message">Are you sure you want to delete this record?</p>
-					<p class="delete-warning">This action cannot be undone.</p>
-				</div>
-				<div class="delete-actions">
-					<Button variant="danger" icon="trash" onclick={confirmDelete}>Delete</Button>
-					<Button variant="secondary" icon="x" onclick={cancelDelete}>Cancel</Button>
-				</div>
-			</div>
+			<DeleteConfirm onConfirm={confirmDelete} onCancel={cancelDelete}>
+				{#if renderView}
+					{@render renderView(deleteRowData)}
+				{/if}
+			</DeleteConfirm>
 		</DetailPanel>
 	{/if}
 
 	{#if showForm && renderForm}
-		<!-- eslint-disable-next-line no-constant-binary-expression -->
 		<DetailPanel show={true} title={editId ? `Edit ${title}` : `New ${title}`} onClose={_onCancel}>
-			{renderForm({ showForm, editId: Number(editId) || 0, onSave: _onSave, onCancel: _onCancel })}
+			{@render renderForm()}
 		</DetailPanel>
 	{/if}
 {:else}
@@ -189,8 +152,7 @@
 				{addLabel}
 				onAdd={handleAdd}
 			/>
-			<!-- eslint-disable-next-line no-constant-binary-expression -->
-			{renderForm({ showForm, editId: Number(editId) ?? 0, onSave: _onSave, onCancel: _onCancel })}
+			{@render renderForm()}
 		</main>
 	</DetailPanel>
 {/if}
@@ -222,43 +184,44 @@
 		flex: 1;
 	}
 
-	.delete-confirm {
+	.crud-panel.inline-mode {
+		width: 100%;
+		max-width: none;
+		min-width: 0;
+		height: auto;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	.inline-mode .crud-header {
+		padding: var(--spacing-md) var(--spacing-md);
+		background: transparent;
+		border-bottom: none;
+	}
+
+	.inline-mode .crud-content {
+		padding: 0;
+	}
+
+	.crud-header {
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		gap: var(--spacing-lg);
-		padding: var(--spacing-lg);
-		text-align: center;
+		padding: var(--spacing-md);
+		border-bottom: 1px solid var(--color-border);
+		background: var(--color-card-bg);
 	}
 
-	.delete-icon {
-		color: var(--color-error);
-		opacity: 0.8;
-	}
-
-	.delete-title {
+	.crud-title {
+		margin: 0;
+		margin-left: var(--spacing-md);
 		font-size: var(--font-size-lg);
 		font-weight: 600;
-		margin: 0;
-		color: var(--color-error);
-	}
-
-	.delete-message {
-		font-size: var(--font-size-md);
-		margin: var(--spacing-sm) 0;
 		color: var(--color-on-surface);
 	}
 
-	.delete-warning {
-		font-size: var(--font-size-sm);
-		color: var(--color-error);
-		opacity: 0.8;
-		margin: 0;
-	}
-
-	.delete-actions {
-		display: flex;
-		gap: var(--spacing-md);
-		margin-top: var(--spacing-md);
+	.crud-content {
+		flex: 1;
+		overflow-y: auto;
+		padding: 0;
 	}
 </style>

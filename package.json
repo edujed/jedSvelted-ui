@@ -23,6 +23,10 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
 		},
+		"./actions": {
+			"types": "./dist/actions/index.d.ts",
+			"svelte": "./dist/actions/index.js"
+		},
 		"./container": {
 			"types": "./dist/container/index.d.ts",
 			"svelte": "./dist/container/index.js"

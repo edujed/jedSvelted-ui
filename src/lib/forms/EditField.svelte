@@ -23,6 +23,7 @@
 </script>
 
 <div
+	class="form-group"
 	class:grid-col-1={colSpan === 1}
 	class:grid-col-2={colSpan === 2}
 	class:grid-col-3={colSpan === 3}

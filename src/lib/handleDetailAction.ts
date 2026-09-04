@@ -13,6 +13,13 @@
  * ```
  */
 
+/**
+ * Unified event contract for CRUD actions emitted by panels (CrudPanel,
+ * DetailShell) and consumed by pages. This is the single vocabulary for
+ * create/update/delete/cancel — independent of the panel's display mode.
+ */
+export type ActionEvent = 'create' | 'update' | 'delete' | 'cancel';
+
 export interface HandleDetailOptions<T extends { id?: number }> {
 	/** Mutable reference to the data array — allows updates without recreating the handler. */
 	dataRef: { data: T[] };
@@ -33,7 +40,7 @@ export function createHandleDetail<T extends { id?: number }>(
 ): {
 	handleSave: (item: T) => void;
 	handleDelete: (item: T) => void;
-	handleDetailAction: (action: string, item: T | undefined) => void;
+	handleDetailAction: (action: ActionEvent, item: T | undefined) => void;
 	/** Exposed for unit tests — not part of the public API. */
 	dataRef: (typeof options)['dataRef'];
 } {
@@ -62,10 +69,10 @@ export function createHandleDetail<T extends { id?: number }>(
 	}
 
 	/** Unified wrapper that dispatches actions to the correct handlers. */
-	function handleDetailAction(action: string, item: T | undefined): void {
+	function handleDetailAction(action: ActionEvent, item: T | undefined): void {
 		if (!item) return;
-		if (action === 'save') return handleSave(item);
-		if (action === 'confirm-delete') return handleDelete(item);
+		if (action === 'create' || action === 'update') return handleSave(item);
+		if (action === 'delete') return handleDelete(item);
 	}
 
 	function handleSave(item: T): void {

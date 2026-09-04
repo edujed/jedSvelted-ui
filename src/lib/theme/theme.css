@@ -1,0 +1,20 @@
+/* ============================================
+   Jedsvelted UI — Theme entry point
+   Import this once in your app:
+   import '@edujed/jedsvelted-ui/theme/theme.css';
+   ============================================ */
+
+/* Base reset & typography (applied to <html>/<body>) */
+@import './base.css';
+
+/* Themes (variables) */
+@import './themes/material-blue.css';
+@import './themes/humanity.css';
+@import './themes/rose.css';
+@import './themes/relax.css';
+
+/* Mode overlay (applied on top of any theme) */
+@import './modes/dark.css';
+
+/* Shared utility classes (grid, form, buttons, confirm, etc.) */
+@import './utilities.css';

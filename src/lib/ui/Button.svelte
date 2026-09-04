@@ -64,15 +64,15 @@
 	.btn {
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		border: none;
+		gap: var(--spacing-sm);
+		padding: var(--spacing-sm) var(--spacing-md);
 		border-radius: var(--radius-sm);
-		font-family: inherit;
+		font-size: var(--font-size-sm);
 		font-weight: 600;
+		font-family: inherit;
 		cursor: pointer;
+		border: 1px solid transparent;
 		transition: all var(--transition-fast);
-		padding: 6px 12px;
 	}
 
 	.btn:disabled {
@@ -82,41 +82,44 @@
 
 	/* Sizes */
 	.btn-sm {
-		font-size: 0.75rem;
+		font-size: var(--font-size-xs);
 	}
 
 	.btn-md {
-		font-size: 0.85rem;
+		font-size: var(--font-size-sm);
 	}
 
 	.btn-lg {
-		font-size: 1rem;
+		font-size: var(--font-size-md);
 	}
 
 	/* Variants */
 	.btn-primary {
 		background: var(--color-primary);
-		color: var(--color-on-primary, white);
+		color: var(--color-on-primary);
+		border-color: var(--color-primary);
 	}
 
 	.btn-primary:hover:not(:disabled) {
-		background: color-mix(in srgb, var(--color-primary) 85%, transparent);
+		background: var(--color-primary-dark);
+		border-color: var(--color-primary-dark);
 	}
 
 	.btn-secondary {
-		background: var(--color-surface, var(--color-card-bg));
+		background: var(--color-input-bg);
 		color: var(--color-on-surface);
-		border: 1px solid var(--color-border);
 	}
 
 	.btn-secondary:hover:not(:disabled) {
 		background: var(--color-sidenav-hover);
+		border-color: var(--color-primary);
+		color: var(--color-primary);
 	}
 
 	.btn-danger {
 		background: var(--color-error);
 		color: white;
-		border: 1px solid var(--color-error);
+		border-color: var(--color-error);
 	}
 
 	.btn-danger:hover:not(:disabled) {
@@ -134,24 +137,29 @@
 
 	.btn-search {
 		background: var(--color-primary);
-		color: var(--color-on-primary, white);
+		color: var(--color-on-primary);
+		border-color: var(--color-primary);
 	}
 
 	.btn-search:hover:not(:disabled) {
-		background: color-mix(in srgb, var(--color-primary) 85%, transparent);
+		background: var(--color-primary-dark);
+		border-color: var(--color-primary-dark);
 	}
 
 	.btn-clear {
 		background: transparent;
 		color: var(--color-on-surface);
-		border: 1px solid var(--color-border);
+		border-color: var(--color-border);
 	}
 
 	.btn-clear:hover:not(:disabled) {
 		background: var(--color-sidenav-hover);
+		border-color: var(--color-input-border);
 	}
 
 	.btn-icon {
+		width: 16px;
+		height: 16px;
 		flex-shrink: 0;
 	}
 </style>

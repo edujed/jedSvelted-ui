@@ -1,0 +1,21 @@
+/* ============================================
+   MODO ESCURO (overlay em todos os temas)
+   ============================================ */
+:root[data-mode='dark'] {
+	--color-primary-light: color-mix(in srgb, var(--color-primary) 20%, transparent);
+	--color-surface: #1e1e1e;
+	--color-background: #121212;
+	--color-on-surface: #e0e0e0;
+	--color-on-background: #e0e0e0;
+	--color-border: #3a3a3a;
+	--color-shadow: rgba(0, 0, 0, 0.4);
+	--color-sidenav-bg: #1e1e1e;
+	--color-sidenav-hover: #2a2a2a;
+	--color-sidenav-active: color-mix(in srgb, var(--color-primary) 25%, transparent);
+	--color-card-bg: #242424;
+	--color-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	--color-input-bg: #2a2a2a;
+	--color-input-border: #4a4a4a;
+	--color-overlay: rgba(0, 0, 0, 0.7);
+	--color-popover-bg: #2a2a2a;
+}

@@ -43,10 +43,6 @@
 		saveIcon?: IconName;
 		cancelIcon?: IconName;
 	} = $props();
-
-	$effect(() => {
-		console.log('FormActions saveIcon:', saveIcon, 'cancelIcon:', cancelIcon);
-	});
 </script>
 
 <div class="form-actions">
@@ -57,3 +53,11 @@
 		<Button variant="secondary" icon={cancelIcon} onclick={onCancel}>{cancelLabel}</Button>
 	{/if}
 </div>
+
+<style>
+	.form-actions {
+		display: flex;
+		gap: var(--spacing-sm);
+		justify-content: flex-end;
+	}
+</style>

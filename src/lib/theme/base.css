@@ -1,0 +1,48 @@
+/* ============================================
+   BASE — Reset & tipografia global
+   ============================================ */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-size: 16px;
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	font-family: var(--font-family);
+	font-size: var(--font-size-base);
+	color: var(--color-on-surface);
+	background-color: var(--color-background);
+	line-height: 1.5;
+	min-height: 100vh;
+	width: 100%;
+	overflow-x: hidden;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Tipografia responsiva */
+@media (max-width: 600px) {
+	html {
+		font-size: 14px;
+	}
+}
+
+@media (min-width: 1200px) {
+	html {
+		font-size: 17px;
+	}
+}
+
+@media (min-width: 1920px) {
+	html {
+		font-size: 18px;
+	}
+}

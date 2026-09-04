@@ -1,0 +1,57 @@
+/* ============================================
+   Tema: Rosê (Floral e feminino, tons rosé)
+   ============================================ */
+:root[data-theme='rose'] {
+	--color-primary: #c2185b;
+	--color-primary-light: #fce4ec;
+	--color-primary-dark: #880e4f;
+	--color-accent: #f06292;
+	--color-on-primary: #ffffff;
+	--color-surface: #fff5f8;
+	--color-background: #fce4ec;
+	--color-on-surface: #4a1942;
+	--color-on-background: #4a1942;
+	--color-error: #d32f2f;
+	--color-on-error: #ffffff;
+	--color-border: #f3c6d6;
+	--color-shadow: rgba(194, 24, 91, 0.1);
+	--color-navbar-bg: #c2185b;
+	--color-navbar-text: #ffffff;
+	--color-sidenav-bg: #fff5f8;
+	--color-sidenav-hover: #fce4ec;
+	--color-sidenav-active: #f8bbd0;
+	--color-card-bg: #ffffff;
+	--color-card-shadow: 0 2px 4px rgba(194, 24, 91, 0.08);
+	--color-input-bg: #ffffff;
+	--color-input-border: #e9b6c8;
+	--color-input-focus: #c2185b;
+	--color-overlay: rgba(74, 25, 66, 0.5);
+	--color-popover-bg: #ffffff;
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 14px;
+	--radius-xl: 20px;
+	--font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+	--font-size-xs: 0.7rem;
+	--font-size-sm: 0.8rem;
+	--font-size-base: 0.9rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.15rem;
+	--font-size-xl: 1.4rem;
+	--font-size-2xl: 1.75rem;
+	--spacing-xxs: 0.125rem;
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+	--navbar-height: 56px;
+	--sidenav-width: 280px;
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.25s ease;
+	--transition-slow: 0.4s ease;
+
+	/* Toast warning */
+	--color-warning: #f9a11a;
+}

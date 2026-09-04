@@ -1,0 +1,215 @@
+/* ============================================
+   UTILITIES — Classes compartilhadas entre componentes
+   Importe junto com theme.css:
+   import '@edujed/jedsvelted-ui/theme/utilities.css';
+   ============================================ */
+
+/* --- Sombra utilitária --- */
+.shadow {
+	box-shadow: 3px 3px 3px 3px var(--shadow);
+	-webkit-box-shadow: 3px 3px 3px 3px var(--shadow);
+	transition: box-shadow 0.35s ease;
+}
+
+.shadow:hover {
+	box-shadow: 4px 4px 4px 4px var(--shadow);
+}
+
+/* --- Grid system — 4 colunas --- */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: var(--spacing-md);
+}
+
+.grid-col-1 {
+	grid-column: span 1;
+}
+.grid-col-2 {
+	grid-column: span 2;
+}
+.grid-col-3 {
+	grid-column: span 3;
+}
+.grid-col-4 {
+	grid-column: span 4;
+}
+
+/* Mobile: empilha automaticamente */
+@media (max-width: 600px) {
+	.grid {
+		grid-template-columns: 1fr;
+	}
+	.grid-col-1,
+	.grid-col-2,
+	.grid-col-3,
+	.grid-col-4 {
+		grid-column: span 1;
+	}
+}
+
+/* --- Labels de formulário --- */
+.form-label,
+.field-label,
+.info-label {
+	font-size: var(--font-size-xs);
+	font-weight: 600;
+	color: var(--color-on-surface);
+	opacity: 0.7;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+/* --- Inputs e selects --- */
+.form-input,
+.field-input {
+	width: 100%;
+	padding: var(--spacing-sm) var(--spacing-md);
+	background: var(--color-input-bg);
+	border: 1px solid var(--color-input-border);
+	border-radius: var(--radius-sm);
+	color: var(--color-on-surface);
+	font-size: var(--font-size-sm);
+	font-family: inherit;
+	outline: none;
+	transition:
+		border-color var(--transition-fast),
+		box-shadow var(--transition-fast);
+	box-shadow: 0 1px 2px var(--color-shadow);
+}
+
+.form-input:focus,
+.field-input:focus {
+	border-color: var(--color-input-focus);
+	box-shadow:
+		0 2px 6px var(--color-shadow),
+		0 0 0 3px var(--color-primary-light);
+}
+
+.form-input::placeholder,
+.field-input::placeholder {
+	color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+}
+
+/* --- Formulários genéricos --- */
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+}
+
+.form-fields {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+	margin-bottom: var(--spacing-lg);
+}
+
+.form-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.form-header h4 {
+	margin: 0;
+	font-size: var(--font-size-lg);
+	color: var(--color-on-surface);
+}
+
+/* --- Botão fechar (X) --- */
+.btn-close {
+	background: transparent;
+	border: none;
+	color: var(--color-on-surface);
+	opacity: 0.6;
+	cursor: pointer;
+	padding: var(--spacing-xs);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity var(--transition-fast);
+}
+
+.btn-close:hover {
+	opacity: 1;
+}
+
+/* --- Overlay de formulário modal --- */
+.form-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1001;
+}
+
+.form-card {
+	background: var(--color-card-bg);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-xl);
+	min-width: 400px;
+	max-width: 500px;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: var(--color-card-shadow);
+}
+
+@media (max-width: 600px) {
+	.form-card {
+		min-width: auto;
+		width: 90%;
+	}
+}
+
+/* --- Seção de título --- */
+.section-title {
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: var(--color-on-surface);
+	opacity: 0.7;
+	margin: 0 0 0.75rem 0;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid var(--color-border);
+}
+
+/* --- Caixa de confirmação --- */
+.confirm-box {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: var(--spacing-xl);
+	background: color-mix(in srgb, var(--color-error) 5%, transparent);
+	border: 1px solid var(--color-error);
+	border-radius: var(--radius-md);
+	margin-bottom: var(--spacing-lg);
+}
+
+.confirm-icon {
+	color: var(--color-error);
+	margin-bottom: var(--spacing-md);
+	opacity: 0.7;
+}
+
+.confirm-text {
+	font-size: var(--font-size-sm);
+	text-align: center;
+	margin-bottom: 0.5rem;
+}
+
+.confirm-text strong {
+	color: var(--color-error);
+}
+
+.confirm-warning {
+	font-size: var(--font-size-xs);
+	color: var(--color-error);
+	opacity: 0.8;
+	margin: 0;
+}

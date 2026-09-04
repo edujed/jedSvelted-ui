@@ -33,7 +33,7 @@
 </script>
 
 <div
-	class="select-field"
+	class="select-field form-group"
 	class:grid-col-1={colSpan === 1}
 	class:grid-col-2={colSpan === 2}
 	class:grid-col-3={colSpan === 3}
@@ -101,6 +101,13 @@
 			border-color var(--transition-fast),
 			box-shadow var(--transition-fast);
 		box-shadow: 0 1px 2px var(--color-shadow);
+	}
+
+	:global(.select-chevron) {
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
+		opacity: 0.6;
 	}
 
 	:global(.select-trigger-wrapper [data-select-trigger]:disabled) {

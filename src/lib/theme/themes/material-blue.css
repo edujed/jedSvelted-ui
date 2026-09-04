@@ -1,0 +1,61 @@
+/* ============================================
+   Tema: Material Blue (Material Design profissional, accent discreto)
+   ============================================ */
+:root[data-theme='material-blue'] {
+	--color-primary: #1976d2;
+	--color-primary-light: #bbdefb;
+	--color-primary-dark: #0d47a1;
+	--color-accent: #42a5f5;
+	--color-on-primary: #ffffff;
+	--color-surface: #ffffff;
+	--color-background: #f5f5f5;
+	--color-on-surface: #212121;
+	--color-on-background: #212121;
+	--color-error: #d32f2f;
+	--color-on-error: #ffffff;
+	--color-border: #e0e0e0;
+	--color-shadow: rgba(0, 0, 0, 0.12);
+	--color-navbar-bg: #1976d2;
+	--color-navbar-text: #ffffff;
+	--color-sidenav-bg: #ffffff;
+	--color-sidenav-hover: #e3f2fd;
+	--color-sidenav-active: #bbdefb;
+	--color-card-bg: #ffffff;
+	--color-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	--color-input-bg: #ffffff;
+	--color-input-border: #bdbdbd;
+	--color-input-focus: #1976d2;
+	--color-overlay: rgba(0, 0, 0, 0.5);
+	--color-popover-bg: #e3f2fd;
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+	--font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
+	--font-size-xs: 0.7rem;
+	--font-size-sm: 0.8rem;
+	--font-size-base: 0.9rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.15rem;
+	--font-size-xl: 1.4rem;
+	--font-size-2xl: 1.75rem;
+	--spacing-xxs: 0.125rem;
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+	--navbar-height: 56px;
+	--sidenav-width: 280px;
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.25s ease;
+	--transition-slow: 0.4s ease;
+
+	/* Sombras */
+	--shadow: rgba(64, 64, 64, 0.35);
+	--shadow-lt: rgba(128, 128, 128, 0.3);
+
+	/* Toast warning */
+	--color-warning: #f9a11a;
+}
