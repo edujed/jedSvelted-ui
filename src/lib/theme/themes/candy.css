@@ -1,0 +1,61 @@
+/* ============================================
+   Tema: Candy (Lúdico, vibrante, infantil)
+   ============================================ */
+:root[data-theme='candy'] {
+	--color-primary: #7c4dff;
+	--color-primary-light: #e8defc;
+	--color-primary-dark: #4a14e6;
+	--color-accent: #ff4081;
+	--color-on-primary: #ffffff;
+	--color-surface: #ffffff;
+	--color-background: #f3e5f5;
+	--color-on-surface: #311b52;
+	--color-on-background: #311b52;
+	--color-error: #d50000;
+	--color-on-error: #ffffff;
+	--color-border: #ce93d8;
+	--color-shadow: rgba(49, 27, 82, 0.12);
+	--color-navbar-bg: #7c4dff;
+	--color-navbar-text: #ffffff;
+	--color-sidenav-bg: #ffffff;
+	--color-sidenav-hover: #f3e5f5;
+	--color-sidenav-active: #e8defc;
+	--color-card-bg: #e2cae6;
+	--color-card-shadow: 0 3px 8px rgba(49, 27, 82, 0.10);
+	--color-input-bg: #ffffff;
+	--color-input-border: #ba68c8;
+	--color-input-focus: #7c4dff;
+	--color-overlay: rgba(49, 27, 82, 0.5);
+	--color-popover-bg: #ffffff;
+	--radius-sm: 8px;
+	--radius-md: 14px;
+	--radius-lg: 20px;
+	--radius-xl: 28px;
+	--font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+	--font-size-xs: 0.7rem;
+	--font-size-sm: 0.8rem;
+	--font-size-base: 0.9rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.15rem;
+	--font-size-xl: 1.4rem;
+	--font-size-2xl: 1.75rem;
+	--spacing-xxs: 0.125rem;
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+	--navbar-height: 56px;
+	--sidenav-width: 280px;
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.25s ease;
+	--transition-slow: 0.4s ease;
+
+	/* Sombras */
+	--shadow: rgba(49, 27, 82, 0.30);
+	--shadow-lt: rgba(49, 27, 82, 0.18);
+
+	/* Toast warning */
+	--color-warning: #ff9100;
+}

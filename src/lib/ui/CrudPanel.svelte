@@ -16,7 +16,8 @@
 		data,
 		onAction,
 		renderForm,
-		renderView
+		renderView,
+		children
 	}: {
 		title?: string;
 		csvFileName: string;
@@ -34,6 +35,8 @@
 		/** Form snippet. Receives a callback to close the panel after save/cancel. */
 		renderForm: Snippet<[onComplete: () => void]>;
 		renderView?: Snippet<[row: Record<string, unknown>]>;
+		/** Default slot — used to pass the renderForm snippet. */
+		children?: Snippet;
 	} = $props();
 
 	// Panel visibility state
@@ -127,7 +130,7 @@
 		</header>
 		<main class="crud-content">
 			<Table
-				id={`table-${title.toLowerCase().replace(/\s+/g, '-')}`}
+				id={csvFileName.replace('.csv', '')}
 				caption={title}
 				{data}
 				{columns}

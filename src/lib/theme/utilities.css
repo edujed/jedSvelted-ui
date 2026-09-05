@@ -78,6 +78,12 @@
 	box-shadow: 0 1px 2px var(--color-shadow);
 }
 
+.form-input:hover,
+.field-input:hover {
+	border-color: var(--color-input-focus);
+	box-shadow: 0 2px 4px var(--color-shadow);
+}
+
 .form-input:focus,
 .field-input:focus {
 	border-color: var(--color-input-focus);

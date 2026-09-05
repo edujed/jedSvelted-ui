@@ -18,7 +18,9 @@ export const THEMES = [
 	{ id: 'material-blue', label: 'Material Blue', icon: '🔵' },
 	{ id: 'humanity', label: 'Humanity', icon: '🟠' },
 	{ id: 'rose', label: 'Rose', icon: '🌸' },
-	{ id: 'relax', label: 'Relax', icon: '🌿' }
+	{ id: 'relax', label: 'Relax', icon: '🌿' },
+	{ id: 'office', label: 'Office', icon: '📐' },
+	{ id: 'candy', label: 'Candy', icon: '🍬' }
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]['id'];

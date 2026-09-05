@@ -40,7 +40,6 @@
 
 <style>
 	.panel {
-		background: var(--color-card-bg);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
 		box-shadow: var(--color-card-shadow);
@@ -54,9 +53,9 @@
 		gap: var(--spacing-sm);
 		width: 100%;
 		padding: var(--spacing-md);
-		background: transparent;
+		background: var(--color-primary-light);
 		border: none;
-		color: var(--color-on-surface);
+		color: var(--color-primary);
 		font-size: var(--font-size-sm);
 		font-weight: 600;
 		font-family: inherit;
@@ -66,7 +65,7 @@
 	}
 
 	.panel-header:hover {
-		background: var(--color-sidenav-hover);
+		background: color-mix(in srgb, var(--color-primary-light) 85%, var(--color-primary) 15%);
 	}
 
 	:global(.panel-icon) {
@@ -96,5 +95,7 @@
 	.panel-content {
 		padding: 0 var(--spacing-md) var(--spacing-md);
 		border-top: 1px solid var(--color-border);
+		padding-top: 0.5em;
+		background: color-mix(in srgb, var(--color-card-bg) 95%, var(--color-on-background) 5%);
 	}
 </style>

@@ -76,7 +76,7 @@
 			{/if}
 
 			<!-- Side panel for details when selected -->
-			{#if detailContent && renderDetail}
+			{#if renderDetail && detailContent}
 				{@render detailContent(instance)}
 			{/if}
 		{/if}

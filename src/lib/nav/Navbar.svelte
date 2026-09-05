@@ -46,11 +46,7 @@
 
 		<div class="search-box">
 			<SearchIcon size={16} class="search-icon" />
-			<input
-				class="search-input"
-				placeholder={LOCALES[$localeStore].quickSearch}
-				aria-label={LOCALES[$localeStore].quickSearch}
-			/>
+			<input class="search-input" placeholder={LOCALES[$localeStore].quickSearch} aria-label={LOCALES[$localeStore].quickSearch} />
 		</div>
 	</div>
 
@@ -66,9 +62,7 @@
 			variant="ghost"
 			icon={currentMode === 'dark' ? 'sun' : 'moon'}
 			iconSize={18}
-			aria-label={currentMode === 'dark'
-				? LOCALES[$localeStore].lightMode
-				: LOCALES[$localeStore].darkMode}
+			aria-label={currentMode === 'dark' ? LOCALES[$localeStore].lightMode : LOCALES[$localeStore].darkMode}
 			onclick={toggleMode}
 		/>
 	</div>
@@ -103,6 +97,15 @@
 		flex: 1;
 		max-width: 400px;
 		min-width: 120px;
+	}
+
+	:global(.search-icon) {
+		position: absolute;
+		left: var(--spacing-sm);
+		top: 50%;
+		transform: translateY(-50%);
+		color: color-mix(in srgb, var(--color-navbar-text) 60%, transparent);
+		pointer-events: none;
 	}
 
 	.search-input {
@@ -151,7 +154,9 @@
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
-		flex-shrink: 0;
+		flex: 1;
+		justify-content: flex-end;
+		min-width: 0;
 	}
 
 	/* Mobile: hides the theme label */

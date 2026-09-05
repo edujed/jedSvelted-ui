@@ -19,9 +19,18 @@
 	} = $props();
 </script>
 
-{#if show}
-	<div class="detail-overlay" transition:fade={{ duration: 200 }}>
-		<div class="detail-panel" transition:fly={{ x: '100%', duration: 300 }}>
+<div
+	class="detail-overlay"
+	class:hidden={!show}
+	in:fade={{ duration: 150 }}
+	out:fade={{ duration: 150 }}
+>
+	{#if show}
+		<div
+			class="detail-panel"
+			in:fly={{ x: '100%', duration: 300 }}
+			out:fly={{ x: '100%', duration: 300 }}
+		>
 			<header class="detail-header">
 				<Button
 					variant="ghost"
@@ -42,14 +51,14 @@
 				{@render children?.()}
 			</main>
 		</div>
-	</div>
-{/if}
+	{/if}
+</div>
 
 <style>
 	.detail-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.5);
+		background: var(--color-overlay);
 		z-index: 1000;
 		display: flex;
 		justify-content: flex-end;
@@ -62,6 +71,8 @@
 		background: var(--color-surface);
 		display: flex;
 		flex-direction: column;
+		box-shadow: -4px 0 16px var(--color-shadow);
+		overflow: hidden;
 	}
 
 	.detail-header {
@@ -69,7 +80,12 @@
 		align-items: center;
 		padding: var(--spacing-md);
 		border-bottom: 1px solid var(--color-border);
-		background: var(--color-card-bg);
+		background: var(--color-primary-light);
+		transition: background var(--transition-fast);
+	}
+
+	.detail-header:hover {
+		background: color-mix(in srgb, var(--color-primary-light) 85%, var(--color-primary) 15%);
 	}
 	:global(.btn-back) {
 		background: transparent;
@@ -93,7 +109,7 @@
 		margin-left: var(--spacing-md);
 		font-size: var(--font-size-lg);
 		font-weight: 600;
-		color: var(--color-on-surface);
+		color: var(--color-primary);
 		flex: 1;
 	}
 

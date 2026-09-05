@@ -1,0 +1,61 @@
+/* ============================================
+   Tema: Office (Formal, sóbrio, institucional)
+   ============================================ */
+:root[data-theme='office'] {
+	--color-primary: #37474f;
+	--color-primary-light: #cfd8dc;
+	--color-primary-dark: #1c262b;
+	--color-accent: #b08d3e;
+	--color-on-primary: #ffffff;
+	--color-surface: #ffffff;
+	--color-background: #eceff1;
+	--color-on-surface: #212b30;
+	--color-on-background: #212b30;
+	--color-error: #b71c1c;
+	--color-on-error: #ffffff;
+	--color-border: #b0bec5;
+	--color-shadow: rgba(33, 43, 48, 0.10);
+	--color-navbar-bg: #263238;
+	--color-navbar-text: #ffffff;
+	--color-sidenav-bg: #ffffff;
+	--color-sidenav-hover: #eceff1;
+	--color-sidenav-active: #cfd8dc;
+	--color-card-bg: #ffffff;
+	--color-card-shadow: 0 1px 3px rgba(33, 43, 48, 0.08);
+	--color-input-bg: #ffffff;
+	--color-input-border: #90a4ae;
+	--color-input-focus: #37474f;
+	--color-overlay: rgba(33, 43, 48, 0.55);
+	--color-popover-bg: #ffffff;
+	--radius-sm: 2px;
+	--radius-md: 4px;
+	--radius-lg: 6px;
+	--radius-xl: 8px;
+	--font-family: 'Georgia', 'Times New Roman', serif;
+	--font-size-xs: 0.7rem;
+	--font-size-sm: 0.8rem;
+	--font-size-base: 0.9rem;
+	--font-size-md: 1rem;
+	--font-size-lg: 1.15rem;
+	--font-size-xl: 1.4rem;
+	--font-size-2xl: 1.75rem;
+	--spacing-xxs: 0.125rem;
+	--spacing-xs: 0.25rem;
+	--spacing-sm: 0.5rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+	--spacing-2xl: 3rem;
+	--navbar-height: 56px;
+	--sidenav-width: 280px;
+	--transition-fast: 0.15s ease;
+	--transition-normal: 0.25s ease;
+	--transition-slow: 0.4s ease;
+
+	/* Sombras */
+	--shadow: rgba(33, 43, 48, 0.25);
+	--shadow-lt: rgba(33, 43, 48, 0.15);
+
+	/* Toast warning */
+	--color-warning: #e65100;
+}

@@ -12,6 +12,8 @@
 @import './themes/humanity.css';
 @import './themes/rose.css';
 @import './themes/relax.css';
+@import './themes/office.css';
+@import './themes/candy.css';
 
 /* Mode overlay (applied on top of any theme) */
 @import './modes/dark.css';

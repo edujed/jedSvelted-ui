@@ -265,6 +265,11 @@
 		font-weight: 600;
 		font-size: var(--font-size-sm);
 		color: var(--color-primary);
+		transition: background var(--transition-fast);
+	}
+
+	.table-caption:hover {
+		background: color-mix(in srgb, var(--color-primary-light) 85%, var(--color-primary) 15%);
 	}
 
 	.caption-actions {
@@ -283,7 +288,14 @@
 		font-size: var(--font-size-xs);
 		font-family: inherit;
 		outline: none;
-		transition: border-color var(--transition-fast);
+		transition:
+			border-color var(--transition-fast),
+			box-shadow var(--transition-fast);
+	}
+
+	.filter-input:hover {
+		border-color: var(--color-input-focus);
+		box-shadow: 0 2px 4px var(--color-shadow);
 	}
 
 	.filter-input:focus {
