@@ -7,6 +7,7 @@
 			"$lib": ["./src/lib"],
 			"$lib/*": ["./src/lib/*"]
 		},
-		"noEmit": true
+		"noEmit": true,
+		"allowImportingTsExtensions": true
 	}
 }

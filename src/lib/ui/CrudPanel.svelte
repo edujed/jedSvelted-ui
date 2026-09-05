@@ -32,7 +32,8 @@
 		 * fire an event.
 		 */
 		onAction?: (action: ActionEvent, item: Record<string, unknown>) => void;
-		renderForm: Snippet;
+		/** Form snippet. Receives a callback to close the panel after save/cancel. */
+		renderForm: Snippet<[onComplete: () => void]>;
 		renderView?: Snippet<[row: Record<string, unknown>]>;
 	} = $props();
 
@@ -80,6 +81,12 @@
 	}
 
 	function _onCancel(): void {
+		showForm = false;
+		editId = null;
+	}
+
+	/** Called by the form (via FormActions) to close the panel after save/cancel. */
+	function _onFormComplete(): void {
 		showForm = false;
 		editId = null;
 	}
@@ -135,7 +142,7 @@
 
 	{#if showForm && renderForm}
 		<DetailPanel show={true} title={editId ? `Edit ${title}` : `New ${title}`} onClose={_onCancel}>
-			{@render renderForm()}
+			{@render renderForm(_onFormComplete)}
 		</DetailPanel>
 	{/if}
 {:else}
@@ -152,7 +159,7 @@
 				{addLabel}
 				onAdd={handleAdd}
 			/>
-			{@render renderForm()}
+			{@render renderForm(_onFormComplete)}
 		</main>
 	</DetailPanel>
 {/if}
