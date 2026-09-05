@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Button from './Button.svelte';
 	import { IconTrash } from '../icons';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		message = 'Are you sure you want to delete this record?',
@@ -11,11 +12,11 @@
 		onCancel,
 		children
 	}: {
-		/** Main confirmation message. */
+		/** Main confirmation message. Defaults to the localized `deleteMessage`. */
 		message?: string;
-		/** Secondary warning line (rendered in the error color). */
+		/** Secondary warning line (rendered in the error color). Defaults to the localized `deleteWarning`. */
 		warning?: string;
-		/** Heading. */
+		/** Heading. Defaults to the localized `confirmDeletion`. */
 		title?: string;
 		/** Called when the user confirms the deletion. */
 		onConfirm?: () => void;
@@ -24,6 +25,10 @@
 		/** Optional content rendered above the message (e.g., the record being deleted). */
 		children?: Snippet;
 	} = $props();
+
+	const resolvedTitle = $derived(title ?? LOCALES[$localeStore].confirmDeletion);
+	const resolvedMessage = $derived(message ?? LOCALES[$localeStore].deleteMessage);
+	const resolvedWarning = $derived(warning ?? LOCALES[$localeStore].deleteWarning);
 </script>
 
 <div class="delete-confirm">
@@ -31,20 +36,21 @@
 		<IconTrash size={48} />
 	</div>
 	<div class="delete-content">
-		<h3 class="delete-title">{title}</h3>
+		<h3 class="delete-title">{resolvedTitle}</h3>
 		{#if children}
 			<div class="delete-record">
 				{@render children()}
 			</div>
 		{/if}
-		<p class="delete-message">{message}</p>
-		{#if warning}
-			<p class="delete-warning">{warning}</p>
+		<p class="delete-message">{resolvedMessage}</p>
+		{#if resolvedWarning}
+			<p class="delete-warning">{resolvedWarning}</p>
 		{/if}
 	</div>
 	<div class="delete-actions">
-		<Button variant="danger" icon="trash" onclick={onConfirm}>Delete</Button>
-		<Button variant="secondary" icon="x" onclick={onCancel}>Cancel</Button>
+		<Button variant="danger" icon="trash" onclick={onConfirm}>{LOCALES[$localeStore].delete}</Button
+		>
+		<Button variant="secondary" icon="x" onclick={onCancel}>{LOCALES[$localeStore].cancel}</Button>
 	</div>
 </div>
 

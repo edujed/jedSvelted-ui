@@ -2,12 +2,13 @@
 	import { Select } from 'bits-ui';
 	import FieldHint from '../info/FieldHint.svelte';
 	import { ChevronDownIcon } from '../icons';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		label = '',
 		value = $bindable(''),
 		options = [] as Array<{ key: string; label: string }>,
-		placeholder = 'Selecione...',
+		placeholder,
 		disabled = false,
 		colSpan = 2,
 		hint = '',
@@ -24,6 +25,7 @@
 	}>();
 
 	const generatedId = $derived(`select-${Date.now().toString(36)}`);
+	const resolvedPlaceholder = $derived(placeholder ?? LOCALES[$localeStore].selectPlaceholder);
 
 	$effect(() => {
 		if (onValueChange && value) {
@@ -52,7 +54,7 @@
 			<Select.Trigger {disabled}>
 				<span class="select-value">
 					{options.find((o: { key: string; label: string }) => o.key === value)?.label ??
-						placeholder}
+						resolvedPlaceholder}
 				</span>
 				<ChevronDownIcon size={16} class="select-chevron" />
 			</Select.Trigger>

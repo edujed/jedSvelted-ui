@@ -2,6 +2,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import Button from './Button.svelte';
 	import type { Snippet } from 'svelte';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		show = $bindable(false),
@@ -27,7 +28,7 @@
 					icon="chevron-right"
 					iconSize={20}
 					onclick={onClose}
-					title="Close"
+					title={LOCALES[$localeStore].close}
 				/>
 				<h2 class="detail-title">{title}</h2>
 				{#if headerActions}

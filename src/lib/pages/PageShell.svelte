@@ -2,6 +2,7 @@
 	import SearchPanel from '$lib/container/SearchPanel.svelte';
 	import type { Snippet } from 'svelte';
 	import { PageState } from './PageState';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		title = '',
@@ -63,7 +64,7 @@
 	<main class="shell-content">
 		<!-- Global loading state -->
 		{#if isLoading}
-			<div class="loading">Loading...</div>
+			<div class="loading">{LOCALES[$localeStore].loading}</div>
 		{:else if hasError}
 			<div class="error">{_error}</div>
 		{:else}
@@ -71,7 +72,7 @@
 			{#if content}
 				{@render content(instance)}
 			{:else if !filter && !content}
-				<p class="empty-state">Nothing to display.</p>
+				<p class="empty-state">{LOCALES[$localeStore].empty}</p>
 			{/if}
 
 			<!-- Side panel for details when selected -->

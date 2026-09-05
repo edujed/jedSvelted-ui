@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import DetailPanel from '../ui/DetailPanel.svelte';
+	import { LOCALES, localeStore } from '../i18n';
 
 	/**
 	 * DetailShell — Generic detail manager component (detail/edit/delete modes).
@@ -54,15 +55,15 @@
 		onClose?.();
 	}
 
-	// Derived title
+	// Derived title (i18n)
 	let title = $derived(
 		_mode === 'detail'
-			? `${entityName} Details`
+			? LOCALES[$localeStore].viewTitle.replace('{entity}', entityName)
 			: _mode === 'edit'
 				? _selectedItem?.id
-					? `Edit ${entityName}`
-					: `New ${entityName}`
-				: `Delete ${entityName}`
+					? LOCALES[$localeStore].editTitle.replace('{entity}', entityName)
+					: LOCALES[$localeStore].newTitle.replace('{entity}', entityName)
+				: LOCALES[$localeStore].deleteTitle.replace('{entity}', entityName)
 	);
 
 	function handleCancel() {

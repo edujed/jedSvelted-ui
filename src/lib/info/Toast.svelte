@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Toast } from './toast';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let { toast, onClose }: { toast: Toast; onClose?: (id: string) => void } = $props();
 
@@ -10,12 +11,12 @@
 		warning: '⚠'
 	};
 
-	const labels: Record<string, string> = {
-		success: 'Success',
-		error: 'Error',
-		info: 'Info',
-		warning: 'Warning'
-	};
+	const labels = $derived<Record<string, string>>({
+		success: LOCALES[$localeStore].toastSuccess,
+		error: LOCALES[$localeStore].toastError,
+		info: LOCALES[$localeStore].toastInfo,
+		warning: LOCALES[$localeStore].toastWarning
+	});
 
 	let pauseTimer: ReturnType<typeof setTimeout> | null = null;
 

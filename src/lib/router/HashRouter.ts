@@ -123,46 +123,11 @@ export class HashRouter {
 	}
 
 	private doEmit(): void {
-		console.log('[Router.emit()] START, currentPath:', this.currentPath);
 		// Resolve the current route before emitting
 		this.resolve();
 
-		/*
-		const path = this.getCurrentPath();
-		this.currentPath = path;
-    // console.log('[Router.emit()]', 'path:', path, 'routes.length:', this.routes.length);
-		// Calls the handler of the matched route
-		let found = false;
-		for (const route of this.routes) {
-			const match = path.match(route.regex);
-			if (match) {
-				found = true;
-				const params: Record<string, string> = {};
-				route.keys.forEach((key, i) => {
-					params[key] = match[i + 1] ?? '';
-				});
-				// Exposes the public values for external consumption
-				this.path = path;
-				this.params = params;
-				this.title = route.title || '';
-
-				console.log(
-					'[Router.emit()] MATCHED',
-					'pattern:',
-					route.pattern,
-					'keys:',
-					route.keys,
-					'params:',
-					JSON.stringify(params)
-				);
-				route.handler(params);
-				break;
-			}
-		}
-		*/
-
 		// Always calls listeners, regardless of whether a route was found
-		this.listeners.forEach((fn) => console.log('calling:', fn, fn()));
+		this.listeners.forEach((fn) => fn());
 	}
 
 	private register(event: string) {
@@ -172,7 +137,6 @@ export class HashRouter {
 
 		try {
 			window.addEventListener(event, () => {
-				console.log('[Router.init()] ' + event + ' fired');
 				this.emit();
 			});
 		} catch (e) {
@@ -187,7 +151,6 @@ export class HashRouter {
 
 		// Tries to resolve immediately on load
 		const initialPath = this.getCurrentPath();
-		console.log('[Router.init()] initialPath:', initialPath);
 		if (initialPath && initialPath !== '/') {
 			window.history.pushState({}, '', `#${initialPath}`);
 		}
@@ -213,10 +176,11 @@ export class HashRouter {
 	 * Returns menu items derived from registered routes.
 	 * Automatically filters routes marked as not shown in the menu.
 	 * Each item includes the clean pattern, title, and icon if available.
+	 * Titles may be getters (for locale reactivity) — consumers should resolve them.
 	 */
 	public get registeredRoutes(): ReadonlyArray<{
 		pattern: string;
-		title?: string;
+		title?: string | (() => string);
 		moduleName?: string;
 		icon?: string;
 	}> {
@@ -230,6 +194,12 @@ export class HashRouter {
 			}));
 	}
 
+	/** Resolves a title that may be a getter (for locale reactivity). */
+	private resolveTitle(title?: string | (() => string)): string {
+		if (!title) return '';
+		return typeof title === 'function' ? title() : title;
+	}
+
 	/**
 	 * Returns the current application state as a single object.
 	 * Useful for centralizing state initialization and updates in the App.
@@ -241,11 +211,11 @@ export class HashRouter {
 		const result: RouteState = {
 			path,
 			currentPage: route?.moduleName || 'home',
-			title: route?.title || '',
+			title: this.resolveTitle(route?.title),
+			rawTitle: route?.title,
 			moduleName: route?.moduleName,
 			routeParams: this.resolve() ?? {}
 		};
-		console.log('getState: ', JSON.stringify(result));
 		return result;
 	}
 }

@@ -5,10 +5,10 @@
 	import DeleteConfirm from './DeleteConfirm.svelte';
 	import type { TableCol, TableAction } from '../table';
 	import type { ActionEvent } from '../handleDetailAction';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		title = '',
-		addLabel,
 		csvFileName,
 		onClose,
 		inline = false,
@@ -19,7 +19,6 @@
 		renderView
 	}: {
 		title?: string;
-		addLabel: string;
 		csvFileName: string;
 		onClose?: () => void;
 		inline?: boolean;
@@ -91,11 +90,34 @@
 		editId = null;
 	}
 
-	const actions: TableAction[] = [
-		{ title: 'View', hint: 'View details', icon: 'eye' as const, onClick: handleView },
-		{ title: 'Edit', hint: 'Edit', icon: 'edit' as const, onClick: handleEdit },
-		{ title: 'Delete', hint: 'Delete', icon: 'trash' as const, onClick: handleDelete }
-	];
+	const actions = $derived<TableAction[]>([
+		{
+			title: LOCALES[$localeStore].view,
+			hint: LOCALES[$localeStore].viewDetails,
+			icon: 'eye' as const,
+			onClick: handleView
+		},
+		{
+			title: LOCALES[$localeStore].edit,
+			hint: LOCALES[$localeStore].edit,
+			icon: 'edit' as const,
+			onClick: handleEdit
+		},
+		{
+			title: LOCALES[$localeStore].delete,
+			hint: LOCALES[$localeStore].delete,
+			icon: 'trash' as const,
+			onClick: handleDelete
+		}
+	]);
+
+	const viewTitle = $derived(LOCALES[$localeStore].viewTitle.replace('{entity}', title));
+	const deleteTitle = $derived(LOCALES[$localeStore].deleteTitle.replace('{entity}', title));
+	const formTitle = $derived(
+		editId
+			? LOCALES[$localeStore].editTitle.replace('{entity}', title)
+			: LOCALES[$localeStore].newTitle.replace('{entity}', title)
+	);
 </script>
 
 {#if inline}
@@ -112,7 +134,6 @@
 				{actions}
 				rowKey="id"
 				{csvFileName}
-				{addLabel}
 				onAdd={handleAdd}
 			/>
 		</main>
@@ -121,7 +142,7 @@
 	{#if viewRowData && renderView}
 		<DetailPanel
 			show={true}
-			title={`View ${title}`}
+			title={viewTitle}
 			onClose={() => {
 				viewRowData = null;
 			}}
@@ -131,7 +152,7 @@
 	{/if}
 
 	{#if deleteRowData}
-		<DetailPanel show={true} title={`Delete ${title}`} onClose={cancelDelete}>
+		<DetailPanel show={true} title={deleteTitle} onClose={cancelDelete}>
 			<DeleteConfirm onConfirm={confirmDelete} onCancel={cancelDelete}>
 				{#if renderView}
 					{@render renderView(deleteRowData)}
@@ -141,7 +162,7 @@
 	{/if}
 
 	{#if showForm && renderForm}
-		<DetailPanel show={true} title={editId ? `Edit ${title}` : `New ${title}`} onClose={_onCancel}>
+		<DetailPanel show={true} title={formTitle} onClose={_onCancel}>
 			{@render renderForm(_onFormComplete)}
 		</DetailPanel>
 	{/if}
@@ -156,7 +177,6 @@
 				{actions}
 				rowKey="id"
 				{csvFileName}
-				{addLabel}
 				onAdd={handleAdd}
 			/>
 			{@render renderForm(_onFormComplete)}

@@ -2,6 +2,7 @@
 	import type { HashRouter, RouteState } from '../router';
 	import type { MenuItem } from './types';
 	import { IconX } from '../icons';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		title = 'DemoApp',
@@ -77,15 +78,21 @@
 	}
 
 	const menuItems = $derived.by((): MenuItem[] => {
+		// Read $localeStore so this derived re-evaluates on locale change
+		// (route titles may be getters that resolve via the locale store).
+		const _locale = $localeStore;
 		if (!router?.registeredRoutes.length) return [];
-		return router.registeredRoutes.map((r): MenuItem => ({
-			pattern: r.pattern,
-			path: r.pattern === '/' ? '/' : cleanPattern(r.pattern),
-			title: r.title,
-			moduleName: r.moduleName,
-			label: r.title ?? '',
-			icon: r.icon ?? ''
-		}));
+		return router.registeredRoutes.map((r): MenuItem => {
+			const resolvedTitle = typeof r.title === 'function' ? r.title() : (r.title ?? '');
+			return {
+				pattern: r.pattern,
+				path: r.pattern === '/' ? '/' : cleanPattern(r.pattern),
+				title: resolvedTitle,
+				moduleName: r.moduleName,
+				label: resolvedTitle,
+				icon: r.icon ?? ''
+			};
+		});
 	});
 
 	function navigate(path: string): void {
@@ -96,7 +103,7 @@
 
 {#if opened}
 	<div class="sidenav-overlay" role="presentation" onclick={close}>
-		<div class="sidenav" role="dialog" aria-label="Navigation menu">
+		<div class="sidenav" role="dialog" aria-label={LOCALES[$localeStore].navigationMenu}>
 			<div class="sidenav-header">
 				<span
 					role="link"
@@ -110,7 +117,7 @@
 					<span class="sidenav-logo">{logo}</span>
 					<span class="sidenav-title">{title}</span>
 				</span>
-				<button class="sidenav-close" aria-label="Close menu" onclick={close}>
+				<button class="sidenav-close" aria-label={LOCALES[$localeStore].closeMenu} onclick={close}>
 					<IconX size={18} />
 				</button>
 			</div>

@@ -1,9 +1,11 @@
 <script lang="ts">
 	import ThemeSelector from '../theme/ThemeSelector.svelte';
+	import LangSelector from '../i18n/LangSelector.svelte';
 	import { toggleMode as switchThemeMode, modeStore } from '../theme';
 	import type { HashRouter } from '../router';
 	import { SearchIcon } from '../icons';
 	import Button from '../ui/Button.svelte';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		router,
@@ -14,7 +16,15 @@
 	} = $props();
 
 	// Dynamic title — derived from the router when available.
-	const currentTitle = $derived(router?.getState()?.title || '');
+	// Reads rawTitle (which may be a getter) so it re-resolves on locale change.
+	const currentTitle = $derived.by(() => {
+		// Read $localeStore so this derived re-evaluates on locale change.
+		const _locale = $localeStore;
+		const state = router?.getState();
+		if (!state) return '';
+		const raw = state.rawTitle ?? state.title;
+		return typeof raw === 'function' ? raw() : raw;
+	});
 
 	// Syncs theme mode via reactive store (auto-subscription in Svelte 5)
 	let currentMode = $derived($modeStore);
@@ -24,13 +34,13 @@
 	}
 </script>
 
-<nav class="navbar" aria-label="Main navigation bar">
+<nav class="navbar" aria-label={LOCALES[$localeStore].mainNav}>
 	<div class="navbar-left">
 		<Button
 			variant="ghost"
 			icon="menu"
 			iconSize={22}
-			aria-label="Open side menu"
+			aria-label={LOCALES[$localeStore].openSideMenu}
 			onclick={() => onMenuClick()}
 		/>
 
@@ -38,8 +48,8 @@
 			<SearchIcon size={16} class="search-icon" />
 			<input
 				class="search-input"
-				placeholder="Quick search (AI Agent)..."
-				aria-label="Quick search"
+				placeholder={LOCALES[$localeStore].quickSearch}
+				aria-label={LOCALES[$localeStore].quickSearch}
 			/>
 		</div>
 	</div>
@@ -49,13 +59,16 @@
 	</div>
 
 	<div class="navbar-right">
+		<LangSelector />
 		<ThemeSelector />
 
 		<Button
 			variant="ghost"
 			icon={currentMode === 'dark' ? 'sun' : 'moon'}
 			iconSize={18}
-			aria-label={currentMode === 'dark' ? 'Light mode' : 'Dark mode'}
+			aria-label={currentMode === 'dark'
+				? LOCALES[$localeStore].lightMode
+				: LOCALES[$localeStore].darkMode}
 			onclick={toggleMode}
 		/>
 	</div>

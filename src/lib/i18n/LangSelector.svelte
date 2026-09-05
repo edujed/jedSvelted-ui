@@ -1,35 +1,31 @@
 <script lang="ts">
 	import { DropdownMenu } from 'bits-ui';
-	import { THEMES, applyTheme, themeStore, type ThemeId } from './index';
+	import { localeStore, setLocale, LOCALE_OPTIONS, type Locale } from './index';
 	import { ChevronDownIcon } from '../icons';
-	import { LOCALES, localeStore } from '../i18n';
 
-	let currentTheme = $derived($themeStore);
+	let currentLocale = $derived($localeStore);
 
-	function selectTheme(id: ThemeId): void {
-		applyTheme(id);
+	function selectLocale(id: Locale): void {
+		setLocale(id);
 	}
 
-	// Find current theme (reactive — re-evaluates when the theme changes)
-	const themeInfo = $derived(
-		THEMES.find((theme) => theme.id === currentTheme) ?? null
-	);
+	const localeInfo = $derived(LOCALE_OPTIONS.find((l) => l.id === currentLocale));
 </script>
 
-<div class="theme-selector">
+<div class="lang-selector">
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger class="theme-btn">
-			<span class="theme-icon">{themeInfo?.icon ?? '🔵'}</span>
-			<span class="theme-label">{themeInfo?.label ?? LOCALES[$localeStore].theme}</span>
+		<DropdownMenu.Trigger class="lang-btn">
+			<span class="lang-icon">{localeInfo?.icon ?? '🌐'}</span>
+			<span class="lang-label">{localeInfo?.label ?? 'Language'}</span>
 			<ChevronDownIcon size={14} class="chevron" />
 		</DropdownMenu.Trigger>
 
-		<DropdownMenu.Content class="theme-list">
-			{#each THEMES as theme (theme.id)}
-				<DropdownMenu.Item class="theme-item" onSelect={() => selectTheme(theme.id)}>
-					<span class="item-icon">{theme.icon}</span>
-					<span class="item-label">{theme.label}</span>
-					{#if currentTheme === theme.id}
+		<DropdownMenu.Content class="lang-list">
+			{#each LOCALE_OPTIONS as locale (locale.id)}
+				<DropdownMenu.Item class="lang-item" onSelect={() => selectLocale(locale.id)}>
+					<span class="item-icon">{locale.icon}</span>
+					<span class="item-label">{locale.label}</span>
+					{#if currentLocale === locale.id}
 						<span class="item-check">✓</span>
 					{/if}
 				</DropdownMenu.Item>
@@ -39,11 +35,11 @@
 </div>
 
 <style>
-	.theme-selector {
+	.lang-selector {
 		position: relative;
 	}
 
-	:global(.theme-btn) {
+	:global(.lang-btn) {
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
@@ -59,15 +55,15 @@
 		transition: background var(--transition-fast);
 	}
 
-	:global(.theme-btn:hover) {
+	:global(.lang-btn:hover) {
 		background: color-mix(in srgb, var(--color-navbar-text) 15%, transparent);
 	}
 
-	.theme-icon {
+	.lang-icon {
 		font-size: 1rem;
 	}
 
-	:global(.theme-list) {
+	:global(.lang-list) {
 		background: var(--color-popover-bg);
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-md);
@@ -77,7 +73,7 @@
 		z-index: 100;
 	}
 
-	:global(.theme-item) {
+	:global(.lang-item) {
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-sm);
@@ -94,7 +90,7 @@
 		transition: background var(--transition-fast);
 	}
 
-	:global(.theme-item:hover) {
+	:global(.lang-item:hover) {
 		background: var(--color-sidenav-hover);
 	}
 

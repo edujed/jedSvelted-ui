@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import * as toastModule from './toast';
 
-// Mock localStorage globalmente para todos os testes deste módulo
+// Mock localStorage globally for all tests in this module
 const storage = new Map<string, string>();
 globalThis.localStorage = {
 	getItem(key) {
@@ -22,7 +22,7 @@ describe('toast', () => {
 	beforeEach(() => {
 		storage.clear();
 		vi.useFakeTimers();
-		// Limpa todo o estado interno para isolamento de testes
+		// Clear all internal state for test isolation
 		if (typeof toastModule._clearAllToastsForTests === 'function') {
 			toastModule._clearAllToastsForTests();
 		}
@@ -74,12 +74,12 @@ describe('toast', () => {
 		}
 	});
 
-	// NOTE: Teste desativado temporariamente porque depende de comportamento interno
-	// dos timers falsos + subscrições assíncronas da writable store.
-	// Pode ser reactivado quando se garante sincronia entre addToast e getToasts.;
+	// NOTE: Test temporarily disabled because it depends on internal behavior
+	// of fake timers + async subscriptions of the writable store.
+	// It can be re-enabled once addToast/getToasts synchronization is guaranteed.
 
 	it('shortcut methods work correctly', () => {
-		// Assuremos limpeza antes do teste
+		// Ensure cleanup before the test
 		toastModule._clearAllToastsForTests();
 		toastModule.toast.success('Success!');
 		toastModule.toast.error('Error!', undefined, 5000);

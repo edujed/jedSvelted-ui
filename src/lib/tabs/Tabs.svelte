@@ -14,12 +14,12 @@
 		tabContent?: Snippet<[string]>;
 	} = $props();
 
-	let internalAtiva = $state('');
-	let currentValue = $derived(activeTab ?? internalAtiva);
+	let internalActive = $state('');
+	let currentValue = $derived(activeTab ?? internalActive);
 
 	$effect(() => {
-		if (activeTab === undefined && tabs.length > 0 && !internalAtiva) {
-			internalAtiva = tabs[0].value;
+		if (activeTab === undefined && tabs.length > 0 && !internalActive) {
+			internalActive = tabs[0].value;
 		}
 	});
 
@@ -27,7 +27,7 @@
 		if (activeTab !== undefined) {
 			activeTab = newValue;
 		} else {
-			internalAtiva = newValue;
+			internalActive = newValue;
 		}
 	}
 </script>

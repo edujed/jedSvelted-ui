@@ -2,9 +2,10 @@
 	import type { Snippet } from 'svelte';
 	import Panel from './Panel.svelte';
 	import Button from '../ui/Button.svelte';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
-		title = 'Search',
+		title,
 		onSearch = () => {},
 		onClear = () => {},
 		isOpen = $bindable(true),
@@ -16,17 +17,22 @@
 		isOpen?: boolean;
 		children?: Snippet;
 	} = $props();
+
+	const resolvedTitle = $derived(title ?? LOCALES[$localeStore].search);
 </script>
 
-<Panel {title} iconName="filter" {isOpen}>
+<Panel title={resolvedTitle} iconName="filter" {isOpen}>
 	<div class="search-fields grid">
 		{@render children?.()}
 	</div>
 
 	<div class="search-actions">
-		<Button variant="search" size="md" icon="search" iconSize={14} onclick={onSearch}>Search</Button
+		<Button variant="search" size="md" icon="search" iconSize={14} onclick={onSearch}
+			>{LOCALES[$localeStore].search}</Button
 		>
-		<Button variant="clear" size="md" icon="x" iconSize={14} onclick={onClear}>Clear</Button>
+		<Button variant="clear" size="md" icon="x" iconSize={14} onclick={onClear}
+			>{LOCALES[$localeStore].clear}</Button
+		>
 	</div>
 </Panel>
 

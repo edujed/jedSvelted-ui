@@ -6,6 +6,7 @@
 	import Button from '../ui/Button.svelte';
 	import { filterData, sortData } from './tableTypes';
 	import type { TableAction, TableCol } from './tableTypes';
+	import { LOCALES, localeStore } from '../i18n';
 
 	let {
 		caption = '',
@@ -16,7 +17,6 @@
 		rowKey = '',
 		csvFileName = 'export.csv',
 		onAdd = () => {},
-		addLabel = 'Add',
 		header,
 		footer
 	}: {
@@ -29,7 +29,6 @@
 		rowKey?: string;
 		csvFileName?: string;
 		onAdd?: () => void;
-		addLabel?: string;
 		header?: Snippet;
 		footer?: Snippet;
 	} = $props();
@@ -116,7 +115,7 @@
 						size="sm"
 						icon="download"
 						onclick={exportCSV}
-						title="Export CSV">CSV</Button
+						title={LOCALES[$localeStore].exportCsv}>{LOCALES[$localeStore].csv}</Button
 					>
 				{/if}
 				<Button
@@ -125,7 +124,7 @@
 					icon="plus"
 					iconSize={14}
 					onclick={onAdd}
-					title="Add new record">{addLabel}</Button
+					title={LOCALES[$localeStore].addNewRecord}>{LOCALES[$localeStore].add}</Button
 				>
 				{@render header?.()}
 			</span>
@@ -145,7 +144,7 @@
 										class="th-sort"
 										class:sort-active={sortColumnIndex === idx && sortDirection !== 'none'}
 										onclick={() => handleSort(idx)}
-										title="Sort"
+										title={LOCALES[$localeStore].sort}
 									>
 										<IconSort size={14} />
 									</button>
@@ -160,7 +159,7 @@
 							<th>
 								<input
 									type="search"
-									placeholder="Filter..."
+									placeholder={LOCALES[$localeStore].filter}
 									class="filter-input"
 									oninput={(e) => handleFilter(idx, (e.target as HTMLInputElement).value)}
 								/>
@@ -196,7 +195,7 @@
 									<div class="actions-wrapper">
 										<Popover.Root>
 											<div class="actions-trigger">
-												<Popover.Trigger type="button" title="Actions">
+												<Popover.Trigger type="button" title={LOCALES[$localeStore].actions}>
 													<Icon name="more" size={18} />
 												</Popover.Trigger>
 											</div>
@@ -232,7 +231,7 @@
 		<tfoot>
 			<tr>
 				<td class="tfoot-cell" colspan={columns.length}>
-					<span class="">{data.length} row(s)</span>
+					<span class="">{LOCALES[$localeStore].rows.replace('{count}', String(data.length))}</span>
 					{@render footer?.()}
 				</td>
 			</tr>

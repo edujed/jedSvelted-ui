@@ -11,7 +11,12 @@
  *   displayFields: ['name']
  * });
  * ```
+ *
+ * Toast messages are translated via the i18n module (`t()`), so they
+ * update automatically when the locale changes.
  */
+
+import { t } from './i18n';
 
 /**
  * Unified event contract for CRUD actions emitted by panels (CrudPanel,
@@ -25,8 +30,12 @@ export interface HandleDetailOptions<T extends { id?: number }> {
 	dataRef: { data: T[] };
 	/** Toast function for user-facing feedback messages. */
 	toast: { success: (msg: string) => void; warning: (msg: string) => void };
-	/** Item name used in confirmation messages. */
-	itemName: string;
+	/**
+	 * Item name used in confirmation messages.
+	 * Accepts a string (resolved once) or a getter (resolved at event time,
+	 * so it stays in sync with the current locale).
+	 */
+	itemName: string | (() => string);
 	/** Fields displayed in message (e.g., ['name', 'label']). */
 	displayFields?: string[];
 }
@@ -44,8 +53,13 @@ export function createHandleDetail<T extends { id?: number }>(
 	/** Exposed for unit tests — not part of the public API. */
 	dataRef: (typeof options)['dataRef'];
 } {
-	const { toast, itemName, displayFields = [] } = options;
+	const { toast, displayFields = [] } = options;
 	const dataRef = options.dataRef;
+
+	/** Resolves the item name at event time (supports locale-reactive getters). */
+	function resolveItemName(): string {
+		return typeof options.itemName === 'function' ? options.itemName() : options.itemName;
+	}
 
 	function getDisplayValue(item: T): string {
 		if (displayFields.length > 0) {
@@ -62,7 +76,7 @@ export function createHandleDetail<T extends { id?: number }>(
 			const data = dataRef.data;
 			const filtered = data.filter((i) => i.id !== item.id);
 			data.splice(0, data.length, ...filtered);
-			toast.warning(`${itemName} "${getDisplayValue(item)}" deleted`);
+			toast.warning(t('itemDeleted', { item: resolveItemName(), value: getDisplayValue(item) }));
 		} catch {
 			// Silently ignore errors during delete operations
 		}
@@ -83,11 +97,13 @@ export function createHandleDetail<T extends { id?: number }>(
 				if (idx !== -1) {
 					data[idx] = { ...data[idx], ...item } as T;
 				}
-				toast.success(`${itemName} "${getDisplayValue(item)}" updated successfully`);
+				toast.success(t('itemUpdated', { item: resolveItemName(), value: getDisplayValue(item) }));
 			} else {
 				const newItem = { ...item, id: Date.now() } as T;
 				data.unshift(newItem);
-				toast.success(`${itemName} "${getDisplayValue(newItem)}" created successfully`);
+				toast.success(
+					t('itemCreated', { item: resolveItemName(), value: getDisplayValue(newItem) })
+				);
 			}
 		} catch {
 			// Silently ignore errors during save operations
