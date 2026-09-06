@@ -19,7 +19,6 @@
 	}>();
 
 	/** Whether the hint is "rich" (has title or impact sections). */
-	const isRich = $derived(!!hintTitle || !!hintImpact);
 </script>
 
 <div class="field-header">
@@ -45,8 +44,8 @@
 				</svg>
 			</Popover.Trigger>
 			<Popover.Content class="popover" side="top" align="center" sideOffset={6}>
-				{#if hintTitle}
-					<div class="hint-title">{hintTitle}</div>
+				{#if hintTitle || label}
+					<div class="hint-title">{hintTitle|| label}</div>
 				{/if}
 				{#if hint}
 					<p class="hint-text">{hint}</p>

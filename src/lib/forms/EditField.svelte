@@ -4,6 +4,8 @@
 	let {
 		label = '',
 		hint = '',
+		hintTitle = '',
+		hintImpact = '',
 		type = 'text',
 		placeholder = '',
 		value = $bindable(''),
@@ -12,6 +14,8 @@
 	} = $props<{
 		label?: string;
 		hint?: string;
+		hintTitle?: string;
+		hintImpact?: string;
 		type?: string;
 		placeholder?: string;
 		value?: string;
@@ -20,6 +24,7 @@
 	}>();
 
 	const generatedId = $derived(id ?? `field-${Math.random().toString(36).slice(2, 9)}`);
+	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);
 </script>
 
 <div
@@ -29,9 +34,9 @@
 	class:grid-col-3={colSpan === 3}
 	class:grid-col-4={colSpan === 4}
 >
-	{#if label || hint}
-		{#if hint}
-			<FieldHint {hint} {label} labelFor={generatedId} />
+	{#if label || hasHint}
+		{#if hasHint}
+			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
 		{:else}
 			<label for={generatedId} class="field-label">{label}</label>
 		{/if}

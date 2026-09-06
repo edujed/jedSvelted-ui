@@ -12,6 +12,8 @@
 		disabled = false,
 		colSpan = 2,
 		hint = '',
+		hintTitle = '',
+		hintImpact = '',
 		onValueChange
 	} = $props<{
 		label?: string;
@@ -21,11 +23,14 @@
 		disabled?: boolean;
 		colSpan?: number;
 		hint?: string;
+		hintTitle?: string;
+		hintImpact?: string;
 		onValueChange?: (value: string) => void;
 	}>();
 
 	const generatedId = $derived(`select-${Date.now().toString(36)}`);
 	const resolvedPlaceholder = $derived(placeholder ?? LOCALES[$localeStore].selectPlaceholder);
+	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);
 
 	$effect(() => {
 		if (onValueChange && value) {
@@ -41,9 +46,9 @@
 	class:grid-col-3={colSpan === 3}
 	class:grid-col-4={colSpan === 4}
 >
-	{#if label || hint}
-		{#if hint}
-			<FieldHint {hint} {label} labelFor={generatedId} />
+	{#if label || hasHint}
+		{#if hasHint}
+			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
 		{:else}
 			<label for={generatedId} class="field-label">{label}</label>
 		{/if}
