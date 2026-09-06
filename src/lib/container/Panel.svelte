@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
 	import { ChevronDownIcon } from '../icons';
@@ -32,7 +33,7 @@
 	</button>
 
 	{#if isOpen}
-		<div class="panel-content">
+		<div class="panel-content" in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}>
 			{@render children?.()}
 		</div>
 	{/if}

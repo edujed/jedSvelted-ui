@@ -1,5 +1,8 @@
 <script lang="ts">
 	import IconEye from './IconEye.svelte';
+	import IconFile from './IconFile.svelte';
+	import IconFolder from './IconFolder.svelte';
+	import IconFolderOpen from './IconFolderOpen.svelte';
 	import IconEdit from './IconEdit.svelte';
 	import IconTrash from './IconTrash.svelte';
 	import IconUser from './IconUser.svelte';
@@ -26,6 +29,9 @@
 	/** Icon registry — add new icons here */
 	const ICON_MAP = {
 		eye: IconEye,
+		file: IconFile,
+		folder: IconFolder,
+		'folder-open': IconFolderOpen,
 		edit: IconEdit,
 		trash: IconTrash,
 		user: IconUser,

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Navbar from '../nav/Navbar.svelte';
 	import Sidenav from '../nav/Sidenav.svelte';
-	import { HashRouter } from '../router';
+	import { HashRouter } from './HashRouter';
 	import type { Snippet } from 'svelte';
 
 	let {

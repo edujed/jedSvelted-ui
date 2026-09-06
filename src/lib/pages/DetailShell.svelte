@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import DetailPanel from '../ui/DetailPanel.svelte';
+	import DetailPanel from '../container/DetailPanel.svelte';
 	import { LOCALES, localeStore } from '../i18n';
 
 	/**

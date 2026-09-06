@@ -54,4 +54,7 @@
 
 	/* Toast warning */
 	--color-warning: #f9a11a;
+
+	/* Success */
+	--color-success: #2e7d32;
 }

@@ -5,11 +5,13 @@
 	let {
 		tabs = [],
 		activeTab = $bindable(),
+		showContent = true,
 		children,
 		tabContent
 	}: {
 		tabs?: Array<{ value: string; label: string }>;
 		activeTab?: string;
+		showContent?: boolean;
 		children?: Snippet;
 		tabContent?: Snippet<[string]>;
 	} = $props();
@@ -41,10 +43,12 @@
 		{/each}
 	</Tabs.List>
 
-	<div class="ui-tabs-content">
-		{@render tabContent?.(currentValue)}
-		{@render children?.()}
-	</div>
+	{#if showContent}
+		<div class="ui-tabs-content">
+			{@render tabContent?.(currentValue)}
+			{@render children?.()}
+		</div>
+	{/if}
 </Tabs.Root>
 
 <style>

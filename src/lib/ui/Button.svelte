@@ -4,6 +4,9 @@
 
 	type IconName =
 		| 'eye'
+		| 'file'
+		| 'folder'
+		| 'folder-open'
 		| 'edit'
 		| 'trash'
 		| 'user'
@@ -38,7 +41,7 @@
 		children,
 		...restProps
 	}: {
-		variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'search' | 'clear';
+		variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'ghost' | 'search' | 'clear';
 		size?: 'sm' | 'md' | 'lg';
 		icon?: IconName;
 		iconPosition?: 'left' | 'right';
@@ -124,6 +127,16 @@
 
 	.btn-danger:hover:not(:disabled) {
 		background: color-mix(in srgb, var(--color-error) 80%, transparent);
+	}
+
+	.btn-warning {
+		background: var(--color-warning);
+		color: var(--color-on-primary);
+		border-color: var(--color-warning);
+	}
+
+	.btn-warning:hover:not(:disabled) {
+		background: color-mix(in srgb, var(--color-warning) 80%, transparent);
 	}
 
 	.btn-ghost {

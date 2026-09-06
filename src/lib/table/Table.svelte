@@ -17,6 +17,8 @@
 		rowKey = '',
 		csvFileName = 'export.csv',
 		onAdd = () => {},
+		defaultSortKey,
+		defaultSortDirection = 'asc',
 		header,
 		footer
 	}: {
@@ -29,13 +31,25 @@
 		rowKey?: string;
 		csvFileName?: string;
 		onAdd?: () => void;
+		/** Column key to sort by on initial render (e.g. 'name'). */
+		defaultSortKey?: string;
+		/** Initial sort direction when defaultSortKey is set. */
+		defaultSortDirection?: 'asc' | 'desc';
 		header?: Snippet;
 		footer?: Snippet;
 	} = $props();
 
-	// Reactive state created locally (runes only in .svelte)
-	let sortColumnIndex = $state(-1);
-	let sortDirection = $state<'asc' | 'desc' | 'none'>('none');
+	// Reactive state created locally (runes only in .svelte).
+	// Initialized from defaultSortKey so the table starts sorted.
+	function getInitialSortIndex(): number {
+		if (!defaultSortKey) return -1;
+		return columns.findIndex((c) => c.key === defaultSortKey);
+	}
+	function getInitialSortDirection(): 'asc' | 'desc' | 'none' {
+		return getInitialSortIndex() >= 0 ? defaultSortDirection : 'none';
+	}
+	let sortColumnIndex = $state(getInitialSortIndex());
+	let sortDirection = $state<'asc' | 'desc' | 'none'>(getInitialSortDirection());
 	let filterValues = $state<Record<number, string>>({});
 
 	/** Filtered data (reactive) */

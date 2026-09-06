@@ -80,7 +80,7 @@
 	const menuItems = $derived.by((): MenuItem[] => {
 		// Read $localeStore so this derived re-evaluates on locale change
 		// (route titles may be getters that resolve via the locale store).
-		const _locale = $localeStore;
+		void $localeStore;
 		if (!router?.registeredRoutes.length) return [];
 		return router.registeredRoutes.map((r): MenuItem => {
 			const resolvedTitle = typeof r.title === 'function' ? r.title() : (r.title ?? '');

@@ -14,7 +14,7 @@
 	--color-error: #b71c1c;
 	--color-on-error: #ffffff;
 	--color-border: #b0bec5;
-	--color-shadow: rgba(33, 43, 48, 0.10);
+	--color-shadow: rgba(33, 43, 48, 0.1);
 	--color-navbar-bg: #263238;
 	--color-navbar-text: #ffffff;
 	--color-sidenav-bg: #ffffff;
@@ -58,4 +58,7 @@
 
 	/* Toast warning */
 	--color-warning: #e65100;
+
+	/* Success */
+	--color-success: #2e7d32;
 }

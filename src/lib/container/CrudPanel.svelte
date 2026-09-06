@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Table from '../table/Table.svelte';
 	import DetailPanel from './DetailPanel.svelte';
-	import DeleteConfirm from './DeleteConfirm.svelte';
+	import DeleteConfirm from '../ui/DeleteConfirm.svelte';
 	import type { TableCol, TableAction } from '../table';
 	import type { ActionEvent } from '../handleDetailAction';
 	import { LOCALES, localeStore } from '../i18n';
@@ -16,8 +16,7 @@
 		data,
 		onAction,
 		renderForm,
-		renderView,
-		children
+		renderView
 	}: {
 		title?: string;
 		csvFileName: string;
@@ -35,8 +34,6 @@
 		/** Form snippet. Receives a callback to close the panel after save/cancel. */
 		renderForm: Snippet<[onComplete: () => void]>;
 		renderView?: Snippet<[row: Record<string, unknown>]>;
-		/** Default slot — used to pass the renderForm snippet. */
-		children?: Snippet;
 	} = $props();
 
 	// Panel visibility state

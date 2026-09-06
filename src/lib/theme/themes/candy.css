@@ -21,7 +21,7 @@
 	--color-sidenav-hover: #f3e5f5;
 	--color-sidenav-active: #e8defc;
 	--color-card-bg: #e2cae6;
-	--color-card-shadow: 0 3px 8px rgba(49, 27, 82, 0.10);
+	--color-card-shadow: 0 3px 8px rgba(49, 27, 82, 0.1);
 	--color-input-bg: #ffffff;
 	--color-input-border: #ba68c8;
 	--color-input-focus: #7c4dff;
@@ -53,9 +53,12 @@
 	--transition-slow: 0.4s ease;
 
 	/* Sombras */
-	--shadow: rgba(49, 27, 82, 0.30);
+	--shadow: rgba(49, 27, 82, 0.3);
 	--shadow-lt: rgba(49, 27, 82, 0.18);
 
 	/* Toast warning */
 	--color-warning: #ff9100;
+
+	/* Success */
+	--color-success: #2e7d32;
 }

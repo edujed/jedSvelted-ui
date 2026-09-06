@@ -11,9 +11,7 @@
 	}
 
 	// Find current theme (reactive — re-evaluates when the theme changes)
-	const themeInfo = $derived(
-		THEMES.find((theme) => theme.id === currentTheme) ?? null
-	);
+	const themeInfo = $derived(THEMES.find((theme) => theme.id === currentTheme) ?? null);
 </script>
 
 <div class="theme-selector">

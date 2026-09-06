@@ -1,9 +1,12 @@
 <script lang="ts">
-	import Button from './Button.svelte';
+	import Button from '../ui/Button.svelte';
 	import { LOCALES, localeStore } from '../i18n';
 
 	type IconName =
 		| 'eye'
+		| 'file'
+		| 'folder'
+		| 'folder-open'
 		| 'edit'
 		| 'trash'
 		| 'user'

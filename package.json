@@ -27,6 +27,14 @@
 			"types": "./dist/actions/index.d.ts",
 			"svelte": "./dist/actions/index.js"
 		},
+		"./chat": {
+			"types": "./dist/chat/index.d.ts",
+			"svelte": "./dist/chat/index.js"
+		},
+		"./chat/*": {
+			"types": "./dist/chat/*.d.ts",
+			"svelte": "./dist/chat/*.svelte"
+		},
 		"./container": {
 			"types": "./dist/container/index.d.ts",
 			"svelte": "./dist/container/index.js"

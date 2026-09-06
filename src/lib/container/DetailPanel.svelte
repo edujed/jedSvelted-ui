@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
-	import Button from './Button.svelte';
+	import Button from '../ui/Button.svelte';
 	import type { Snippet } from 'svelte';
 	import { LOCALES, localeStore } from '../i18n';
 
@@ -19,12 +19,7 @@
 	} = $props();
 </script>
 
-<div
-	class="detail-overlay"
-	class:hidden={!show}
-	in:fade={{ duration: 150 }}
-	out:fade={{ duration: 150 }}
->
+<div class="detail-overlay" in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}>
 	{#if show}
 		<div
 			class="detail-panel"
