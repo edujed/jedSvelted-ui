@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '../icons/Icon.svelte';
 	import Badge from '../ui/Badge.svelte';
+	import { LOCALES, localeStore } from '../i18n';
 	import type { ChatMessageType } from './ChatPanel.svelte';
 
 	let {
@@ -30,12 +31,7 @@
 		return msg.thoughtContent;
 	});
 
-	const roleLabels: Record<string, string> = {
-		user: 'Usuário',
-		assistant: 'Assistente',
-		tool: 'Ferramenta',
-		error: 'Erro'
-	};
+	const roleLabels: Record<string, string> = $derived(LOCALES[$localeStore]);
 </script>
 
 {#if msg.role === 'assistant'}
@@ -47,12 +43,12 @@
 			</span>
 			<div class="chat-msg-actions">
 				{#if onFork}
-					<button class="chat-action-btn" title="Fork" onclick={() => onFork(index)}>
+					<button class="chat-action-btn" title={roleLabels.fork} onclick={() => onFork(index)}>
 						<Icon name="more" size={14} />
 					</button>
 				{/if}
 				{#if onDelete}
-					<button class="chat-action-btn" title="Excluir" onclick={() => onDelete(index)}>
+					<button class="chat-action-btn" title={roleLabels.delete} onclick={() => onDelete(index)}>
 						<Icon name="trash" size={14} />
 					</button>
 				{/if}
@@ -62,7 +58,7 @@
 		{#if msg.thoughtContent}
 			<details class="chat-thought" open={true}>
 				<summary class="chat-thought-summary">
-					💭 Pensamento
+					💭 {roleLabels.thought}
 					{#if msg.isStreaming}
 						<span class="thinking-dots">
 							<span class="dot"></span>
@@ -116,6 +112,18 @@
 			{@html contentHtml}
 		</div>
 	</div>
+{:else if msg.role === 'system'}
+	<div class="chat-msg system">
+		<div class="chat-msg-header">
+			<span class="chat-role-badge system">
+				<Icon name="settings" size={14} />
+				{roleLabels.system}
+			</span>
+		</div>
+		<div class="chat-msg-content">
+			{@html contentHtml}
+		</div>
+	</div>
 {:else if msg.role === 'error'}
 	<div class="chat-msg error">
 		<div class="chat-msg-header">
@@ -137,12 +145,12 @@
 			</span>
 			<div class="chat-msg-actions">
 				{#if onFork}
-					<button class="chat-action-btn" title="Fork" onclick={() => onFork(index)}>
+					<button class="chat-action-btn" title={roleLabels.fork} onclick={() => onFork(index)}>
 						<Icon name="more" size={14} />
 					</button>
 				{/if}
 				{#if onDelete}
-					<button class="chat-action-btn" title="Excluir" onclick={() => onDelete(index)}>
+					<button class="chat-action-btn" title={roleLabels.delete} onclick={() => onDelete(index)}>
 						<Icon name="trash" size={14} />
 					</button>
 				{/if}
@@ -195,6 +203,20 @@
 		background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
 		border: 1px solid var(--color-error);
 		color: var(--color-on-surface);
+	}
+
+	.chat-msg.system {
+		align-self: center;
+		background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+		border: 1px dashed var(--color-border);
+		color: var(--color-on-surface);
+		text-align: center;
+		opacity: 0.85;
+		font-size: var(--font-size-sm);
+	}
+
+	.chat-role-badge.system {
+		color: var(--color-primary);
 	}
 
 	.chat-msg-header {

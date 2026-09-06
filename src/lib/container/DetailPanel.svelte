@@ -19,7 +19,7 @@
 	} = $props();
 </script>
 
-<div class="detail-overlay" in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}>
+<div class="detail-overlay" class:active={show} in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}>
 	{#if show}
 		<div
 			class="detail-panel"
@@ -57,6 +57,14 @@
 		z-index: 1000;
 		display: flex;
 		justify-content: flex-end;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity var(--transition-fast);
+	}
+
+	.detail-overlay.active {
+		opacity: 1;
+		pointer-events: auto;
 	}
 
 	.detail-panel {

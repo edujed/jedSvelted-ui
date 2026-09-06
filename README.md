@@ -29,8 +29,8 @@ import { initTheme } from '@edujed/jedsvelted-ui/theme';
 import { initI18n } from '@edujed/jedsvelted-ui/i18n';
 import '@edujed/jedsvelted-ui/theme/theme.css';
 
-initTheme();   // reads localStorage (s-theme / s-mode), applies data-* to <html>
-initI18n();    // reads localStorage (s-locale), default 'en'
+initTheme(); // reads localStorage (s-theme / s-mode), applies data-* to <html>
+initI18n(); // reads localStorage (s-locale), default 'en'
 ```
 
 Both accept an optional prefix to support multiple lib instances on the same
@@ -41,22 +41,22 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 
 ## 🧩 Modules
 
-| Module       | Description                                                                                              |
-| ------------ | -------------------------------------------------------------------------------------------------------- |
-| `actions`    | CRUD action handlers (`createHandleDetail`)                                                               |
-| `chat`       | Chat UI (`ChatPanel`)                                                                                     |
-| `container`  | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                                      |
-| `forms`      | Form controls (`EditField`, `SelectField`, `FormActions`)                                                 |
-| `i18n`       | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`)                                    |
-| `icons`      | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                                  |
-| `info`       | Visual feedback (`ToastContainer`, `toast`, `FieldHint`)                                                  |
-| `nav`        | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                                |
-| `pages`      | Page shells (`PageShell`, `DetailShell`, `PageState`)                                                     |
-| `router`     | Routing and app layout (`HashRouter`, `Layout`)                                                           |
-| `table`      | Interactive tables (`Table`)                                                                              |
-| `tabs`       | Tab system (`Tabs`)                                                                                       |
-| `theme`      | Theme management (`initTheme`, `ThemeSelector`)                                                           |
-| `ui`         | General UI components (`Button`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`)                        |
+| Module      | Description                                                                        |
+| ----------- | ---------------------------------------------------------------------------------- |
+| `actions`   | CRUD action handlers (`createHandleDetail`)                                        |
+| `chat`      | Chat UI (`ChatPanel`)                                                              |
+| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)               |
+| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `FormActions`) |
+| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`)             |
+| `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                           |
+| `info`      | Visual feedback (`ToastContainer`, `toast`, `FieldHint`)                           |
+| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                         |
+| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                              |
+| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                    |
+| `table`     | Interactive tables (`Table`)                                                       |
+| `tabs`      | Tab system (`Tabs`)                                                                |
+| `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                    |
+| `ui`        | General UI components (`Button`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`) |
 
 ### Import styles
 
@@ -153,10 +153,7 @@ single `onAction` event on confirmed mutations only:
 <CrudPanel title="Users" csvFileName="users.csv" {columns} {data} onAction={handleAction}>
 	{#snippet renderForm(onComplete)}
 		<!-- form fields -->
-		<FormActions
-			onSave={() => save(onComplete)}
-			onCancel={() => cancel(onComplete)}
-		/>
+		<FormActions onSave={() => save(onComplete)} onCancel={() => cancel(onComplete)} />
 	{/snippet}
 </CrudPanel>
 ```
@@ -174,25 +171,49 @@ single `onAction` event on confirmed mutations only:
 		{ key: 'name', title: 'Name', sortable: true, filterable: true, exportable: true },
 		{ key: 'age', title: 'Age', align: 'right', formatter: (v) => String(v) }
 	];
-	const actions: TableAction[] = [
-		{ title: 'View', icon: 'eye', onClick: (row) => view(row) }
-	];
+	const actions: TableAction[] = [{ title: 'View', icon: 'eye', onClick: (row) => view(row) }];
 </script>
 
-<Table id="users" caption="Users" {data} {columns} {actions} rowKey="id" csvFileName="users.csv" onAdd={handleAdd} />
+<Table
+	id="users"
+	caption="Users"
+	{data}
+	{columns}
+	{actions}
+	rowKey="id"
+	csvFileName="users.csv"
+	onAdd={handleAdd}
+/>
 ```
 
 ### Forms
 
 ```svelte
 <script lang="ts">
-	import { EditField, SelectField, FormActions } from '@edujed/jedsvelted-ui/forms';
+	import { EditField, NumericField, SelectField, SliderField, FormActions } from '@edujed/jedsvelted-ui/forms';
 </script>
 
 <EditField label="Name" bind:value={name} placeholder="Full name" />
+<NumericField label="Top K" bind:value={topK} min={0} step={1} />
 <SelectField label="Role" bind:value={role} options={['admin', 'user']} />
+<SliderField label="Temperature" bind:value={temp} min={0.1} max={2} step={0.1} decimals={2} />
 <FormActions onSave={save} onCancel={cancel} />
 ```
+
+All form fields support an optional **rich hint** (3-part popover: title, description, impact):
+
+```svelte
+<SliderField
+	label="Temperature"
+	hintTitle="Temperature"
+	hint="Controls randomness of the output."
+	hintImpact="Lower values make output more focused and deterministic."
+	bind:value={temp}
+	min={0.1} max={2} step={0.1}
+/>
+```
+
+The hint renders as a `?` icon next to the label. On hover (desktop) or click (mobile) it opens a popover with the three sections. Fields without a hint show a plain label.
 
 ### Chat
 
@@ -204,10 +225,14 @@ single `onAction` event on confirmed mutations only:
 	let messages = $state<ChatMessageType[]>([]);
 </script>
 
-<ChatPanel title="Chat" {messages} loading={loading}
+<ChatPanel
+	title="Chat"
+	{messages}
+	{loading}
 	renderContent={(msg) => marked.parse(msg.content || '') as string}
 	onFork={(i) => fork(i)}
-	onDelete={(i) => del(i)}>
+	onDelete={(i) => del(i)}
+>
 	<!-- input area as children snippet -->
 </ChatPanel>
 ```
@@ -216,7 +241,7 @@ single `onAction` event on confirmed mutations only:
 
 ```ts
 {
-	role: 'user' | 'assistant' | 'tool' | 'error';
+	role: 'user' | 'assistant' | 'tool' | 'system' | 'error';
 	content: string;
 	attachedFiles?: string[];
 	metrics?: { prompt_tokens?; completion_tokens?; total_tokens?; total_time_ms?; token_speed? };
@@ -242,7 +267,12 @@ single `onAction` event on confirmed mutations only:
 	};
 </script>
 
-<FileTree {root} selectedFiles={selected} toggleFile={toggle} onViewFile={(path, name) => open(path)} />
+<FileTree
+	{root}
+	selectedFiles={selected}
+	toggleFile={toggle}
+	onViewFile={(path, name) => open(path)}
+/>
 ```
 
 ### Toasts
@@ -262,10 +292,19 @@ toast.warning('Item deleted');
 toast.error('Something went wrong');
 ```
 
-`FieldHint` renders a label with a `?` popover hint:
+`FieldHint` renders a label with a `?` popover hint (used internally by form fields):
 
 ```svelte
 <FieldHint label="Temperature" hint="Sampling temperature" labelFor="temp" />
+
+<!-- Rich variant (title + description + impact) -->
+<FieldHint
+	label="Temperature"
+	hintTitle="Temperature"
+	hint="Controls randomness of the output."
+	hintImpact="Lower values make output more focused."
+	labelFor="temp"
+/>
 ```
 
 ### Navigation
@@ -345,9 +384,9 @@ and `subscribe()`.
 ```ts
 import { t, localeStore, setLocale, LOCALES } from '@edujed/jedsvelted-ui/i18n';
 
-t('add');                       // "Add" (en) / "Adicionar" (pt-BR)
-t('rows', { count: 5 });        // parameterized
-setLocale('pt-BR');             // runtime switch — UI reacts automatically
+t('add'); // "Add" (en) / "Adicionar" (pt-BR)
+t('rows', { count: 5 }); // parameterized
+setLocale('pt-BR'); // runtime switch — UI reacts automatically
 ```
 
 `t()` is reactive (reads `localeStore` internally).
@@ -425,7 +464,7 @@ git clone https://github.com/edujed/jedSvelted-demo-app.git
 ## for a Live Demo:
 
 > To open a Live Demo for this lib:
-[![Live Demo](https://shields.io)](https://edujed.github.io/jedSvelted-demo-app/)
+> [![Live Demo](https://shields.io)](https://edujed.github.io/jedSvelted-demo-app/)
 
 ## 📄 License
 

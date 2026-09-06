@@ -4,9 +4,10 @@
 	import Icon from '../icons/Icon.svelte';
 	import ChevronDownIcon from '../icons/ChevronDownIcon.svelte';
 	import ChatMessage from './ChatMessage.svelte';
+	import { LOCALES, localeStore } from '../i18n';
 
 	export interface ChatMessageType {
-		role: 'user' | 'assistant' | 'tool' | 'error';
+		role: 'user' | 'assistant' | 'system' | 'tool' | 'error';
 		content: string;
 		attachedFiles?: string[];
 		metrics?: {
@@ -78,7 +79,7 @@
 
 				{#if loading}
 					<div class="chat-msg assistant loading">
-						<span>⏳ Processando...</span>
+						<span>⏳ {LOCALES[$localeStore].processing}</span>
 					</div>
 				{/if}
 			</div>

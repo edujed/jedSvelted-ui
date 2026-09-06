@@ -57,4 +57,7 @@
 
 	/* Success */
 	--color-success: #2e7d32;
+
+	/* Info (lilás, para não conflitar com o accent rosado) */
+	--color-info: #9575cd;
 }

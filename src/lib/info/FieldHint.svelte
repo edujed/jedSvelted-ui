@@ -3,72 +3,139 @@
 
 	let {
 		hint = '',
+		hintTitle = '',
+		hintImpact = '',
 		label = '',
 		labelFor = ''
 	} = $props<{
+		/** Short hint text (shown in the popover). */
 		hint?: string;
+		/** Optional title for the hint popover (bold, primary color). */
+		hintTitle?: string;
+		/** Optional impact/tip text (shown in a highlighted box). */
+		hintImpact?: string;
 		label?: string;
 		labelFor?: string;
 	}>();
+
+	/** Whether the hint is "rich" (has title or impact sections). */
+	const isRich = $derived(!!hintTitle || !!hintImpact);
 </script>
 
 <div class="field-header">
 	{#if label}
 		<label for={labelFor} class="field-label">{label}</label>
 	{/if}
-	<Popover.Root>
-		<Popover.Trigger>?</Popover.Trigger>
-		<Popover.Content class="popover" side="top" align="center" sideOffset={3}>
-			<p class="hint-text">{hint}</p>
-		</Popover.Content>
-	</Popover.Root>
+	{#if hint || hintTitle || hintImpact}
+		<Popover.Root>
+			<Popover.Trigger class="hint-trigger" aria-label="Hint">
+				<svg
+					class="hint-icon"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<circle cx="12" cy="12" r="10"></circle>
+					<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+					<line x1="12" y1="17" x2="12.01" y2="17"></line>
+				</svg>
+			</Popover.Trigger>
+			<Popover.Content class="popover" side="top" align="center" sideOffset={6}>
+				{#if hintTitle}
+					<div class="hint-title">{hintTitle}</div>
+				{/if}
+				{#if hint}
+					<p class="hint-text">{hint}</p>
+				{/if}
+				{#if hintImpact}
+					<div class="hint-impact">{hintImpact}</div>
+				{/if}
+			</Popover.Content>
+		</Popover.Root>
+	{/if}
 </div>
 
 <style>
-	:global(.popover) {
-		width: 100%;
-		padding: 0.5rem 0.75rem;
-		background: var(--color-sidenav-hover);
-		opacity: 0.85;
-		border: 1px solid var(--color-input-border);
-		border-radius: var(--radius-sm);
-		color: var(--color-on-surface);
-		font-size: var(--font-size-sm);
-		font-family: inherit;
-		font-weight: 600;
-		outline: none;
-		transition: border-color var(--transition-fast);
-		box-shadow: 2px 2px 4px var(--color-shadow);
-	}
-
 	.field-header {
 		display: flex;
 		align-items: center;
 		gap: var(--spacing-xs);
 	}
 
-	:global(div.field-header button) {
-		width: 18px;
-		height: 18px;
-		border-radius: 50%;
-		border: 1px solid var(--color-border);
-		background: transparent;
-		color: var(--color-on-surface);
-		opacity: 0.5;
-		font-size: 0.75rem;
-		font-weight: 600;
-		cursor: pointer;
-		display: flex;
+	:global(.hint-trigger) {
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background: none;
+		color: var(--color-primary);
+		cursor: help;
 		transition: all var(--transition-fast);
 		padding: 0;
 		line-height: 1;
+		border: none;
 	}
 
-	:global(div.field-header button:hover) {
-		opacity: 1;
-		border-color: var(--color-primary);
+	:global(.hint-icon) {
+		width: 18px;
+		height: 18px;
+		display: block;
+	}
+
+	:global(.hint-trigger:hover) {
+		color: var(--color-primary-dark);
+		transform: scale(1.1);
+	}
+
+	:global(.popover) {
+		width: auto;
+		max-width: 350px;
+		min-width: 200px;
+		padding: 0.75rem 1rem;
+		background: var(--color-surface);
+		border: 1px solid var(--color-primary);
+		border-radius: var(--radius-md);
+		color: var(--color-on-surface);
+		font-size: var(--font-size-sm);
+		font-family: inherit;
+		outline: none;
+		box-shadow: 0 4px 16px var(--color-shadow);
+	}
+
+	.hint-title {
 		color: var(--color-primary);
+		font-weight: bold;
+		font-size: var(--font-size-base);
+		margin-bottom: var(--spacing-xs);
+		padding-bottom: var(--spacing-xs);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.hint-text {
+		margin: 0;
+		color: var(--color-on-surface);
+		font-size: var(--font-size-sm);
+		line-height: 1.5;
+	}
+
+	.hint-text:not(:last-child) {
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.hint-impact {
+		margin-top: var(--spacing-sm);
+		color: var(--color-accent);
+		font-size: var(--font-size-xs);
+		line-height: 1.4;
+		background: var(--color-card-bg);
+		padding: var(--spacing-xs) var(--spacing-sm);
+		border-radius: var(--radius-sm);
+		border-left: 3px solid var(--color-primary);
 	}
 </style>
