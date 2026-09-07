@@ -6,9 +6,9 @@ A collection of reusable UI components built for applications using **Svelte 5**
 
 ```bash
 npm install @edujed/jedsvelted-ui
-# ou
+# or
 pnpm add @edujed/jedsvelted-ui
-# ou
+# or
 yarn add @edujed/jedsvelted-ui
 ```
 
@@ -34,47 +34,73 @@ initI18n(); // reads localStorage (s-locale), default 'en'
 ```
 
 Both accept an optional prefix to support multiple lib instances on the same
-page: `initTheme('app1')` → `app1-theme` / `app1-mode`.
+page: `initTheme('app1')` → `app1-theme` / `app1-mode`, `initI18n('app1')`
+→ `app1-locale`.
 
 Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 `office`, `candy`. Mode: `light` / `dark`.
 
 ## 🧩 Modules
 
-| Module      | Description                                                                        |
-| ----------- | ---------------------------------------------------------------------------------- |
-| `actions`   | CRUD action handlers (`createHandleDetail`)                                        |
-| `chat`      | Chat UI (`ChatPanel`)                                                              |
-| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)               |
-| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `FormActions`) |
-| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`)             |
-| `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                           |
-| `info`      | Visual feedback (`ToastContainer`, `toast`, `FieldHint`)                           |
-| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                         |
-| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                              |
-| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                    |
-| `table`     | Interactive tables (`Table`)                                                       |
-| `tabs`      | Tab system (`Tabs`)                                                                |
-| `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                    |
-| `ui`        | General UI components (`Button`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`) |
+| Module      | Description                                                                                       |
+| ----------- | ------------------------------------------------------------------------------------------------- |
+| `actions`   | CRUD action handlers (`createHandleDetail`)                                                       |
+| `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                              |
+| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                              |
+| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `FormActions`)          |
+| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`)                            |
+| `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                          |
+| `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                               |
+| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                        |
+| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                                             |
+| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                                   |
+| `table`     | Interactive tables (`Table`)                                                                      |
+| `tabs`      | Tab system (`Tabs`)                                                                               |
+| `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                                   |
+| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`) |
 
 ### Import styles
 
-Every module has a **barrel** export. Most also expose individual files:
+Three levels of granularity are available:
 
 ```ts
-// Barrel (recommended)
+// 1. Package root — everything in one import (convenience)
+import { Button, Table, toast, HashRouter } from '@edujed/jedsvelted-ui';
+
+// 2. Module barrel (recommended) — scoped to one module
 import { Button, Badge } from '@edujed/jedsvelted-ui/ui';
 import { Table } from '@edujed/jedsvelted-ui/table';
 import { toast, ToastContainer } from '@edujed/jedsvelted-ui/info';
 
-// Individual file (where available)
+// 3. Individual file (where available) — most granular
 import { Button } from '@edujed/jedsvelted-ui/ui/Button';
 import { Table } from '@edujed/jedsvelted-ui/table/Table';
 ```
 
+Module barrels are recommended for readability and tree-shaking; the root
+import is a convenience for quick prototypes.
+
 > **Note:** `actions`, `i18n` and `router` only expose the barrel export —
 > use `import { ... } from '@edujed/jedsvelted-ui/<module>'` for those.
+
+### Public type contracts
+
+Every module exports the **props interfaces** of its components (plus the
+data shapes they work with), so you can build objects for binding/aggregating
+props and compose new components on top of the lib's primitives:
+
+```ts
+import type { ButtonProps, BadgeProps, FileNode } from '@edujed/jedsvelted-ui/ui';
+import type { TableCol, TableAction } from '@edujed/jedsvelted-ui/table';
+import type { CrudPanelProps } from '@edujed/jedsvelted-ui/container';
+import type { EditFieldProps, SelectOption } from '@edujed/jedsvelted-ui/forms';
+import type { ChatMessageType, ChatPanelProps } from '@edujed/jedsvelted-ui/chat';
+import type { PageShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
+import type { IconName } from '@edujed/jedsvelted-ui/icons';
+```
+
+Each module's types live in a dedicated file (`uiTypes`, `formsTypes`,
+`chatTypes`, …) and are re-exported from the module barrel.
 
 ## 📖 Usage
 
@@ -101,7 +127,8 @@ import { Table } from '@edujed/jedsvelted-ui/table/Table';
 ```
 
 `RouteMetadata` options: `title` (string or getter for locale reactivity),
-`moduleName`, `icon`, `showInMenu`.
+`moduleName`, `icon`, `showInMenu`. The menu-relevant subset of a registered
+route is typed as `RegisteredRouteItem` (exported by both `router` and `nav`).
 
 ### Buttons & badges
 
@@ -190,12 +217,25 @@ single `onAction` event on confirmed mutations only:
 
 ```svelte
 <script lang="ts">
-	import { EditField, NumericField, SelectField, SliderField, FormActions } from '@edujed/jedsvelted-ui/forms';
+	import {
+		EditField,
+		NumericField,
+		SelectField,
+		SliderField,
+		FormActions
+	} from '@edujed/jedsvelted-ui/forms';
 </script>
 
 <EditField label="Name" bind:value={name} placeholder="Full name" />
 <NumericField label="Top K" bind:value={topK} min={0} step={1} />
-<SelectField label="Role" bind:value={role} options={['admin', 'user']} />
+<SelectField
+	label="Role"
+	bind:value={role}
+	options={[
+		{ key: 'admin', label: 'Admin' },
+		{ key: 'user', label: 'User' }
+	]}
+/>
 <SliderField label="Temperature" bind:value={temp} min={0.1} max={2} step={0.1} decimals={2} />
 <FormActions onSave={save} onCancel={cancel} />
 ```
@@ -209,7 +249,9 @@ All form fields support an optional **rich hint** (3-part popover: title, descri
 	hint="Controls randomness of the output."
 	hintImpact="Lower values make output more focused and deterministic."
 	bind:value={temp}
-	min={0.1} max={2} step={0.1}
+	min={0.1}
+	max={2}
+	step={0.1}
 />
 ```
 
@@ -268,7 +310,7 @@ The hint renders as a `?` icon next to the label. On hover (desktop) or click (m
 </script>
 
 <FileTree
-	{root}
+	node={root}
 	selectedFiles={selected}
 	toggleFile={toggle}
 	onViewFile={(path, name) => open(path)}
@@ -352,12 +394,13 @@ and `subscribe()`.
 ```svelte
 <script lang="ts">
 	import { Tabs } from '@edujed/jedsvelted-ui/tabs';
+	import type { TabItem } from '@edujed/jedsvelted-ui/tabs';
 
-	const tabs = [
+	const tabs: TabItem[] = [
 		{ value: 'chat', label: '💬 Chat' },
 		{ value: 'terminal', label: '🖥️ Terminal' }
 	];
-	let active = $bindable('chat');
+	let active = $state('chat');
 </script>
 
 <Tabs {tabs} bind:activeTab={active}>
@@ -389,7 +432,9 @@ t('rows', { count: 5 }); // parameterized
 setLocale('pt-BR'); // runtime switch — UI reacts automatically
 ```
 
-`t()` is reactive (reads `localeStore` internally).
+`t()` reads `localeStore` on every call, so it stays in sync with the current
+locale (components that render `t(...)` inside `$derived`/templates re-evaluate
+on locale change).
 
 ### CRUD action handler
 
@@ -409,7 +454,8 @@ const { handleDetailAction } = createHandleDetail<Permission>({
 ```
 
 `handleDetailAction(action, item)` handles `'create' | 'update' | 'delete'`
-and fires the appropriate toast.
+and fires the appropriate toast. `createHandleDetail` also returns
+`handleSave` and `handleDelete` for direct use.
 
 ### Icons
 
@@ -427,16 +473,6 @@ and fires the appropriate toast.
 `menu`, `more`, `check`, `x`, `wallet`, `bank`, `clock`, `file`, `folder`,
 `folder-open`, `chevron-right`, `chevron-down`, `circle`, `user-alt`).
 Individual icon components are also exported (`IconCheck`, `IconTrash`, …).
-
-## 🔗 Individual imports
-
-Most modules also expose per-file subpaths (see the `exports` map in
-`package.json`). Barrel imports are recommended for readability:
-
-```ts
-import { Table } from '@edujed/jedsvelted-ui/table/Table';
-import { ToastContainer } from '@edujed/jedsvelted-ui/info/ToastContainer';
-```
 
 ## 🛠 Local development
 
@@ -461,7 +497,7 @@ npm run test:run     # vitest (single run, CI)
 git clone https://github.com/edujed/jedSvelted-demo-app.git
 ```
 
-## for a Live Demo:
+## 🌐 Live Demo
 
 > To open a Live Demo for this lib:
 > [![Live Demo](https://shields.io)](https://edujed.github.io/jedSvelted-demo-app/)

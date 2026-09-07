@@ -2,6 +2,7 @@
 export type { IconName } from './iconsTypes';
 export { default as Icon } from './Icon.svelte';
 export { default as IconBank } from './IconBank.svelte';
+export { default as IconBuilding } from './IconBuilding.svelte';
 export { default as IconCheck } from './IconCheck.svelte';
 export { default as IconChevronRight } from './IconChevronRight.svelte';
 export { default as IconClock } from './IconClock.svelte';
@@ -18,6 +19,7 @@ export { default as IconPlus } from './IconPlus.svelte';
 export { default as IconSort } from './IconSort.svelte';
 export { default as IconSun } from './IconSun.svelte';
 export { default as IconTrash } from './IconTrash.svelte';
+export { default as IconTree } from './IconTree.svelte';
 export { default as IconUser } from './IconUser.svelte';
 export { default as IconWallet } from './IconWallet.svelte';
 export { default as IconX } from './IconX.svelte';

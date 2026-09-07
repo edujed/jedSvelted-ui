@@ -25,6 +25,8 @@
 	import SearchIcon from './SearchIcon.svelte';
 	import SettingsIcon from './SettingsIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
+	import IconTree from './IconTree.svelte';
+	import IconBuilding from './IconBuilding.svelte';
 	import type { IconName } from './iconsTypes';
 
 	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
@@ -54,7 +56,9 @@
 		filter: FilterIcon,
 		search: SearchIcon,
 		settings: SettingsIcon,
-		'user-alt': UserIcon
+		'user-alt': UserIcon,
+		tree: IconTree,
+		building: IconBuilding
 	} as const;
 
 	let {

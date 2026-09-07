@@ -32,4 +32,6 @@ export type IconName =
 	| 'filter'
 	| 'search'
 	| 'settings'
-	| 'user-alt';
+	| 'user-alt'
+	| 'tree'
+	| 'building';

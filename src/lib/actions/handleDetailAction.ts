@@ -26,8 +26,12 @@ import { t } from '../i18n';
 export type ActionEvent = 'create' | 'update' | 'delete' | 'cancel';
 
 export interface HandleDetailOptions<T extends { id?: number }> {
-	/** Mutable reference to the data array — allows updates without recreating the handler. */
-	dataRef: { data: T[] };
+	/**
+	 * Mutable reference to the data array — allows updates without recreating
+	 * the handler. `data` may be a getter so Svelte `$state` arrays stay
+	 * reactive (pass `{ get data() { return myState; } }` from a component).
+	 */
+	dataRef: { readonly data: T[] };
 	/** Toast function for user-facing feedback messages. */
 	toast: { success: (msg: string) => void; warning: (msg: string) => void };
 	/**

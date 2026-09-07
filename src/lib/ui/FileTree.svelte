@@ -3,7 +3,7 @@
 	import IconFolder from '../icons/IconFolder.svelte';
 	import IconFolderOpen from '../icons/IconFolderOpen.svelte';
 	import IconFile from '../icons/IconFile.svelte';
-	import type { FileNode, FileTreeProps } from './uiTypes';
+	import type { FileTreeProps } from './uiTypes';
 
 	let {
 		node,

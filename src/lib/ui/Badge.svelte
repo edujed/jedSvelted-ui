@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconX from '../icons/IconX.svelte';
-	import { LOCALES, localeStore } from '../i18n';
+	import { LOCALES } from '../i18n';
 	import type { BadgeProps } from './uiTypes';
 
 	let {
