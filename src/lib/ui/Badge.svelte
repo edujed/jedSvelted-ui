@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import IconX from '../icons/IconX.svelte';
+	import { LOCALES, localeStore } from '../i18n';
+	import type { BadgeProps } from './uiTypes';
 
 	let {
 		variant = 'primary',
@@ -8,18 +9,7 @@
 		onDismiss,
 		children,
 		class: className = ''
-	}: {
-		/** Color variant. */
-		variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-		/** Show a dismiss (×) button. */
-		dismissible?: boolean;
-		/** Called when the dismiss button is clicked. */
-		onDismiss?: () => void;
-		/** Badge content. */
-		children?: Snippet;
-		/** Extra classes. */
-		class?: string;
-	} = $props();
+	}: BadgeProps = $props();
 </script>
 
 <span class="badge badge-{variant} {className}">

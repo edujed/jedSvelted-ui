@@ -209,7 +209,10 @@
 									<div class="actions-wrapper">
 										<Popover.Root>
 											<div class="actions-trigger">
-												<Popover.Trigger type="button" title={LOCALES[$localeStore].actions}>
+												<Popover.Trigger
+													class="rounded-input"
+													title={LOCALES[$localeStore].actions}
+												>
 													<Icon name="more" size={18} />
 												</Popover.Trigger>
 											</div>
@@ -449,6 +452,12 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	:global(.actions-trigger button.rounded-input) {
+		border-radius: var(--radius-md);
+		color: var(--color-primary-dark);
+		border: 0px;
 	}
 
 	.actions-trigger {

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import Panel from './Panel.svelte';
 	import Button from '../ui/Button.svelte';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { SearchPanelProps } from './containerTypes';
 
 	let {
 		title,
@@ -10,13 +10,7 @@
 		onClear = () => {},
 		isOpen = $bindable(true),
 		children
-	}: {
-		title?: string;
-		onSearch?: () => void;
-		onClear?: () => void;
-		isOpen?: boolean;
-		children?: Snippet;
-	} = $props();
+	}: SearchPanelProps = $props();
 
 	const resolvedTitle = $derived(title ?? LOCALES[$localeStore].search);
 </script>

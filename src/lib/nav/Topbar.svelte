@@ -5,6 +5,7 @@
 	import { SearchIcon } from '../icons';
 	import Button from '../ui/Button.svelte';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { TopbarProps } from './navTypes';
 
 	let {
 		title = '',
@@ -13,14 +14,7 @@
 		onMenuClick = () => {},
 		onSearch = () => {},
 		onSearchKeydown = () => {}
-	}: {
-		title?: string;
-		showQuickSearch?: boolean;
-		showHamburguer?: boolean;
-		onMenuClick?: () => void;
-		onSearch?: (value: string) => void;
-		onSearchKeydown?: (event: KeyboardEvent) => void;
-	} = $props();
+	}: TopbarProps = $props();
 
 	// Syncs theme mode via reactive store (auto-subscription in Svelte 5)
 	let currentMode = $derived($modeStore);

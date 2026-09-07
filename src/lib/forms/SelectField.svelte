@@ -3,11 +3,12 @@
 	import FieldHint from '../info/FieldHint.svelte';
 	import { ChevronDownIcon } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { SelectFieldProps, SelectOption } from './formsTypes';
 
 	let {
 		label = '',
 		value = $bindable(''),
-		options = [] as Array<{ key: string; label: string }>,
+		options = [] as SelectOption[],
 		placeholder,
 		disabled = false,
 		colSpan = 2,
@@ -15,18 +16,7 @@
 		hintTitle = '',
 		hintImpact = '',
 		onValueChange
-	} = $props<{
-		label?: string;
-		value?: string;
-		options?: Array<{ key: string; label: string }>;
-		placeholder?: string;
-		disabled?: boolean;
-		colSpan?: number;
-		hint?: string;
-		hintTitle?: string;
-		hintImpact?: string;
-		onValueChange?: (value: string) => void;
-	}>();
+	}: SelectFieldProps = $props();
 
 	const generatedId = $derived(`select-${Date.now().toString(36)}`);
 	const resolvedPlaceholder = $derived(placeholder ?? LOCALES[$localeStore].selectPlaceholder);
@@ -58,8 +48,7 @@
 		<div class="select-trigger-wrapper" id={generatedId}>
 			<Select.Trigger {disabled}>
 				<span class="select-value">
-					{options.find((o: { key: string; label: string }) => o.key === value)?.label ??
-						resolvedPlaceholder}
+					{options.find((o: SelectOption) => o.key === value)?.label ?? resolvedPlaceholder}
 				</span>
 				<ChevronDownIcon size={16} class="select-chevron" />
 			</Select.Trigger>

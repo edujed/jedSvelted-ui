@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FieldHint from '../info/FieldHint.svelte';
+	import type { NumericFieldProps } from './formsTypes';
 
 	let {
 		label = '',
@@ -12,18 +13,7 @@
 		step = 1,
 		id,
 		colSpan = 4
-	} = $props<{
-		label?: string;
-		hint?: string;
-		hintTitle?: string;
-		hintImpact?: string;
-		value?: number;
-		min?: number;
-		max?: number;
-		step?: number;
-		id?: string;
-		colSpan?: number;
-	}>();
+	}: NumericFieldProps = $props();
 
 	const generatedId = $derived(id ?? `numeric-${Math.random().toString(36).slice(2, 9)}`);
 	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);

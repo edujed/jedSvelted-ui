@@ -1,15 +1,9 @@
 <script lang="ts">
 	import Topbar from './Topbar.svelte';
-	import type { HashRouter } from '../router';
 	import { localeStore } from '../i18n';
+	import type { NavbarProps } from './navTypes';
 
-	let {
-		router,
-		onMenuClick = () => {}
-	}: {
-		router?: HashRouter;
-		onMenuClick?: () => void;
-	} = $props();
+	let { router, onMenuClick = () => {} }: NavbarProps = $props();
 
 	// Dynamic title — derived from the router when available.
 	// Reads rawTitle (which may be a getter) so it re-resolves on locale change.

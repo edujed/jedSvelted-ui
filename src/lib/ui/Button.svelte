@@ -1,34 +1,6 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
-
-	type IconName =
-		| 'eye'
-		| 'file'
-		| 'folder'
-		| 'folder-open'
-		| 'edit'
-		| 'trash'
-		| 'user'
-		| 'more'
-		| 'chevron-right'
-		| 'check'
-		| 'x'
-		| 'wallet'
-		| 'bank'
-		| 'clock'
-		| 'menu'
-		| 'download'
-		| 'sun'
-		| 'moon'
-		| 'sort'
-		| 'plus'
-		| 'chevron-down'
-		| 'circle'
-		| 'filter'
-		| 'search'
-		| 'settings'
-		| 'user-alt';
+	import type { ButtonProps } from './uiTypes';
 
 	let {
 		variant = 'primary',
@@ -40,17 +12,7 @@
 		class: className = '',
 		children,
 		...restProps
-	}: {
-		variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'ghost' | 'search' | 'clear';
-		size?: 'sm' | 'md' | 'lg';
-		icon?: IconName;
-		iconPosition?: 'left' | 'right';
-		iconSize?: number;
-		disabled?: boolean;
-		class?: string;
-		children?: Snippet;
-		[key: string]: unknown;
-	} = $props();
+	}: ButtonProps = $props();
 </script>
 
 <button class="btn btn-{variant} btn-{size} {className}" {disabled} {...restProps}>

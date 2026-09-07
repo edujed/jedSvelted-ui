@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FieldHint from '../info/FieldHint.svelte';
+	import type { EditFieldProps } from './formsTypes';
 
 	let {
 		label = '',
@@ -11,17 +12,7 @@
 		value = $bindable(''),
 		id,
 		colSpan = 4
-	} = $props<{
-		label?: string;
-		hint?: string;
-		hintTitle?: string;
-		hintImpact?: string;
-		type?: string;
-		placeholder?: string;
-		value?: string;
-		id?: string;
-		colSpan?: number;
-	}>();
+	}: EditFieldProps = $props();
 
 	const generatedId = $derived(id ?? `field-${Math.random().toString(36).slice(2, 9)}`);
 	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);

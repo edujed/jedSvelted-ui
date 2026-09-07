@@ -1,4 +1,4 @@
-import type { Route, RouteHandler, RouteMetadata, RouteState } from './types';
+import type { RegisteredRouteItem, Route, RouteHandler, RouteMetadata, RouteState } from './types';
 
 export class HashRouter {
 	private routes: Route[] = [];
@@ -178,19 +178,14 @@ export class HashRouter {
 	 * Each item includes the clean pattern, title, and icon if available.
 	 * Titles may be getters (for locale reactivity) — consumers should resolve them.
 	 */
-	public get registeredRoutes(): ReadonlyArray<{
-		pattern: string;
-		title?: string | (() => string);
-		moduleName?: string;
-		icon?: string;
-	}> {
+	public get registeredRoutes(): ReadonlyArray<RegisteredRouteItem> {
 		return this.routes
-			.filter((r) => !(r as { showInMenu?: boolean })?.showInMenu === false)
+			.filter((r) => r.showInMenu !== false)
 			.map((r) => ({
 				pattern: r.pattern,
 				title: r.title,
 				moduleName: r.moduleName,
-				icon: (r as { icon?: string }).icon
+				icon: r.icon
 			}));
 	}
 

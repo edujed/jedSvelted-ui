@@ -1,8 +1,10 @@
+import type { IconName } from '../icons';
+
 /** Type definition for a table action button. */
 export interface TableAction<T extends Record<string, unknown> = Record<string, unknown>> {
 	title: string;
 	hint?: string;
-	icon?: string;
+	icon?: IconName;
 	onClick?: (row: T) => void;
 }
 

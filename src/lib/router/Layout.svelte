@@ -2,15 +2,9 @@
 	import Navbar from '../nav/Navbar.svelte';
 	import Sidenav from '../nav/Sidenav.svelte';
 	import { HashRouter } from './HashRouter';
-	import type { Snippet } from 'svelte';
+	import type { LayoutProps } from './routerTypes';
 
-	let {
-		children,
-		router = new HashRouter()
-	}: {
-		children?: Snippet;
-		router?: HashRouter;
-	} = $props();
+	let { children, router = new HashRouter() }: LayoutProps = $props();
 
 	let sidenavOpen = $state(false);
 

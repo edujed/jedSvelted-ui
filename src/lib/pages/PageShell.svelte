@@ -1,8 +1,8 @@
 <script lang="ts">
 	import SearchPanel from '$lib/container/SearchPanel.svelte';
-	import type { Snippet } from 'svelte';
 	import { PageState } from './PageState';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { PageShellProps } from './pagesTypes';
 
 	let {
 		title = '',
@@ -10,16 +10,9 @@
 		onClear,
 		filter,
 		content,
-		detailContent
-	}: {
-		title?: string;
-		onSearch?: () => void;
-		onClear?: () => void;
-		/** Called by child when it wants to open detail panel automatically (e.g., after loading a single row). */
-		filter?: Snippet<[PageState]> | undefined;
-		content?: Snippet<[PageState]> | undefined;
-		detailContent?: Snippet<[PageState]> | undefined;
-	} = $props();
+		detailContent,
+		filterOpen = $bindable(true)
+	}: PageShellProps = $props();
 
 	const instance = new PageState();
 
@@ -27,17 +20,20 @@
 	let _loading = $state(false);
 	let _error = $state('');
 	let _showDetail = $state(false);
+	let _detailKey = $state(0);
 
 	$effect(() => {
 		const unsubscribe = instance.subscribe(() => {
 			_loading = instance.loading;
 			_error = instance.error;
 			_showDetail = instance.showDetail;
+			_detailKey = instance.detailKey;
 		});
 		// Initial sync
 		_loading = instance.loading;
 		_error = instance.error;
 		_showDetail = instance.showDetail;
+		_detailKey = instance.detailKey;
 		return unsubscribe;
 	});
 
@@ -56,7 +52,7 @@
 
 <div class="page-shell">
 	{#if filter}
-		<SearchPanel {title} {onSearch} {onClear}>
+		<SearchPanel {title} {onSearch} {onClear} bind:isOpen={filterOpen}>
 			{@render filter(instance)}
 		</SearchPanel>
 	{/if}
@@ -75,9 +71,12 @@
 				<p class="empty-state">{LOCALES[$localeStore].empty}</p>
 			{/if}
 
-			<!-- Side panel for details when selected -->
+			<!-- Side panel for details when selected — keyed by detailKey so the content
+				remounts fresh on every show/edit/delete (e.g.: deep-link /users/3 → /users/5). -->
 			{#if renderDetail && detailContent}
-				{@render detailContent(instance)}
+				{#key _detailKey}
+					{@render detailContent(instance)}
+				{/key}
 			{/if}
 		{/if}
 	</main>

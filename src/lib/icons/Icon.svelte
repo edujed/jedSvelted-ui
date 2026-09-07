@@ -25,8 +25,9 @@
 	import SearchIcon from './SearchIcon.svelte';
 	import SettingsIcon from './SettingsIcon.svelte';
 	import UserIcon from './UserIcon.svelte';
+	import type { IconName } from './iconsTypes';
 
-	/** Icon registry — add new icons here */
+	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
 	const ICON_MAP = {
 		eye: IconEye,
 		file: IconFile,
@@ -61,13 +62,13 @@
 		size = 16,
 		class: className = ''
 	}: {
-		name?: string;
+		name?: IconName;
 		size?: number;
 		class?: string;
 	} = $props();
 
 	// Selects the icon component based on the name
-	const IconComponent = $derived(ICON_MAP[name as keyof typeof ICON_MAP] ?? IconEye);
+	const IconComponent = $derived(ICON_MAP[name] ?? IconEye);
 </script>
 
 <IconComponent {size} class={className} />

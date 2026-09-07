@@ -1,5 +1,5 @@
 /** Simple state holder for page-level UI behavior (detail panel, loading, errors). */
-export type DetailAction = 'detail' | 'edit' | 'delete';
+import type { DetailAction } from './pagesTypes';
 
 type Listener = () => void;
 
@@ -9,6 +9,7 @@ export class PageState {
 	private _showDetail = false;
 	private _selectedItem: Record<string, unknown> | undefined;
 	private _detailAction: DetailAction = 'detail';
+	private _detailKey = 0;
 	private listeners = new Set<Listener>();
 
 	get loading() {
@@ -25,6 +26,10 @@ export class PageState {
 	}
 	get detailAction() {
 		return this._detailAction;
+	}
+	/** Increments on every show/edit/deleteRow — used as a key to force remount of the detail content. */
+	get detailKey() {
+		return this._detailKey;
 	}
 
 	subscribe(listener: Listener): () => void {
@@ -51,6 +56,7 @@ export class PageState {
 		this._selectedItem = row;
 		this._detailAction = action;
 		this._showDetail = true;
+		this._detailKey++;
 		this.notify();
 	}
 

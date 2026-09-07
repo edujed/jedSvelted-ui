@@ -45,7 +45,7 @@
 			</Popover.Trigger>
 			<Popover.Content class="popover" side="top" align="center" sideOffset={6}>
 				{#if hintTitle || label}
-					<div class="hint-title">{hintTitle|| label}</div>
+					<div class="hint-title">{hintTitle || label}</div>
 				{/if}
 				{#if hint}
 					<p class="hint-text">{hint}</p>

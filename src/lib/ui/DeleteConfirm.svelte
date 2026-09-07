@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import Button from './Button.svelte';
 	import { IconTrash } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { DeleteConfirmProps } from './uiTypes';
 
 	let {
 		message = 'Are you sure you want to delete this record?',
@@ -11,20 +11,7 @@
 		onConfirm,
 		onCancel,
 		children
-	}: {
-		/** Main confirmation message. Defaults to the localized `deleteMessage`. */
-		message?: string;
-		/** Secondary warning line (rendered in the error color). Defaults to the localized `deleteWarning`. */
-		warning?: string;
-		/** Heading. Defaults to the localized `confirmDeletion`. */
-		title?: string;
-		/** Called when the user confirms the deletion. */
-		onConfirm?: () => void;
-		/** Called when the user cancels. */
-		onCancel?: () => void;
-		/** Optional content rendered above the message (e.g., the record being deleted). */
-		children?: Snippet;
-	} = $props();
+	}: DeleteConfirmProps = $props();
 
 	const resolvedTitle = $derived(title ?? LOCALES[$localeStore].confirmDeletion);
 	const resolvedMessage = $derived(message ?? LOCALES[$localeStore].deleteMessage);

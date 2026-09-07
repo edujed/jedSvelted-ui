@@ -1,34 +1,7 @@
 <script lang="ts">
 	import Button from '../ui/Button.svelte';
 	import { LOCALES, localeStore } from '../i18n';
-
-	type IconName =
-		| 'eye'
-		| 'file'
-		| 'folder'
-		| 'folder-open'
-		| 'edit'
-		| 'trash'
-		| 'user'
-		| 'more'
-		| 'chevron-right'
-		| 'check'
-		| 'x'
-		| 'wallet'
-		| 'bank'
-		| 'clock'
-		| 'menu'
-		| 'download'
-		| 'sun'
-		| 'moon'
-		| 'sort'
-		| 'plus'
-		| 'chevron-down'
-		| 'circle'
-		| 'filter'
-		| 'search'
-		| 'settings'
-		| 'user-alt';
+	import type { FormActionsProps } from './formsTypes';
 
 	let {
 		onSave,
@@ -38,15 +11,7 @@
 		showCancel = true,
 		saveIcon = 'check',
 		cancelIcon = 'x'
-	}: {
-		onSave?: () => void;
-		onCancel?: () => void;
-		saveLabel?: string;
-		cancelLabel?: string;
-		showCancel?: boolean;
-		saveIcon?: IconName;
-		cancelIcon?: IconName;
-	} = $props();
+	}: FormActionsProps = $props();
 
 	const resolvedSaveLabel = $derived(saveLabel ?? LOCALES[$localeStore].save);
 	const resolvedCancelLabel = $derived(cancelLabel ?? LOCALES[$localeStore].cancel);

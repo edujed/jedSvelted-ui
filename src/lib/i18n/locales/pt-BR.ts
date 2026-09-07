@@ -62,6 +62,9 @@ const ptBR: Messages = {
 	itemUpdated: '{item} "{value}" atualizado com sucesso',
 	itemCreated: '{item} "{value}" criado com sucesso',
 
+	// Deep-link errors
+	recordNotFound: 'Registro não encontrado',
+
 	// Chat
 	chat: 'Chat',
 	user: 'Usuário',
@@ -94,7 +97,8 @@ const ptBR: Messages = {
 	modelConfig: '⚙️ Configuração do Modelo',
 	personaProfile: '💬 Persona & Profile (Customizado)',
 	personaLabel: 'Persona & Profile',
-	personaPlaceholder: 'Descreva a persona, perfil, comportamento desejado do assistente...\n\nExemplo: Você é um assistente prestativo e amigável. Sempre responda em português brasileiro. Seja conciso e direto.',
+	personaPlaceholder:
+		'Descreva a persona, perfil, comportamento desejado do assistente...\n\nExemplo: Você é um assistente prestativo e amigável. Sempre responda em português brasileiro. Seja conciso e direto.',
 	savePersona: '💾 Salvar Persona',
 	personaHint: '💡 Este texto será combinado com as instruções das ferramentas',
 	basicParams: '🎲 Parâmetros Básicos',
@@ -129,48 +133,89 @@ const ptBR: Messages = {
 	fileContentError: 'Erro ao carregar conteúdo do arquivo: {error}',
 	configLoadError: 'Erro ao carregar config: {error}',
 	errorPrefix: '⚠️ **Erro:** {error}',
+	errorWithId: '{error} (id: {id})',
 
 	// Config do modelo — descrições dos parâmetros (tooltips)
-	descTemp: 'Controla a aleatoriedade das respostas. Valores mais altos (ex: 0.8) tornam a saída mais criativa e diversificada, enquanto valores mais baixos (ex: 0.3) tornam mais focada e determinística.',
-	impactTemp: '💡 Baixo: respostas mais consistentes. Alto: mais criatividade, mas pode perder coerência.',
-	descTopK: 'Limita o número de tokens com maior probabilidade de serem selecionados. O modelo considera apenas os K tokens mais prováveis em cada passo.',
-	impactTopK: '💡 Baixo (ex: 10): mais focado e previsível. Alto (ex: 100): mais variedade nas escolhas.',
-	descTopP: 'Seleciona tokens até acumular P probabilidade cumulativa. É uma alternativa suave ao Top K, mantendo equilíbrio entre qualidade e diversidade.',
-	impactTopP: '💡 Baixo (0.5): muito conservador. Alto (0.95): permite tokens menos prováveis, mais diversidade.',
-	descMinP: 'Probabilidade mínima relativa para seleção de tokens. Baseada na probabilidade do token mais provável, filtra tokens muito improváveis.',
-	impactMinP: '💡 Baixo (0.01): permite mais tokens. Alto (0.5): apenas tokens muito prováveis são considerados.',
-	descTypicalP: 'Amostragem tipica que mantém tokens com base na entropia local. Penaliza tokens muito improváveis e muito prováveis, mantendo o meio termo.',
-	impactTypicalP: '💡 Baixo (0.1): comportamento similar ao Top P. Alto (1.0): desativado, comportamento padrão.',
-	descRepeatLastN: 'Número de tokens recentes considerados para penalidade de repetição. O modelo analisa os últimos N tokens para evitar repetições.',
-	impactRepeatLastN: '💡 Baixo (16): apenas repetições recentes. Alto (128): considera contexto mais longo para evitar repetições.',
-	descRepeatPenalty: 'Multiplicador de penalidade para tokens que se repetem. Valores > 1.0 reduzem a probabilidade de repetição.',
-	impactRepeatPenalty: '💡 1.0: sem penalidade. 1.5: reduz repetições moderadamente. 2.0+: evita repetições agressivamente.',
-	descFrequencyPenalty: 'Penalidade baseada na frequência do token na resposta. Tokens usados frequentemente são menos prováveis de serem selecionados novamente.',
-	impactFrequencyPenalty: '💡 0.0: sem penalidade. 0.5: reduz uso excessivo de palavras. 1.0+: encoraja vocabulário diverso.',
-	descPresencePenalty: 'Penalidade para novos tokens vs tokens já presentes. Incentiva o modelo a falar sobre novos tópicos em vez de repetir os mesmos.',
-	impactPresencePenalty: '💡 0.0: sem penalidade. 0.5: incentiva novos tópicos. 1.0+: forte incentivo para diversidade temática.',
-	descDryMultiplier: 'Multiplicador de força do algoritmo DRY (Do Not Repeat). Controla quão agressivamente o sistema evita repetições.',
-	impactDryMultiplier: '💡 0.0: DRY desativado. 1.2-1.5: prevenção moderada de repetições. >1.5: prevenção forte.',
-	descDryBase: 'Parâmetro base do algoritmo DRY. Define o limiar de penalidade para repetições baseadas em padrões de n-grams.',
-	impactDryBase: '💡 0.8: limiar baixo, mais tokens penalizados. 1.75: padrão. 2.5+: apenas repetições muito óbvias.',
-	descDryAllowedLength: 'Comprimento mínimo de tokens antes de começar a penalizar repetições. Permite sequências curtas antes de aplicar DRY.',
-	impactDryAllowedLength: '💡 0: penaliza imediatamente. 2: permite 2 tokens antes de penalizar. 5+: contexto mais longo antes.',
-	descDryPenaltyLastN: 'Número de tokens para considerar ao aplicar penalidade DRY. Similar ao Repeat Last N, mas específico para o algoritmo DRY.',
-	impactDryPenaltyLastN: '💡 32: contexto curto. 64: padrão. 128+: contexto longo, detecta padrões complexos.',
-	descXtcProbability: 'Probabilidade de ativar XTC (eXclusion Tree Sampling). Remove tokens com probabilidade muito baixa após alguns passos.',
-	impactXtcProbability: '💡 0.0: XTC desativado. 0.1-0.3: ativa ocasionalmente. >0.5: ativa frequentemente, mais determinístico.',
-	descXtcThreshold: 'Limiar de probabilidade para remoção de tokens pelo XTC. Tokens com probabilidade abaixo deste limiar são removidos.',
-	impactXtcThreshold: '💡 0.1: limiar baixo, poucos tokens removidos. 0.5: limiar alto, mais tokens removidos.',
-	descMirostat: 'Modo de controle adaptativo de perplexidade. O sistema ajusta automaticamente a temperatura durante a geração.',
-	impactMirostat: '💡 0: desativado. 1: Mirostat v1 (mais simples). 2: Mirostat v2 (mais preciso, recomendado).',
-	descMirostatLr: 'Taxa de aprendizado do algoritmo Mirostat. Controla quão rapidamente o sistema ajusta a temperatura.',
-	impactMirostatLr: '💡 0.01: ajustes suaves e lentos. 0.1: padrão, equilíbrio. 0.5: ajustes rápidos e agressivos.',
-	descMirostatEnt: 'Entropia alvo que o Mirostat tenta alcançar. Controla o nível de perplexidade desejado na saída.',
-	impactMirostatEnt: '💡 1.0: muito focado, menos variável. 5.0: padrão, bom equilíbrio. 10.0+: muito diversificado.',
-	descAdaptiveTarget: 'Alvo adaptativo para ajuste dinâmico de parâmetros. Controla o comportamento de ajuste automático do modelo.',
-	impactAdaptiveTarget: '💡 -1.0: desativado (padrão). Valores positivos: ativa ajuste adaptativo com diferentes comportamentos.',
-	descAdaptiveDecay: 'Fator de decaimento para ajuste adaptativo. Controla como a influência dos ajustes diminui ao longo do tempo.',
-	impactAdaptiveDecay: '💡 0.5: decaimento rápido. 0.9: decaimento lento, mantém influência. 0.99: quase sem decaimento.'
+	descTemp:
+		'Controla a aleatoriedade das respostas. Valores mais altos (ex: 0.8) tornam a saída mais criativa e diversificada, enquanto valores mais baixos (ex: 0.3) tornam mais focada e determinística.',
+	impactTemp:
+		'💡 Baixo: respostas mais consistentes. Alto: mais criatividade, mas pode perder coerência.',
+	descTopK:
+		'Limita o número de tokens com maior probabilidade de serem selecionados. O modelo considera apenas os K tokens mais prováveis em cada passo.',
+	impactTopK:
+		'💡 Baixo (ex: 10): mais focado e previsível. Alto (ex: 100): mais variedade nas escolhas.',
+	descTopP:
+		'Seleciona tokens até acumular P probabilidade cumulativa. É uma alternativa suave ao Top K, mantendo equilíbrio entre qualidade e diversidade.',
+	impactTopP:
+		'💡 Baixo (0.5): muito conservador. Alto (0.95): permite tokens menos prováveis, mais diversidade.',
+	descMinP:
+		'Probabilidade mínima relativa para seleção de tokens. Baseada na probabilidade do token mais provável, filtra tokens muito improváveis.',
+	impactMinP:
+		'💡 Baixo (0.01): permite mais tokens. Alto (0.5): apenas tokens muito prováveis são considerados.',
+	descTypicalP:
+		'Amostragem tipica que mantém tokens com base na entropia local. Penaliza tokens muito improváveis e muito prováveis, mantendo o meio termo.',
+	impactTypicalP:
+		'💡 Baixo (0.1): comportamento similar ao Top P. Alto (1.0): desativado, comportamento padrão.',
+	descRepeatLastN:
+		'Número de tokens recentes considerados para penalidade de repetição. O modelo analisa os últimos N tokens para evitar repetições.',
+	impactRepeatLastN:
+		'💡 Baixo (16): apenas repetições recentes. Alto (128): considera contexto mais longo para evitar repetições.',
+	descRepeatPenalty:
+		'Multiplicador de penalidade para tokens que se repetem. Valores > 1.0 reduzem a probabilidade de repetição.',
+	impactRepeatPenalty:
+		'💡 1.0: sem penalidade. 1.5: reduz repetições moderadamente. 2.0+: evita repetições agressivamente.',
+	descFrequencyPenalty:
+		'Penalidade baseada na frequência do token na resposta. Tokens usados frequentemente são menos prováveis de serem selecionados novamente.',
+	impactFrequencyPenalty:
+		'💡 0.0: sem penalidade. 0.5: reduz uso excessivo de palavras. 1.0+: encoraja vocabulário diverso.',
+	descPresencePenalty:
+		'Penalidade para novos tokens vs tokens já presentes. Incentiva o modelo a falar sobre novos tópicos em vez de repetir os mesmos.',
+	impactPresencePenalty:
+		'💡 0.0: sem penalidade. 0.5: incentiva novos tópicos. 1.0+: forte incentivo para diversidade temática.',
+	descDryMultiplier:
+		'Multiplicador de força do algoritmo DRY (Do Not Repeat). Controla quão agressivamente o sistema evita repetições.',
+	impactDryMultiplier:
+		'💡 0.0: DRY desativado. 1.2-1.5: prevenção moderada de repetições. >1.5: prevenção forte.',
+	descDryBase:
+		'Parâmetro base do algoritmo DRY. Define o limiar de penalidade para repetições baseadas em padrões de n-grams.',
+	impactDryBase:
+		'💡 0.8: limiar baixo, mais tokens penalizados. 1.75: padrão. 2.5+: apenas repetições muito óbvias.',
+	descDryAllowedLength:
+		'Comprimento mínimo de tokens antes de começar a penalizar repetições. Permite sequências curtas antes de aplicar DRY.',
+	impactDryAllowedLength:
+		'💡 0: penaliza imediatamente. 2: permite 2 tokens antes de penalizar. 5+: contexto mais longo antes.',
+	descDryPenaltyLastN:
+		'Número de tokens para considerar ao aplicar penalidade DRY. Similar ao Repeat Last N, mas específico para o algoritmo DRY.',
+	impactDryPenaltyLastN:
+		'💡 32: contexto curto. 64: padrão. 128+: contexto longo, detecta padrões complexos.',
+	descXtcProbability:
+		'Probabilidade de ativar XTC (eXclusion Tree Sampling). Remove tokens com probabilidade muito baixa após alguns passos.',
+	impactXtcProbability:
+		'💡 0.0: XTC desativado. 0.1-0.3: ativa ocasionalmente. >0.5: ativa frequentemente, mais determinístico.',
+	descXtcThreshold:
+		'Limiar de probabilidade para remoção de tokens pelo XTC. Tokens com probabilidade abaixo deste limiar são removidos.',
+	impactXtcThreshold:
+		'💡 0.1: limiar baixo, poucos tokens removidos. 0.5: limiar alto, mais tokens removidos.',
+	descMirostat:
+		'Modo de controle adaptativo de perplexidade. O sistema ajusta automaticamente a temperatura durante a geração.',
+	impactMirostat:
+		'💡 0: desativado. 1: Mirostat v1 (mais simples). 2: Mirostat v2 (mais preciso, recomendado).',
+	descMirostatLr:
+		'Taxa de aprendizado do algoritmo Mirostat. Controla quão rapidamente o sistema ajusta a temperatura.',
+	impactMirostatLr:
+		'💡 0.01: ajustes suaves e lentos. 0.1: padrão, equilíbrio. 0.5: ajustes rápidos e agressivos.',
+	descMirostatEnt:
+		'Entropia alvo que o Mirostat tenta alcançar. Controla o nível de perplexidade desejado na saída.',
+	impactMirostatEnt:
+		'💡 1.0: muito focado, menos variável. 5.0: padrão, bom equilíbrio. 10.0+: muito diversificado.',
+	descAdaptiveTarget:
+		'Alvo adaptativo para ajuste dinâmico de parâmetros. Controla o comportamento de ajuste automático do modelo.',
+	impactAdaptiveTarget:
+		'💡 -1.0: desativado (padrão). Valores positivos: ativa ajuste adaptativo com diferentes comportamentos.',
+	descAdaptiveDecay:
+		'Fator de decaimento para ajuste adaptativo. Controla como a influência dos ajustes diminui ao longo do tempo.',
+	impactAdaptiveDecay:
+		'💡 0.5: decaimento rápido. 0.9: decaimento lento, mantém influência. 0.99: quase sem decaimento.'
 };
 
 export default ptBR;

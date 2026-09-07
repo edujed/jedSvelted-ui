@@ -1,11 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-
-	export interface ButtonGroupOption {
-		value: string;
-		label: string;
-		disabled?: boolean;
-	}
+	import type { ButtonGroupOption, ButtonGroupProps } from './uiTypes';
 
 	let {
 		options = [],
@@ -14,14 +8,7 @@
 		class: className = '',
 		onchange,
 		children
-	}: {
-		options?: ButtonGroupOption[];
-		value?: string;
-		size?: 'sm' | 'md';
-		class?: string;
-		onchange?: (value: string) => void;
-		children?: Snippet;
-	} = $props();
+	}: ButtonGroupProps = $props();
 
 	function handleClick(opt: ButtonGroupOption) {
 		if (opt.disabled) return;

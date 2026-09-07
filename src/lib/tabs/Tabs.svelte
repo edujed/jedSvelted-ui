@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tabs } from 'bits-ui';
-	import type { Snippet } from 'svelte';
+	import type { TabsProps } from './tabsTypes';
 
 	let {
 		tabs = [],
@@ -8,22 +8,23 @@
 		showContent = true,
 		children,
 		tabContent
-	}: {
-		tabs?: Array<{ value: string; label: string }>;
-		activeTab?: string;
-		showContent?: boolean;
-		children?: Snippet;
-		tabContent?: Snippet<[string]>;
-	} = $props();
+	}: TabsProps = $props();
 
 	let internalActive = $state('');
-	let currentValue = $derived(activeTab ?? internalActive);
 
 	$effect(() => {
-		if (activeTab === undefined && tabs.length > 0 && !internalActive) {
-			internalActive = tabs[0].value;
+		// If activeTab is undefined or not in the tabs list, fall back to the first tab.
+		if (tabs.length > 0) {
+			const isValidTab = activeTab && tabs.some((t) => t.value === activeTab);
+			if (!isValidTab) {
+				internalActive = tabs[0].value;
+			}
 		}
 	});
+
+	let currentValue = $derived(
+		activeTab && tabs.some((t) => t.value === activeTab) ? activeTab : internalActive
+	);
 
 	function handleValueChange(newValue: string): void {
 		if (activeTab !== undefined) {
@@ -66,7 +67,6 @@
 		display: flex;
 		border-bottom: 2px solid var(--color-border);
 		background: var(--color-background);
-		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
 	}
 

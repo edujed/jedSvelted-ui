@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Toast } from './toast';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { ToastProps } from './infoTypes';
 
-	let { toast, onClose }: { toast: Toast; onClose?: (id: string) => void } = $props();
+	let { toast, onClose }: ToastProps = $props();
 
 	const icons: Record<string, string> = {
 		success: '✓',

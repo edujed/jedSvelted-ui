@@ -1,9 +1,7 @@
 <script lang="ts">
-	let {
-		items
-	}: {
-		items: Array<{ label: string; value: string | number | undefined | null }>;
-	} = $props();
+	import type { InfoGridProps } from './uiTypes';
+
+	let { items }: InfoGridProps = $props();
 </script>
 
 <div class="info-grid">

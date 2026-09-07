@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade, fly } from 'svelte/transition';
 	import Button from '../ui/Button.svelte';
-	import type { Snippet } from 'svelte';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { DetailPanelProps } from './containerTypes';
 
 	let {
 		show = $bindable(false),
@@ -10,16 +10,15 @@
 		onClose,
 		headerActions,
 		children
-	}: {
-		show?: boolean;
-		title?: string;
-		onClose?: () => void;
-		headerActions?: Snippet;
-		children?: Snippet;
-	} = $props();
+	}: DetailPanelProps = $props();
 </script>
 
-<div class="detail-overlay" class:active={show} in:fade={{ duration: 150 }} out:fade={{ duration: 150 }}>
+<div
+	class="detail-overlay"
+	class:active={show}
+	in:fade={{ duration: 150 }}
+	out:fade={{ duration: 150 }}
+>
 	{#if show}
 		<div
 			class="detail-panel"

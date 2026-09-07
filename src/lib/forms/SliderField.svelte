@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FieldHint from '../info/FieldHint.svelte';
+	import type { SliderFieldProps } from './formsTypes';
 
 	let {
 		label = '',
@@ -12,24 +13,9 @@
 		step = 0.01,
 		id,
 		colSpan = 4,
-		/** Number of decimal places to display (default: 2). */
 		decimals = 2,
-		/** Optional formatter. Receives the raw value, returns the display string. */
 		format
-	} = $props<{
-		label?: string;
-		hint?: string;
-		hintTitle?: string;
-		hintImpact?: string;
-		value?: number;
-		min?: number;
-		max?: number;
-		step?: number;
-		id?: string;
-		colSpan?: number;
-		decimals?: number;
-		format?: (value: number) => string;
-	}>();
+	}: SliderFieldProps = $props();
 
 	const generatedId = $derived(id ?? `slider-${Math.random().toString(36).slice(2, 9)}`);
 	const displayValue = $derived(format ? format(value) : value.toFixed(decimals));
@@ -52,15 +38,7 @@
 	{/if}
 
 	<div class="slider-wrapper">
-		<input
-			id={generatedId}
-			type="range"
-			{min}
-			{max}
-			{step}
-			class="slider-input"
-			bind:value
-		/>
+		<input id={generatedId} type="range" {min} {max} {step} class="slider-input" bind:value />
 		<span class="slider-value">{displayValue}</span>
 	</div>
 </div>
@@ -113,7 +91,9 @@
 		border: 2px solid var(--color-surface);
 		box-shadow: 0 1px 3px var(--color-shadow);
 		cursor: pointer;
-		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+		transition:
+			transform var(--transition-fast),
+			box-shadow var(--transition-fast);
 	}
 
 	.slider-input::-webkit-slider-thumb:hover {
@@ -134,7 +114,9 @@
 		border: 2px solid var(--color-surface);
 		box-shadow: 0 1px 3px var(--color-shadow);
 		cursor: pointer;
-		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+		transition:
+			transform var(--transition-fast),
+			box-shadow var(--transition-fast);
 	}
 
 	.slider-input::-moz-range-thumb:hover {

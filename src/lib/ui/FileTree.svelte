@@ -3,18 +3,7 @@
 	import IconFolder from '../icons/IconFolder.svelte';
 	import IconFolderOpen from '../icons/IconFolderOpen.svelte';
 	import IconFile from '../icons/IconFile.svelte';
-
-	/** A single node of the file tree. */
-	export interface FileNode {
-		/** Display name (file or folder). */
-		name: string;
-		/** Full path — used as the selection key and passed to callbacks. */
-		path: string;
-		/** Whether the node is a directory. */
-		is_dir: boolean;
-		/** Child nodes (directories only). */
-		children?: FileNode[];
-	}
+	import type { FileNode, FileTreeProps } from './uiTypes';
 
 	let {
 		node,
@@ -23,20 +12,7 @@
 		selectedFiles = [],
 		defaultExpanded = true,
 		class: className = ''
-	}: {
-		/** The tree node to render (and its children, recursively). */
-		node: FileNode;
-		/** Called when the user toggles a file's checkbox. */
-		toggleFile?: (path: string) => void;
-		/** Called when the user clicks a file. */
-		onViewFile?: (path: string, name: string) => void;
-		/** Paths of the currently selected files (drives the checkboxes). */
-		selectedFiles?: string[];
-		/** Whether folders start expanded. */
-		defaultExpanded?: boolean;
-		/** Extra classes for the root node. */
-		class?: string;
-	} = $props();
+	}: FileTreeProps = $props();
 
 	let expanded = $state(true);
 

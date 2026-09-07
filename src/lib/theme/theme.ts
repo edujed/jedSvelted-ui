@@ -23,7 +23,10 @@ export const THEMES = [
 	{ id: 'candy', label: 'Candy', icon: '🍬' }
 ] as const;
 
-export type ThemeId = (typeof THEMES)[number]['id'];
+/** A theme definition (id, display label, and icon). */
+export type Theme = (typeof THEMES)[number];
+
+export type ThemeId = Theme['id'];
 export type Mode = 'light' | 'dark';
 
 //** Default prefix used for localStorage keys (`s-theme`, `s-mode`). */

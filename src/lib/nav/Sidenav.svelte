@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { HashRouter, RouteState } from '../router';
-	import type { MenuItem } from './types';
+	import type { RouteState } from '../router';
+	import type { MenuItem, SidenavProps } from './navTypes';
 	import { IconX } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 
@@ -10,13 +10,7 @@
 		isOpen = false,
 		onOverlayClick = () => {},
 		router
-	}: {
-		title?: string;
-		logo?: string;
-		isOpen?: boolean;
-		onOverlayClick?: () => void;
-		router: HashRouter;
-	} = $props();
+	}: SidenavProps = $props();
 
 	let routeState: RouteState = $derived(router?.getState() ?? {});
 	let opened = $state(false);

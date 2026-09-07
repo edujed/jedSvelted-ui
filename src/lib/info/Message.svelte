@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import type { MessageProps } from './infoTypes';
 
 	let {
 		variant = 'info',
@@ -8,20 +8,7 @@
 		onDismiss,
 		children,
 		class: className = ''
-	}: {
-		/** Visual variant — controls text and border color */
-		variant?: 'info' | 'success' | 'warning' | 'error';
-		/** Optional bold title shown before the message content */
-		title?: string;
-		/** Show a close button */
-		dismissible?: boolean;
-		/** Called when the close button is clicked */
-		onDismiss?: () => void;
-		/** Message content */
-		children?: Snippet;
-		/** Additional CSS classes */
-		class?: string;
-	} = $props();
+	}: MessageProps = $props();
 
 	const icons: Record<string, string> = {
 		success: '✓',

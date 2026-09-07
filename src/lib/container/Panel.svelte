@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
 	import { ChevronDownIcon } from '../icons';
+	import type { PanelProps } from './containerTypes';
 
 	let {
 		title = '',
@@ -10,13 +10,7 @@
 		isOpen = $bindable(true),
 		children,
 		onToggle
-	}: {
-		title?: string;
-		iconName?: string;
-		isOpen?: boolean;
-		children?: Snippet;
-		onToggle?: () => void;
-	} = $props();
+	}: PanelProps = $props();
 </script>
 
 <div class="panel">

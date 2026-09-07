@@ -16,6 +16,22 @@ export interface RouteMetadata {
 
 export type RouteHandler = (params: Record<string, string>) => void;
 
+/**
+ * A route as exposed by `HashRouter.registeredRoutes` — the menu-relevant
+ * subset of a registered route. Titles may be getters (for locale
+ * reactivity) — consumers should resolve them before rendering.
+ */
+export interface RegisteredRouteItem {
+	/** Original route pattern (e.g.: "/users/:id") */
+	pattern: string;
+	/** Title displayed in the menu (may be a getter for locale reactivity). */
+	title?: string | (() => string);
+	/** Identifier of the corresponding module/page */
+	moduleName?: string;
+	/** Optional icon for rendering in the menu */
+	icon?: string;
+}
+
 /** Complete state of a route — useful for grouping everything together in the App */
 export interface RouteState {
 	currentPage: string;

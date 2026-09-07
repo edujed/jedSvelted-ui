@@ -1,27 +1,10 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
 	import ChevronDownIcon from '../icons/ChevronDownIcon.svelte';
 	import ChatMessage from './ChatMessage.svelte';
 	import { LOCALES, localeStore } from '../i18n';
-
-	export interface ChatMessageType {
-		role: 'user' | 'assistant' | 'system' | 'tool' | 'error';
-		content: string;
-		attachedFiles?: string[];
-		metrics?: {
-			prompt_tokens?: number;
-			completion_tokens?: number;
-			total_tokens?: number;
-			total_time_ms?: number;
-			token_speed?: number;
-		};
-		isStreaming?: boolean;
-		thoughtContent?: string;
-		textHtml?: string;
-		toolName?: string;
-	}
+	import type { ChatPanelProps } from './chatTypes';
 
 	let {
 		title = 'Chat',
@@ -34,28 +17,7 @@
 		onDelete,
 		children,
 		class: className = ''
-	}: {
-		/** Panel title. */
-		title?: string;
-		/** Icon name for the header. */
-		iconName?: string;
-		/** Whether the panel is open (collapsible). */
-		isOpen?: boolean;
-		/** Chat messages to render. */
-		messages?: ChatMessageType[];
-		/** Show loading indicator. */
-		loading?: boolean;
-		/** Custom content renderer. Receives the message, returns HTML string. */
-		renderContent?: (msg: ChatMessageType) => string;
-		/** Called when fork button is clicked. */
-		onFork?: (index: number) => void;
-		/** Called when delete button is clicked. */
-		onDelete?: (index: number) => void;
-		/** Custom input area (rendered below messages). */
-		children?: Snippet;
-		/** Extra classes. */
-		class?: string;
-	} = $props();
+	}: ChatPanelProps = $props();
 </script>
 
 <div class="chat-panel {className}">

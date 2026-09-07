@@ -1,10 +1,9 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import Table from '../table/Table.svelte';
 	import DetailPanel from './DetailPanel.svelte';
 	import DeleteConfirm from '../ui/DeleteConfirm.svelte';
-	import type { TableCol, TableAction } from '../table';
-	import type { ActionEvent } from '../handleDetailAction';
+	import type { TableAction } from '../table';
+	import type { CrudPanelProps, Row } from './containerTypes';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let {
@@ -16,31 +15,38 @@
 		data,
 		onAction,
 		renderForm,
-		renderView
-	}: {
-		title?: string;
-		csvFileName: string;
-		onClose?: () => void;
-		inline?: boolean;
-		columns: TableCol[];
-		data: Record<string, unknown>[];
-		/**
-		 * Single event contract: (action, item). Fired only on confirmed
-		 * mutations — 'create'/'update' when the form is saved, 'delete'
-		 * when the user confirms the deletion. Opening a panel does NOT
-		 * fire an event.
-		 */
-		onAction?: (action: ActionEvent, item: Record<string, unknown>) => void;
-		/** Form snippet. Receives a callback to close the panel after save/cancel. */
-		renderForm: Snippet<[onComplete: () => void]>;
-		renderView?: Snippet<[row: Record<string, unknown>]>;
-	} = $props();
+		renderView,
+		autoOpenId = $bindable(0),
+		onAutoOpenError
+	}: CrudPanelProps = $props();
 
 	// Panel visibility state
 	let showForm = $state(false);
 	let editId: number | null = $state(null);
-	let viewRowData = $state<Record<string, unknown> | null>(null);
-	let deleteRowData = $state<Record<string, unknown> | null>(null);
+	let viewRowData = $state<Row | null>(null);
+	let deleteRowData = $state<Row | null>(null);
+
+	// Tracks the last autoOpenId that was processed (found or not) so the
+	// not-found callback fires once per id, not on every data refresh.
+	let lastAutoOpenId = $state<number | null>(null);
+
+	// Auto-open the view panel when autoOpenId changes (deep-link).
+	$effect(() => {
+		if (autoOpenId && autoOpenId > 0) {
+			const row = data.find((r) => r.id === autoOpenId);
+			if (row) {
+				viewRowData = row;
+				showForm = false;
+				deleteRowData = null;
+			} else {
+				// Record not found — notify the parent (once per id).
+				if (lastAutoOpenId !== autoOpenId) {
+					lastAutoOpenId = autoOpenId;
+					onAutoOpenError?.(autoOpenId);
+				}
+			}
+		}
+	});
 
 	function handleAdd(): void {
 		showForm = true;
@@ -49,14 +55,14 @@
 		deleteRowData = null;
 	}
 
-	function handleEdit(row: Record<string, unknown>): void {
+	function handleEdit(row: Row): void {
 		showForm = true;
 		editId = row.id != null ? Number(row.id) : null;
 		viewRowData = null;
 		deleteRowData = null;
 	}
 
-	function handleDelete(row: Record<string, unknown>): void {
+	function handleDelete(row: Row): void {
 		deleteRowData = row;
 		viewRowData = null;
 		showForm = false;
@@ -73,7 +79,7 @@
 		deleteRowData = null;
 	}
 
-	function handleView(row: Record<string, unknown>): void {
+	function handleView(row: Row): void {
 		viewRowData = row;
 		showForm = false;
 		deleteRowData = null;

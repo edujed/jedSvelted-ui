@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import DetailPanel from '../container/DetailPanel.svelte';
 	import { LOCALES, localeStore } from '../i18n';
+	import type { DetailShellProps, DetailShellState } from './pagesTypes';
 
 	/**
 	 * DetailShell — Generic detail manager component (detail/edit/delete modes).
@@ -17,31 +17,13 @@
 	 * this component only manages the panel chrome (title + close).
 	 */
 
-	export interface DetailShellState<T extends Record<string, unknown> = Record<string, unknown>> {
-		mode: 'detail' | 'edit' | 'delete';
-		selectedItem: T | undefined;
-		title: string;
-		onCancel: () => void;
-	}
-
 	let {
 		item,
-		mode = $bindable('detail' as 'detail' | 'edit' | 'delete'),
+		mode = $bindable('detail' as const),
 		entityName = 'Record',
 		onClose,
 		children
-	}: {
-		/** Data item for display */
-		item?: Record<string, unknown>;
-		/** Current mode (detail/edit/delete) */
-		mode?: 'detail' | 'edit' | 'delete';
-		/** Entity name for titles (e.g., "Person", "Wallet") */
-		entityName?: string;
-		/** Callback when closing */
-		onClose?: () => void;
-		/** Custom content (detail/edit/delete sections) */
-		children?: Snippet<[DetailShellState, (section: 'detail' | 'edit' | 'delete') => boolean]>;
-	} = $props();
+	}: DetailShellProps = $props();
 
 	// Internal derived state from props — avoids redundant state+effect.
 	let _mode = $derived(mode ?? ('detail' as const));
@@ -85,7 +67,7 @@
 	};
 
 	// Helper to check current mode (used in snippet)
-	function isMode(check: 'detail' | 'edit' | 'delete'): boolean {
+	function isMode(check: DetailShellProps['mode']): boolean {
 		return _mode === check;
 	}
 </script>

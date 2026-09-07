@@ -2,21 +2,9 @@
 	import Icon from '../icons/Icon.svelte';
 	import Badge from '../ui/Badge.svelte';
 	import { LOCALES, localeStore } from '../i18n';
-	import type { ChatMessageType } from './ChatPanel.svelte';
+	import type { ChatMessageProps } from './chatTypes';
 
-	let {
-		msg,
-		renderContent,
-		onFork,
-		onDelete,
-		index
-	}: {
-		msg: ChatMessageType;
-		renderContent?: (msg: ChatMessageType) => string;
-		onFork?: (index: number) => void;
-		onDelete?: (index: number) => void;
-		index: number;
-	} = $props();
+	let { msg, renderContent, onFork, onDelete, index }: ChatMessageProps = $props();
 
 	// Derived para garantir reatividade
 	let contentHtml = $derived.by(() => {
