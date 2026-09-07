@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Popover } from 'bits-ui';
+	import type { FieldHintProps } from '../forms/formsTypes';
 
 	let {
 		hint = '',
@@ -7,16 +8,7 @@
 		hintImpact = '',
 		label = '',
 		labelFor = ''
-	} = $props<{
-		/** Short hint text (shown in the popover). */
-		hint?: string;
-		/** Optional title for the hint popover (bold, primary color). */
-		hintTitle?: string;
-		/** Optional impact/tip text (shown in a highlighted box). */
-		hintImpact?: string;
-		label?: string;
-		labelFor?: string;
-	}>();
+	}: FieldHintProps = $props();
 
 	/** Whether the hint is "rich" (has title or impact sections). */
 </script>

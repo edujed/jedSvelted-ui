@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DropdownMenu } from 'bits-ui';
 	import { THEMES, applyTheme, themeStore, type ThemeId } from './index';
-	import { ChevronDownIcon } from '../icons';
+	import { IconChevronDown } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let currentTheme = $derived($themeStore);
@@ -19,7 +19,7 @@
 		<DropdownMenu.Trigger class="theme-btn">
 			<span class="theme-icon">{themeInfo?.icon ?? '🔵'}</span>
 			<span class="theme-label">{themeInfo?.label ?? LOCALES[$localeStore].theme}</span>
-			<ChevronDownIcon size={14} class="chevron" />
+			<IconChevronDown size={14} class="chevron" />
 		</DropdownMenu.Trigger>
 
 		<DropdownMenu.Content class="theme-list">

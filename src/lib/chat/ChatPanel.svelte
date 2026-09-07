@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Icon from '../icons/Icon.svelte';
-	import ChevronDownIcon from '../icons/ChevronDownIcon.svelte';
+	import IconChevronDown from '../icons/IconChevronDown.svelte';
 	import ChatMessage from './ChatMessage.svelte';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { ChatPanelProps } from './chatTypes';
@@ -29,7 +29,7 @@
 	>
 		<Icon name={iconName} class="chat-panel-icon" />
 		<span class="chat-panel-title">{title}</span>
-		<ChevronDownIcon class="chat-panel-chevron" />
+		<IconChevronDown class="chat-panel-chevron" />
 	</button>
 
 	{#if isOpen}

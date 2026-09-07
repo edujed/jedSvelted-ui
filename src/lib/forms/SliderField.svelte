@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FieldHint from '../info/FieldHint.svelte';
+	import FormField from './FormField.svelte';
 	import type { SliderFieldProps } from './formsTypes';
 
 	let {
@@ -17,40 +17,19 @@
 		format
 	}: SliderFieldProps = $props();
 
-	const generatedId = $derived(id ?? `slider-${Math.random().toString(36).slice(2, 9)}`);
 	const displayValue = $derived(format ? format(value) : value.toFixed(decimals));
-	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);
 </script>
 
-<div
-	class="slider-field form-group"
-	class:grid-col-1={colSpan === 1}
-	class:grid-col-2={colSpan === 2}
-	class:grid-col-3={colSpan === 3}
-	class:grid-col-4={colSpan === 4}
->
-	{#if label || hasHint}
-		{#if hasHint}
-			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
-		{:else}
-			<label for={generatedId} class="field-label">{label}</label>
-		{/if}
-	{/if}
-
-	<div class="slider-wrapper">
-		<input id={generatedId} type="range" {min} {max} {step} class="slider-input" bind:value />
-		<span class="slider-value">{displayValue}</span>
-	</div>
-</div>
+<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan} class="slider-field">
+	{#snippet children(fieldId)}
+		<div class="slider-wrapper">
+			<input id={fieldId} type="range" {min} {max} {step} class="slider-input" bind:value />
+			<span class="slider-value">{displayValue}</span>
+		</div>
+	{/snippet}
+</FormField>
 
 <style>
-	.slider-field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-xs);
-		min-width: 0;
-	}
-
 	.slider-wrapper {
 		display: flex;
 		align-items: center;

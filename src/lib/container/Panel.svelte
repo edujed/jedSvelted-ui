@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Icon from '../icons/Icon.svelte';
-	import { ChevronDownIcon } from '../icons';
+	import { IconChevronDown } from '../icons';
 	import type { PanelProps } from './containerTypes';
 
 	let {
@@ -23,7 +23,7 @@
 	>
 		<Icon name={iconName} class="panel-icon" />
 		<span class="panel-title">{title}</span>
-		<ChevronDownIcon class="panel-chevron" />
+		<IconChevronDown class="panel-chevron" />
 	</button>
 
 	{#if isOpen}

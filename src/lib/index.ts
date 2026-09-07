@@ -28,7 +28,8 @@ export type {
 } from './container';
 
 // forms
-export { EditField, FormActions, NumericField, SelectField, SliderField } from './forms';
+export { EditField, FormActions, FormField, NumericField, SelectField, SliderField } from './forms';
+export type { FormFieldProps } from './forms';
 export type {
 	EditFieldProps,
 	FieldHintProps,
@@ -56,33 +57,35 @@ export type { Locale, MessageKey, Messages } from './i18n';
 
 // icons
 export {
-	ChevronDownIcon,
-	CircleIcon,
-	FilterIcon,
 	Icon,
 	IconBank,
+	IconBuilding,
 	IconCheck,
+	IconChevronDown,
 	IconChevronRight,
+	IconCircle,
 	IconClock,
 	IconDownload,
 	IconEdit,
 	IconEye,
 	IconFile,
+	IconFilter,
 	IconFolder,
 	IconFolderOpen,
 	IconMenu,
 	IconMoon,
 	IconMore,
 	IconPlus,
+	IconSearch,
+	IconSettings,
 	IconSort,
 	IconSun,
 	IconTrash,
+	IconTree,
 	IconUser,
+	IconUserAlt,
 	IconWallet,
-	IconX,
-	SearchIcon,
-	SettingsIcon,
-	UserIcon
+	IconX
 } from './icons';
 export type { IconName } from './icons';
 
@@ -127,8 +130,8 @@ export type {
 
 // table
 export { Table } from './table';
-export type { TableAction, TableCol, TableColBase, UseTableStateOptions } from './table';
-export { filterData, sortData } from './table';
+export type { SortDirection, TableAction, TableCol, TableColBase } from './table';
+export { buildCsv, filterData, sortData } from './table';
 
 // tabs
 export { Tabs } from './tabs';

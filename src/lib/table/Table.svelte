@@ -4,8 +4,8 @@
 	import Icon from '../icons/Icon.svelte';
 	import { IconSort } from '../icons';
 	import Button from '../ui/Button.svelte';
-	import { filterData, sortData } from './tableTypes';
-	import type { TableAction, TableCol } from './tableTypes';
+	import { buildCsv, filterData, sortData } from './tableUtils';
+	import type { SortDirection, TableAction, TableCol } from './tableTypes';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let {
@@ -34,7 +34,7 @@
 		/** Column key to sort by on initial render (e.g. 'name'). */
 		defaultSortKey?: string;
 		/** Initial sort direction when defaultSortKey is set. */
-		defaultSortDirection?: 'asc' | 'desc';
+		defaultSortDirection?: Exclude<SortDirection, 'none'>;
 		header?: Snippet;
 		footer?: Snippet;
 	} = $props();
@@ -45,11 +45,11 @@
 		if (!defaultSortKey) return -1;
 		return columns.findIndex((c) => c.key === defaultSortKey);
 	}
-	function getInitialSortDirection(): 'asc' | 'desc' | 'none' {
+	function getInitialSortDirection(): SortDirection {
 		return getInitialSortIndex() >= 0 ? defaultSortDirection : 'none';
 	}
 	let sortColumnIndex = $state(getInitialSortIndex());
-	let sortDirection = $state<'asc' | 'desc' | 'none'>(getInitialSortDirection());
+	let sortDirection = $state<SortDirection>(getInitialSortDirection());
 	let filterValues = $state<Record<number, string>>({});
 
 	/** Filtered data (reactive) */
@@ -79,31 +79,10 @@
 		filterValues = { ...filterValues, [colIndex]: value };
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function _clearFilters(): void {
-		filterValues = {};
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	function _clearSort(): void {
-		sortColumnIndex = -1;
-		sortDirection = 'none';
-	}
-
 	/** Exports data as a CSV file. */
 	function exportCSV(): void {
 		if (columns.length === 0 || filteredData.length === 0) return;
-		const exportCols = columns.filter((c) => c.exportable !== false);
-		const headers = exportCols.map((c) => `"${c.title}"`).join(';');
-		const rows = filteredData.map((row) =>
-			exportCols
-				.map((c) => {
-					const val = row[c.key as string] ?? '';
-					return `"${String(val).replace(/"/g, "'")}"`;
-				})
-				.join(';')
-		);
-		const csv = [headers, ...rows].join('\n');
+		const csv = buildCsv(columns, filteredData);
 		const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
@@ -111,10 +90,6 @@
 		link.download = csvFileName;
 		link.click();
 		URL.revokeObjectURL(url);
-	}
-
-	function handleAction(action: TableAction, row: Record<string, unknown>): void {
-		action.onClick?.(row);
 	}
 </script>
 
@@ -225,7 +200,7 @@
 												{#each actions as action (action.title)}
 													<button
 														class="action-item"
-														onclick={() => handleAction(action, row)}
+														onclick={() => action.onClick?.(row)}
 														title={action.hint}
 													>
 														{#if action.icon}

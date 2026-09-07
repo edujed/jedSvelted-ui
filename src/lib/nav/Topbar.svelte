@@ -2,7 +2,7 @@
 	import ThemeSelector from '../theme/ThemeSelector.svelte';
 	import LangSelector from '../i18n/LangSelector.svelte';
 	import { toggleMode as switchThemeMode, modeStore } from '../theme';
-	import { SearchIcon } from '../icons';
+	import { IconSearch } from '../icons';
 	import Button from '../ui/Button.svelte';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { TopbarProps } from './navTypes';
@@ -38,7 +38,7 @@
 
 		{#if showQuickSearch}
 			<div class="search-box">
-				<SearchIcon size={16} class="search-icon" />
+				<IconSearch size={16} class="search-icon" />
 				<input
 					class="search-input"
 					placeholder={LOCALES[$localeStore].quickSearch}

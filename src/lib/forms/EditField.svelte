@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FieldHint from '../info/FieldHint.svelte';
+	import FormField from './FormField.svelte';
 	import type { EditFieldProps } from './formsTypes';
 
 	let {
@@ -13,30 +13,15 @@
 		id,
 		colSpan = 4
 	}: EditFieldProps = $props();
-
-	const generatedId = $derived(id ?? `field-${Math.random().toString(36).slice(2, 9)}`);
-	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);
 </script>
 
-<div
-	class="form-group"
-	class:grid-col-1={colSpan === 1}
-	class:grid-col-2={colSpan === 2}
-	class:grid-col-3={colSpan === 3}
-	class:grid-col-4={colSpan === 4}
->
-	{#if label || hasHint}
-		{#if hasHint}
-			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
-		{:else}
-			<label for={generatedId} class="field-label">{label}</label>
-		{/if}
-	{/if}
-
-	<div class="field-wrapper">
-		<input id={generatedId} {type} {placeholder} class="field-input" bind:value />
-	</div>
-</div>
+<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan}>
+	{#snippet children(fieldId)}
+		<div class="field-wrapper">
+			<input id={fieldId} {type} {placeholder} class="field-input" bind:value />
+		</div>
+	{/snippet}
+</FormField>
 
 <style>
 	.field-wrapper {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DropdownMenu } from 'bits-ui';
 	import { localeStore, setLocale, LOCALE_OPTIONS, type Locale } from './index';
-	import { ChevronDownIcon } from '../icons';
+	import { IconChevronDown } from '../icons';
 
 	let currentLocale = $derived($localeStore);
 
@@ -17,7 +17,7 @@
 		<DropdownMenu.Trigger class="lang-btn">
 			<span class="lang-icon">{localeInfo?.icon ?? '🌐'}</span>
 			<span class="lang-label">{localeInfo?.label ?? 'Language'}</span>
-			<ChevronDownIcon size={14} class="chevron" />
+			<IconChevronDown size={14} class="chevron" />
 		</DropdownMenu.Trigger>
 
 		<DropdownMenu.Content class="lang-list">

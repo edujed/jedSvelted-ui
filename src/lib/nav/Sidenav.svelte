@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { RouteState } from '../router';
 	import type { MenuItem, SidenavProps } from './navTypes';
+	import { cleanPattern, isRouteActive } from './navUtils';
 	import { IconX } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 
@@ -42,42 +43,13 @@
 		onOverlayClick();
 	}
 
-	/**
-	 * Checks if a path matches a registered route,
-	 * considering parameters and wildcards.
-	 */
-	function isRouteActive(pattern: string, currentPath: string): boolean {
-		const cleanPattern = pattern.replace(/(\/:\w+\??)*$/g, ''); // removes params/wildcard from the end
-		const normalizedCurrent =
-			currentPath.endsWith('/') && currentPath !== '/' ? currentPath.slice(0, -1) : currentPath;
-		return (
-			normalizedCurrent.toLowerCase() === cleanPattern.toLowerCase() ||
-			normalizedCurrent.toLowerCase().startsWith(cleanPattern.toLowerCase() + '/')
-		);
-	}
-
-	/**
-	 * Cleans route patterns by removing segments with parameters (:id) and wildcards (*).
-	 * Example: "/users/:id/posts" → "/users"
-	 */
-	function cleanPattern(pattern: string): string {
-		return pattern
-			.replace(/(\/:\w+\??|\*)/g, '')
-			.replace(/\/+(?!$)/g, '/')
-			.slice(0, 1) === '/'
-			? pattern
-			: pattern.startsWith('/')
-				? pattern
-				: '/' + pattern;
-	}
-
 	const menuItems = $derived.by((): MenuItem[] => {
 		// Read $localeStore so this derived re-evaluates on locale change
 		// (route titles may be getters that resolve via the locale store).
 		void $localeStore;
 		if (!router?.registeredRoutes.length) return [];
 		return router.registeredRoutes.map((r): MenuItem => {
-			const resolvedTitle = typeof r.title === 'function' ? r.title() : (r.title ?? '');
+			const resolvedTitle = router.resolveTitle(r.title);
 			return {
 				pattern: r.pattern,
 				path: r.pattern === '/' ? '/' : cleanPattern(r.pattern),

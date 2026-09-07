@@ -26,6 +26,7 @@
  */
 
 import { writable, get } from 'svelte/store';
+import { buildKey, setPrefix } from '../storage';
 import en from './locales/en';
 import ptBR from './locales/pt-BR';
 
@@ -48,11 +49,6 @@ export const LOCALE_OPTIONS: Array<{ id: Locale; label: string; icon: string }> 
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
-/** Default prefix used for the localStorage key (`s-locale`). */
-const DEFAULT_PREFIX = 's-';
-
-let _prefix = DEFAULT_PREFIX;
-
 /** Reactive store for the current locale. */
 export const localeStore = writable<Locale>(DEFAULT_LOCALE);
 
@@ -61,13 +57,12 @@ export const localeStore = writable<Locale>(DEFAULT_LOCALE);
  * E.g.: `setI18nKeyPrefix('app2')` → uses `app2-locale`
  */
 export function setI18nKeyPrefix(prefix?: string): void {
-	_prefix = prefix ?? DEFAULT_PREFIX;
+	setPrefix(prefix);
 }
 
 /** Returns the current localStorage key name. Useful for internal tests. */
 export function getLocaleKey(): string {
-	const sep = _prefix.endsWith('-') ? '' : '-';
-	return `${_prefix}${sep}locale`;
+	return buildKey('locale');
 }
 
 function getStoredLocale(fallback: Locale): Locale {

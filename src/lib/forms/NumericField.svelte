@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FieldHint from '../info/FieldHint.svelte';
+	import FormField from './FormField.svelte';
 	import type { NumericFieldProps } from './formsTypes';
 
 	let {
@@ -14,45 +14,27 @@
 		id,
 		colSpan = 4
 	}: NumericFieldProps = $props();
-
-	const generatedId = $derived(id ?? `numeric-${Math.random().toString(36).slice(2, 9)}`);
-	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);
 </script>
 
-<div
-	class="numeric-field form-group"
-	class:grid-col-1={colSpan === 1}
-	class:grid-col-2={colSpan === 2}
-	class:grid-col-3={colSpan === 3}
-	class:grid-col-4={colSpan === 4}
->
-	{#if label || hasHint}
-		{#if hasHint}
-			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
-		{:else}
-			<label for={generatedId} class="field-label">{label}</label>
-		{/if}
-	{/if}
-
-	<div class="field-wrapper">
-		<input
-			id={generatedId}
-			type="number"
-			{min}
-			{max}
-			{step}
-			class="field-input numeric-input"
-			bind:value
-		/>
-	</div>
-</div>
+<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan} class="numeric-field">
+	{#snippet children(fieldId)}
+		<div class="field-wrapper">
+			<input
+				id={fieldId}
+				type="number"
+				{min}
+				{max}
+				{step}
+				class="field-input numeric-input"
+				bind:value
+			/>
+		</div>
+	{/snippet}
+</FormField>
 
 <style>
-	.numeric-field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-xs);
-		min-width: 0;
+	.field-wrapper {
+		position: relative;
 	}
 
 	.numeric-input {

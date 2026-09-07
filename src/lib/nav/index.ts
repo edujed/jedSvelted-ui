@@ -9,3 +9,4 @@ export type {
 	SidenavProps,
 	TopbarProps
 } from './navTypes';
+export { cleanPattern, isRouteActive } from './navUtils';

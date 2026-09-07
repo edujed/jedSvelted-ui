@@ -13,6 +13,7 @@
  */
 
 import { writable } from 'svelte/store';
+import { buildKey, setPrefix } from '../storage';
 
 export const THEMES = [
 	{ id: 'material-blue', label: 'Material Blue', icon: '🔵' },
@@ -29,28 +30,19 @@ export type Theme = (typeof THEMES)[number];
 export type ThemeId = Theme['id'];
 export type Mode = 'light' | 'dark';
 
-//** Default prefix used for localStorage keys (`s-theme`, `s-mode`). */
-const DEFAULT_PREFIX = 's-';
-
-let _prefix = DEFAULT_PREFIX;
-
 /** Sets the prefix used in localStorage keys.
  * Useful when a page has multiple instances of the lib.
  * E.g.: `setThemeKeyPrefix('app2')` → uses `app2-theme` / `app2-mode`
  */
 export function setThemeKeyPrefix(prefix?: string): void {
-	_prefix = prefix ?? DEFAULT_PREFIX;
+	setPrefix(prefix);
 }
 
 /** Returns object with current key names. Useful for internal tests. */
-export const getKeys = (): { THEME_KEY: string; MODE_KEY: string } => {
-	// Ensures consistent hyphen separation
-	const sep = _prefix.endsWith('-') ? '' : '-';
-	return {
-		THEME_KEY: `${_prefix}${sep}theme`,
-		MODE_KEY: `${_prefix}${sep}mode`
-	};
-};
+export const getKeys = (): { THEME_KEY: string; MODE_KEY: string } => ({
+	THEME_KEY: buildKey('theme'),
+	MODE_KEY: buildKey('mode')
+});
 
 /** Reactive store for current theme */
 export const themeStore = writable<ThemeId>('material-blue');

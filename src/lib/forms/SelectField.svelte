@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Select } from 'bits-ui';
-	import FieldHint from '../info/FieldHint.svelte';
-	import { ChevronDownIcon } from '../icons';
+	import FormField from './FormField.svelte';
+	import { IconChevronDown } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { SelectFieldProps, SelectOption } from './formsTypes';
 
@@ -18,9 +18,7 @@
 		onValueChange
 	}: SelectFieldProps = $props();
 
-	const generatedId = $derived(`select-${Date.now().toString(36)}`);
 	const resolvedPlaceholder = $derived(placeholder ?? LOCALES[$localeStore].selectPlaceholder);
-	const hasHint = $derived(!!hint || !!hintTitle || !!hintImpact);
 
 	$effect(() => {
 		if (onValueChange && value) {
@@ -29,51 +27,32 @@
 	});
 </script>
 
-<div
-	class="select-field form-group"
-	class:grid-col-1={colSpan === 1}
-	class:grid-col-2={colSpan === 2}
-	class:grid-col-3={colSpan === 3}
-	class:grid-col-4={colSpan === 4}
->
-	{#if label || hasHint}
-		{#if hasHint}
-			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
-		{:else}
-			<label for={generatedId} class="field-label">{label}</label>
-		{/if}
-	{/if}
+<FormField {label} {hint} {hintTitle} {hintImpact} {colSpan} class="select-field">
+	{#snippet children(fieldId)}
+		<Select.Root type="single" bind:value>
+			<div class="select-trigger-wrapper" id={fieldId}>
+				<Select.Trigger {disabled}>
+					<span class="select-value">
+						{options.find((o: SelectOption) => o.key === value)?.label ?? resolvedPlaceholder}
+					</span>
+					<IconChevronDown size={16} class="select-chevron" />
+				</Select.Trigger>
+			</div>
 
-	<Select.Root type="single" bind:value>
-		<div class="select-trigger-wrapper" id={generatedId}>
-			<Select.Trigger {disabled}>
-				<span class="select-value">
-					{options.find((o: SelectOption) => o.key === value)?.label ?? resolvedPlaceholder}
-				</span>
-				<ChevronDownIcon size={16} class="select-chevron" />
-			</Select.Trigger>
-		</div>
-
-		<Select.Content class="select-content">
-			<Select.Viewport class="select-viewport">
-				{#each options as option (option.key)}
-					<Select.Item class="select-item" value={option.key}>
-						{option.label}
-					</Select.Item>
-				{/each}
-			</Select.Viewport>
-		</Select.Content>
-	</Select.Root>
-</div>
+			<Select.Content class="select-content">
+				<Select.Viewport class="select-viewport">
+					{#each options as option (option.key)}
+						<Select.Item class="select-item" value={option.key}>
+							{option.label}
+						</Select.Item>
+					{/each}
+				</Select.Viewport>
+			</Select.Content>
+		</Select.Root>
+	{/snippet}
+</FormField>
 
 <style>
-	.select-field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-xs);
-		min-width: 0;
-	}
-
 	.select-trigger-wrapper {
 		width: 100%;
 		display: block;

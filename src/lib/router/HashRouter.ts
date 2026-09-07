@@ -79,23 +79,28 @@ export class HashRouter {
 		return path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
 	}
 
+	/** Finds the first registered route whose regex matches the given path. */
+	private matchRoute(path: string): { route: Route; match: RegExpMatchArray } | null {
+		for (const route of this.routes) {
+			const match = path.match(route.regex);
+			if (match) return { route, match };
+		}
+		return null;
+	}
+
 	/** Resolves the current path against registered routes. */
 	resolve(): Record<string, string> | null {
 		const path = this.getCurrentPath();
 		this.currentPath = path;
 
-		for (const route of this.routes) {
-			const match = path.match(route.regex);
-			if (match) {
-				const params: Record<string, string> = {};
-				route.keys.forEach((key, i) => {
-					params[key] = match[i + 1] ?? '';
-				});
-				return params;
-			}
-		}
+		const found = this.matchRoute(path);
+		if (!found) return null;
 
-		return null;
+		const params: Record<string, string> = {};
+		found.route.keys.forEach((key, i) => {
+			params[key] = found.match[i + 1] ?? '';
+		});
+		return params;
 	}
 
 	/** Registers a change listener for route changes. */
@@ -168,8 +173,7 @@ export class HashRouter {
 	 */
 	public getRouteByName(path?: string): Route | undefined {
 		const p = path ?? this.getCurrentPath();
-		for (const route of this.routes) if (route.regex.test(p)) return route;
-		return undefined;
+		return this.matchRoute(p)?.route;
 	}
 
 	/**
@@ -190,7 +194,7 @@ export class HashRouter {
 	}
 
 	/** Resolves a title that may be a getter (for locale reactivity). */
-	private resolveTitle(title?: string | (() => string)): string {
+	public resolveTitle(title?: string | (() => string)): string {
 		if (!title) return '';
 		return typeof title === 'function' ? title() : title;
 	}

@@ -19,12 +19,12 @@
 	import IconMoon from './IconMoon.svelte';
 	import IconSort from './IconSort.svelte';
 	import IconPlus from './IconPlus.svelte';
-	import ChevronDownIcon from './ChevronDownIcon.svelte';
-	import CircleIcon from './CircleIcon.svelte';
-	import FilterIcon from './FilterIcon.svelte';
-	import SearchIcon from './SearchIcon.svelte';
-	import SettingsIcon from './SettingsIcon.svelte';
-	import UserIcon from './UserIcon.svelte';
+	import IconChevronDown from './IconChevronDown.svelte';
+	import IconCircle from './IconCircle.svelte';
+	import IconFilter from './IconFilter.svelte';
+	import IconSearch from './IconSearch.svelte';
+	import IconSettings from './IconSettings.svelte';
+	import IconUserAlt from './IconUserAlt.svelte';
 	import IconTree from './IconTree.svelte';
 	import IconBuilding from './IconBuilding.svelte';
 	import type { IconName } from './iconsTypes';
@@ -51,12 +51,12 @@
 		moon: IconMoon,
 		sort: IconSort,
 		plus: IconPlus,
-		'chevron-down': ChevronDownIcon,
-		circle: CircleIcon,
-		filter: FilterIcon,
-		search: SearchIcon,
-		settings: SettingsIcon,
-		'user-alt': UserIcon,
+		'chevron-down': IconChevronDown,
+		circle: IconCircle,
+		filter: IconFilter,
+		search: IconSearch,
+		settings: IconSettings,
+		'user-alt': IconUserAlt,
 		tree: IconTree,
 		building: IconBuilding
 	} as const;
