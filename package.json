@@ -43,6 +43,10 @@
 			"types": "./dist/container/*.d.ts",
 			"svelte": "./dist/container/*.svelte"
 		},
+		"./format": {
+			"types": "./dist/format/index.d.ts",
+			"svelte": "./dist/format/index.js"
+		},
 		"./forms": {
 			"types": "./dist/forms/index.d.ts",
 			"svelte": "./dist/forms/index.js"

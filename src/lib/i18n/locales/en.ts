@@ -58,6 +58,8 @@ export default {
 
 	// Form fields
 	selectPlaceholder: 'Select...',
+	datePlaceholder: 'Select a date...',
+	dateInvalid: 'Invalid date',
 
 	// Toast messages (handleDetailAction)
 	itemDeleted: '{item} "{value}" deleted',

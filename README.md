@@ -47,8 +47,9 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 | `actions`   | CRUD action handlers (`createHandleDetail`)                                                       |
 | `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                              |
 | `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                              |
-| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `FormActions`)          |
-| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`)                            |
+| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `parseCurrency`)            |
+| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `FormActions`) |
+| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`) + currency definitions     |
 | `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                          |
 | `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                               |
 | `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                        |
@@ -57,7 +58,7 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 | `table`     | Interactive tables (`Table`)                                                                      |
 | `tabs`      | Tab system (`Tabs`)                                                                               |
 | `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                                   |
-| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`) |
+| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`, `Skeleton`) |
 
 ### Import styles
 
@@ -80,8 +81,8 @@ import { Table } from '@edujed/jedsvelted-ui/table/Table';
 Module barrels are recommended for readability and tree-shaking; the root
 import is a convenience for quick prototypes.
 
-> **Note:** `actions`, `i18n` and `router` only expose the barrel export —
-> use `import { ... } from '@edujed/jedsvelted-ui/<module>'` for those.
+> **Note:** `actions`, `format`, `i18n` and `router` only expose the barrel
+> export — use `import { ... } from '@edujed/jedsvelted-ui/<module>'` for those.
 
 ### Public type contracts
 
@@ -93,10 +94,12 @@ props and compose new components on top of the lib's primitives:
 import type { ButtonProps, BadgeProps, FileNode } from '@edujed/jedsvelted-ui/ui';
 import type { TableCol, TableAction } from '@edujed/jedsvelted-ui/table';
 import type { CrudPanelProps } from '@edujed/jedsvelted-ui/container';
-import type { EditFieldProps, SelectOption } from '@edujed/jedsvelted-ui/forms';
+import type { EditFieldProps, SelectOption, CurrencyFieldProps, DateFieldProps } from '@edujed/jedsvelted-ui/forms';
 import type { ChatMessageType, ChatPanelProps } from '@edujed/jedsvelted-ui/chat';
 import type { PageShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
 import type { IconName } from '@edujed/jedsvelted-ui/icons';
+import type { CurrencyCode, CurrencyDef } from '@edujed/jedsvelted-ui/i18n';
+import type { SkeletonProps, SkeletonVariant } from '@edujed/jedsvelted-ui/ui';
 ```
 
 Each module's types live in a dedicated file (`uiTypes`, `formsTypes`,
@@ -222,6 +225,8 @@ single `onAction` event on confirmed mutations only:
 		NumericField,
 		SelectField,
 		SliderField,
+		DateField,
+		CurrencyField,
 		FormActions
 	} from '@edujed/jedsvelted-ui/forms';
 </script>
@@ -237,8 +242,59 @@ single `onAction` event on confirmed mutations only:
 	]}
 />
 <SliderField label="Temperature" bind:value={temp} min={0.1} max={2} step={0.1} decimals={2} />
+<DateField label="Hiring Date" bind:value={hiringDate} />
+<CurrencyField label="Annual Budget" bind:value={budget} currency="BRL" />
 <FormActions onSave={save} onCancel={cancel} />
 ```
+
+### DateField
+
+A date picker (built on `bits-ui` `DatePicker`) with a native `Date` value
+(date-only, no time component). The calendar is portaled to `<body>` so it
+is never clipped by parent overflow.
+
+```svelte
+<script lang="ts">
+	import { DateField } from '@edujed/jedsvelted-ui/forms';
+
+	let hiringDate = $state<Date | undefined>(undefined);
+</script>
+
+<DateField
+	label="Hiring Date"
+	bind:value={hiringDate}
+	min={new Date(2000, 0, 1)}
+	max={new Date()}
+/>
+```
+
+### CurrencyField
+
+A monetary value input with locale-aware formatting. The bound `value` is a
+plain `number` (e.g. `1234.56`); the display is formatted with the locale's
+currency symbol, thousands separator, and fixed decimal places.
+
+```svelte
+<script lang="ts">
+	import { CurrencyField } from '@edujed/jedsvelted-ui/forms';
+	import type { CurrencyCode } from '@edujed/jedsvelted-ui/i18n';
+
+	let budget = $state(0);
+	let currency = $state<CurrencyCode>('BRL');
+</script>
+
+<CurrencyField label="Annual Budget" bind:value={budget} {currency} />
+<CurrencyField label="Price (USD)" bind:value={price} currency="USD" />
+<CurrencyField label="BTC" bind:value={btc} currency="BTC" />
+```
+
+Behavior:
+- **On focus** — the thousands mask is stripped so the user sees a clean number to edit (e.g. `2.100.000,00` → `2100000,00` in pt-BR).
+- **On input** — the bound `value` updates in real time; the display is not re-formatted while typing.
+- **On blur** — the value is committed and the display is re-formatted with thousands separators and fixed decimals.
+- **`decimals`** is optional — defaults to the currency's standard (e.g. `2` for BRL, `0` for JPY, `8` for BTC).
+- **`currency`** accepts any `CurrencyCode` (`USD`, `EUR`, `JPY`, `GBP`, `AUD`, `CAD`, `CHF`, `CNY`, `BRL`, `BTC`, `ETH`).
+- The symbol is reactive to locale changes (e.g. USD shows `$` in en, `US$` in pt-BR).
 
 All form fields support an optional **rich hint** (3-part popover: title, description, impact):
 
@@ -371,7 +427,7 @@ routes registered with `showInMenu: true`.
 	import { PageShell, DetailShell } from '@edujed/jedsvelted-ui/pages';
 </script>
 
-<PageShell title="Users" onSearch={search} onClear={clear}>
+<PageShell title="Users" onSearch={search} onClear={clear} skeletonVariant="table" skeletonRows={5}>
 	{#snippet content(state)}
 		<!-- table / list — state.show(row) opens the detail panel -->
 	{/snippet}
@@ -383,11 +439,46 @@ routes registered with `showInMenu: true`.
 
 `PageShell` owns a `PageState` instance (passed to the snippets) holding
 `loading`, `error`, `showDetail`, `selectedItem`, `detailAction` — with
-`show()`, `edit()`, `deleteRow()`, `close()`, `setLoading()`, `setError()`
-and `subscribe()`.
+`show()`, `edit()`, `deleteRow()`, `close()`, `setLoading()`, `setError()`,
+`setLoadingFor(ms)` and `subscribe()`.
+
+While `loading` is true, `PageShell` renders a `Skeleton` placeholder
+(configurable via `skeletonVariant` and `skeletonRows`). `setLoadingFor(ms)`
+is a convenience for demoing the loading state with synchronous/mock data.
 
 `DetailShell` is a standalone detail panel manager (modes: `detail` / `edit`
-/ `delete`) with title derivation and close delegation.
+/ `delete`) with title derivation and close delegation. It also supports a
+`loading` prop that renders a `Skeleton` (default variant: `list`) while the
+detail content is being fetched.
+
+### Skeleton
+
+A placeholder block shown while content is loading. Supports five variants:
+`text`, `circle`, `rect`, `list`, and `table`.
+
+```svelte
+<script lang="ts">
+	import { Skeleton } from '@edujed/jedsvelted-ui/ui';
+</script>
+
+<!-- Single text line -->
+<Skeleton variant="text" width="60%" />
+
+<!-- Circular avatar placeholder -->
+<Skeleton variant="circle" height={40} />
+
+<!-- List of rows (avatar + two text lines) -->
+<Skeleton variant="list" rows={4} />
+
+<!-- Table placeholder (header + rows) -->
+<Skeleton variant="table" rows={5} />
+
+<!-- Static (no shimmer) -->
+<Skeleton variant="text" animated={false} />
+```
+
+All variants support `width`, `height`, `rows` (for `list`/`table`),
+`circular`, `animated` (default: `true`), and `class`.
 
 ### Tabs
 
@@ -436,6 +527,81 @@ setLocale('pt-BR'); // runtime switch — UI reacts automatically
 locale (components that render `t(...)` inside `$derived`/templates re-evaluate
 on locale change).
 
+### Currencies
+
+The lib ships a built-in currency registry (`i18n/currencies.ts`) with 11
+global currencies. Each currency has a per-locale symbol and a default
+decimal count:
+
+| Code | Name              | en     | pt-BR  | Decimals |
+| ---- | ----------------- | ------ | ------ | -------- |
+| USD  | US Dollar         | `$`    | `US$`  | 2        |
+| EUR  | Euro              | `€`    | `€`    | 2        |
+| JPY  | Japanese Yen      | `¥`    | `¥`    | 0        |
+| GBP  | British Pound     | `£`    | `£`    | 2        |
+| AUD  | Australian Dollar | `A$`   | `A$`   | 2        |
+| CAD  | Canadian Dollar   | `C$`   | `C$`   | 2        |
+| CHF  | Swiss Franc       | `Fr`   | `CHF`  | 2        |
+| CNY  | Chinese Yuan      | `¥`    | `¥`    | 2        |
+| BRL  | Brazilian Real    | `R$`   | `R$`   | 2        |
+| BTC  | Bitcoin           | `₿`    | `₿`    | 8        |
+| ETH  | Ethereum          | `Ξ`    | `Ξ`    | 6        |
+
+```ts
+import { getCurrencySymbol, getCurrencyDecimals, getSupportedCurrencies, CURRENCIES } from '@edujed/jedsvelted-ui/i18n';
+import type { CurrencyCode } from '@edujed/jedsvelted-ui/i18n';
+
+getCurrencySymbol('USD', 'pt-BR'); // "US$"
+getCurrencySymbol('USD', 'en');    // "$"
+getCurrencyDecimals('JPY');        // 0
+getSupportedCurrencies();          // [{ code: 'USD', name: 'US Dollar', symbol: '$' }, …]
+```
+
+`CurrencyField` and `formatCurrency` both use this registry, so the symbol
+and decimal count stay consistent across the app and react to locale changes.
+
+### Formatting utilities
+
+Pure functions for locale-aware display formatting (no reactive state):
+
+```ts
+import { formatCurrency, formatNumber, formatDate, formatDateTime, parseCurrency, stripThousands } from '@edujed/jedsvelted-ui/format';
+import { localeStore } from '@edujed/jedsvelted-ui/i18n';
+
+const locale = $localeStore; // reactive in components
+
+formatCurrency(1234.56, locale);                          // "R$ 1.234,56" (pt-BR) / "$1,234.56" (en)
+formatCurrency(1234.56, locale, { currency: 'USD' });     // "US$ 1.234,56" (pt-BR) / "$ 1,234.56" (en)
+formatCurrency(0.00123456, locale, { currency: 'BTC' });  // "₿ 0,00000012" (pt-BR)
+formatNumber(1234.56, locale, 2);                         // "1.234,56" (pt-BR) / "1,234.56" (en)
+formatDate('2024-03-15', locale);                         // "15/03/2024" (pt-BR) / "3/15/2024" (en)
+formatDateTime('2024-03-15T14:30:00Z', locale);           // "15/03/2024 14:30" (pt-BR)
+parseCurrency('1.234,56');                                // 1234.56
+parseCurrency('1,234.56');                                // 1234.56
+stripThousands('2.100.000,00', 'pt-BR');                  // "2100000,00"
+```
+
+All functions return `'—'` for `undefined`/`null`/invalid values.
+
+Use them in `Table` column formatters and `InfoGrid` items for consistent
+display:
+
+```svelte
+<script lang="ts">
+	import { Table } from '@edujed/jedsvelted-ui/table';
+	import { formatCurrency, formatDate } from '@edujed/jedsvelted-ui/format';
+	import { localeStore } from '@edujed/jedsvelted-ui/i18n';
+
+	const columns = [
+		{ key: 'name', title: 'Name' },
+		{ key: 'budget', title: 'Budget', align: 'right', formatter: (v: number) => formatCurrency(v, $localeStore, { currency: 'BRL' }) },
+		{ key: 'hiringDate', title: 'Hired', formatter: (v: string) => formatDate(v, $localeStore) }
+	];
+</script>
+
+<Table {columns} {data} />
+```
+
 ### CRUD action handler
 
 ```ts
@@ -471,8 +637,10 @@ and fires the appropriate toast. `createHandleDetail` also returns
 `Icon` accepts a `name` from the registry (`user`, `trash`, `edit`, `eye`,
 `plus`, `search`, `settings`, `sun`, `moon`, `filter`, `sort`, `download`,
 `menu`, `more`, `check`, `x`, `wallet`, `bank`, `clock`, `file`, `folder`,
-`folder-open`, `chevron-right`, `chevron-down`, `circle`, `user-alt`).
-Individual icon components are also exported (`IconCheck`, `IconTrash`, …).
+`folder-open`, `chevron-right`, `chevron-down`, `circle`, `user-alt`,
+`calendar`).
+Individual icon components are also exported (`IconCheck`, `IconTrash`,
+`IconCalendar`, …).
 
 ## 🛠 Local development
 

@@ -46,6 +46,19 @@ export class PageState {
 		this.notify();
 	}
 
+	/**
+	 * Sets loading to true, then back to false after `ms` milliseconds.
+	 * Useful for demoing the loading state with synchronous/mock data.
+	 */
+	setLoadingFor(ms: number) {
+		this._loading = true;
+		this.notify();
+		setTimeout(() => {
+			this._loading = false;
+			this.notify();
+		}, ms);
+	}
+
 	setError(message: string) {
 		this._error = message;
 		this.notify();

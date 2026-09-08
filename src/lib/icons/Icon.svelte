@@ -27,6 +27,7 @@
 	import IconUserAlt from './IconUserAlt.svelte';
 	import IconTree from './IconTree.svelte';
 	import IconBuilding from './IconBuilding.svelte';
+	import IconCalendar from './IconCalendar.svelte';
 	import type { IconName } from './iconsTypes';
 
 	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
@@ -58,7 +59,8 @@
 		settings: IconSettings,
 		'user-alt': IconUserAlt,
 		tree: IconTree,
-		building: IconBuilding
+		building: IconBuilding,
+		calendar: IconCalendar
 	} as const;
 
 	let {

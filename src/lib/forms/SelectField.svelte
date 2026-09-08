@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Select } from 'bits-ui';
+	import { Select, Portal } from 'bits-ui';
 	import FormField from './FormField.svelte';
 	import { IconChevronDown } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
@@ -39,15 +39,17 @@
 				</Select.Trigger>
 			</div>
 
-			<Select.Content class="select-content">
-				<Select.Viewport class="select-viewport">
-					{#each options as option (option.key)}
-						<Select.Item class="select-item" value={option.key}>
-							{option.label}
-						</Select.Item>
-					{/each}
-				</Select.Viewport>
-			</Select.Content>
+			<Portal to="body">
+				<Select.Content class="select-content">
+					<Select.Viewport class="select-viewport">
+						{#each options as option (option.key)}
+							<Select.Item class="select-item" value={option.key}>
+								{option.label}
+							</Select.Item>
+						{/each}
+					</Select.Viewport>
+				</Select.Content>
+			</Portal>
 		</Select.Root>
 	{/snippet}
 </FormField>
@@ -109,7 +111,7 @@
 		box-shadow: 0 4px 16px var(--color-shadow);
 		padding: 0.25rem;
 		min-width: 200px;
-		z-index: 100;
+		z-index: 1100;
 	}
 
 	:global(.select-viewport) {

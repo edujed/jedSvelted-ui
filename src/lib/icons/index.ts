@@ -3,6 +3,7 @@ export type { IconName } from './iconsTypes';
 export { default as Icon } from './Icon.svelte';
 export { default as IconBank } from './IconBank.svelte';
 export { default as IconBuilding } from './IconBuilding.svelte';
+export { default as IconCalendar } from './IconCalendar.svelte';
 export { default as IconCheck } from './IconCheck.svelte';
 export { default as IconChevronDown } from './IconChevronDown.svelte';
 export { default as IconChevronRight } from './IconChevronRight.svelte';

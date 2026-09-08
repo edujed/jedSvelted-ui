@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SearchPanel from '$lib/container/SearchPanel.svelte';
+	import Skeleton from '$lib/ui/Skeleton.svelte';
 	import { PageState } from './PageState';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { PageShellProps } from './pagesTypes';
@@ -11,7 +12,9 @@
 		filter,
 		content,
 		detailContent,
-		filterOpen = $bindable(true)
+		filterOpen = $bindable(true),
+		skeletonVariant = 'table',
+		skeletonRows = 5
 	}: PageShellProps = $props();
 
 	const instance = new PageState();
@@ -48,6 +51,14 @@
 	export function closeDetail(): void {
 		instance.close();
 	}
+
+	/**
+	 * Sets loading to true, then back to false after `ms` milliseconds.
+	 * Useful for demoing the loading state with synchronous/mock data.
+	 */
+	export function setLoadingFor(ms: number): void {
+		instance.setLoadingFor(ms);
+	}
 </script>
 
 <div class="page-shell">
@@ -60,7 +71,9 @@
 	<main class="shell-content">
 		<!-- Global loading state -->
 		{#if isLoading}
-			<div class="loading">{LOCALES[$localeStore].loading}</div>
+			<div class="loading">
+				<Skeleton variant={skeletonVariant} rows={skeletonRows} />
+			</div>
 		{:else if hasError}
 			<div class="error">{_error}</div>
 		{:else}

@@ -34,4 +34,5 @@ export type IconName =
 	| 'settings'
 	| 'user-alt'
 	| 'tree'
-	| 'building';
+	| 'building'
+	| 'calendar';

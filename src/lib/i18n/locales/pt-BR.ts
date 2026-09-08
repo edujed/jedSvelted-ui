@@ -56,6 +56,8 @@ const ptBR: Messages = {
 
 	// Form fields
 	selectPlaceholder: 'Selecione...',
+	datePlaceholder: 'Selecione uma data...',
+	dateInvalid: 'Data inválida',
 
 	// Toast messages (handleDetailAction)
 	itemDeleted: '{item} "{value}" excluído',

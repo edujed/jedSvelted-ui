@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DetailPanel from '../container/DetailPanel.svelte';
+	import Skeleton from '../ui/Skeleton.svelte';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { DetailShellProps, DetailShellState } from './pagesTypes';
 
@@ -22,7 +23,10 @@
 		mode = $bindable('detail' as const),
 		entityName = 'Record',
 		onClose,
-		children
+		children,
+		loading = false,
+		skeletonVariant = 'list',
+		skeletonRows = 4
 	}: DetailShellProps = $props();
 
 	// Internal derived state from props — avoids redundant state+effect.
@@ -73,7 +77,17 @@
 </script>
 
 <DetailPanel show={!!item} {title} onClose={wrappedOnClose}>
-	{#if children}
+	{#if loading}
+		<div class="detail-loading">
+			<Skeleton variant={skeletonVariant} rows={skeletonRows} />
+		</div>
+	{:else if children}
 		{@render children(detailState, isMode)}
 	{/if}
 </DetailPanel>
+
+<style>
+	.detail-loading {
+		padding: var(--spacing-md);
+	}
+</style>

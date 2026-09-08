@@ -139,6 +139,8 @@ export interface FileTreeProps {
 export interface InfoGridItem {
 	label: string;
 	value: string | number | undefined | null;
+	/** Align the value to the right (for numbers, dates, currency). */
+	align?: 'left' | 'right';
 }
 
 /**
@@ -147,4 +149,27 @@ export interface InfoGridItem {
 export interface InfoGridProps {
 	/** Items to display. */
 	items: InfoGridItem[];
+}
+
+/** Skeleton shape variants. */
+export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'list' | 'table';
+
+/**
+ * Props for `Skeleton` — a placeholder block shown while content is loading.
+ */
+export interface SkeletonProps {
+	/** Shape of the skeleton. */
+	variant?: SkeletonVariant;
+	/** Number of rows (for `list` and `table` variants). */
+	rows?: number;
+	/** Width (for `text`, `circle`, `rect` variants). Defaults to `100%`. */
+	width?: string | number;
+	/** Height (for `text`, `circle`, `rect` variants). */
+	height?: string | number;
+	/** Render as a circle (shorthand for `variant='circle'`). */
+	circular?: boolean;
+	/** Enable the shimmer animation. */
+	animated?: boolean;
+	/** Extra classes. */
+	class?: string;
 }

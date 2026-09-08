@@ -74,7 +74,8 @@
 		display: flex;
 		flex-direction: column;
 		box-shadow: -4px 0 16px var(--color-shadow);
-		overflow: hidden;
+		overflow: visible;
+		border-radius: var(--radius-md);
 	}
 
 	.detail-header {
@@ -125,6 +126,7 @@
 		flex: 1;
 		overflow-y: auto;
 		padding: 0;
+		border-radius: 0 0 var(--radius-md) var(--radius-md);
 	}
 
 	@media (min-width: 1024px) {

@@ -5,6 +5,7 @@ export { default as ButtonGroup } from './ButtonGroup.svelte';
 export { default as DeleteConfirm } from './DeleteConfirm.svelte';
 export { default as FileTree } from './FileTree.svelte';
 export { default as InfoGrid } from './InfoGrid.svelte';
+export { default as Skeleton } from './Skeleton.svelte';
 export type {
 	BadgeProps,
 	BadgeVariant,
@@ -17,5 +18,7 @@ export type {
 	FileNode,
 	FileTreeProps,
 	InfoGridItem,
-	InfoGridProps
+	InfoGridProps,
+	SkeletonProps,
+	SkeletonVariant
 } from './uiTypes';

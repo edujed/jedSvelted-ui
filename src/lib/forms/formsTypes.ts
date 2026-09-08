@@ -8,6 +8,7 @@
  */
 import type { Snippet } from 'svelte';
 import type { IconName } from '../icons';
+import type { CurrencyCode } from '../i18n/currencies';
 
 /**
  * Hint/label contract shared by all field components (and `FieldHint`).
@@ -58,21 +59,20 @@ export interface EditFieldProps extends FieldHintProps {
 }
 
 /**
-	 * Props for `FormField` — the shared wrapper that owns the label/hint
-	 * header, the generated input id, and the grid column span for every
-	 * field component (EditField, NumericField, SelectField, SliderField).
-	 */
-	export interface FormFieldProps extends FieldHintProps {
-		/** Input id (generated when omitted). */
-		id?: string;
-		/** Grid column span (1-4). */
-		colSpan?: number;
-		/** Extra classes for the wrapper. */
-		class?: string;
-		/** The field's input/control. */
-		children: Snippet<[id: string]>;
-	}
-
+ * Props for `FormField` — the shared wrapper that owns the label/hint
+ * header, the generated input id, and the grid column span for every
+ * field component (EditField, NumericField, SelectField, SliderField).
+ */
+export interface FormFieldProps extends FieldHintProps {
+	/** Input id (generated when omitted). */
+	id?: string;
+	/** Grid column span (1-4). */
+	colSpan?: number;
+	/** Extra classes for the wrapper. */
+	class?: string;
+	/** The field's input/control. */
+	children: Snippet<[id: string]>;
+}
 
 /**
  * Props for `NumericField` — a number input with label/hint.
@@ -138,6 +138,49 @@ export interface SliderFieldProps extends FieldHintProps {
 	decimals?: number;
 	/** Optional formatter. Receives the raw value, returns the display string. */
 	format?: (value: number) => string;
+}
+
+/**
+ * Props for `DateField` — a date picker with label/hint.
+ * The value is a native `Date` (date-only, no time component).
+ */
+export interface DateFieldProps extends FieldHintProps {
+	/** Selected date (bindable). */
+	value?: Date;
+	/** Minimum selectable date. */
+	min?: Date;
+	/** Maximum selectable date. */
+	max?: Date;
+	/** Whether the field is disabled. */
+	disabled?: boolean;
+	/** Input id (generated when omitted). */
+	id?: string;
+	/** Grid column span (1-4). */
+	colSpan?: number;
+}
+
+/**
+ * Props for `CurrencyField` — a monetary value input with label/hint.
+ * The value is a `number` (e.g. 1234.56). The display is formatted with
+ * the locale's currency symbol and decimal separator.
+ */
+export interface CurrencyFieldProps extends FieldHintProps {
+	/** Monetary value (bindable). */
+	value?: number;
+	/** Number of decimal places (defaults to the currency's standard). */
+	decimals?: number;
+	/** Currency code for formatting (default: 'BRL'). */
+	currency?: CurrencyCode;
+	/** Minimum value. */
+	min?: number;
+	/** Maximum value. */
+	max?: number;
+	/** Whether the field is disabled. */
+	disabled?: boolean;
+	/** Input id (generated when omitted). */
+	id?: string;
+	/** Grid column span (1-4). */
+	colSpan?: number;
 }
 
 /**

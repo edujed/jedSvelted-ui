@@ -5,6 +5,7 @@
  * (detail/edit/delete) — shared by `PageState`, `DetailShell` and consumers.
  */
 import type { Snippet } from 'svelte';
+import type { SkeletonVariant } from '../ui/uiTypes';
 import type { PageState } from './PageState';
 
 /** Detail-panel mode. */
@@ -48,6 +49,10 @@ export interface PageShellProps {
 	detailContent?: Snippet<[PageState]>;
 	/** Whether the filter panel is expanded (bindable). */
 	filterOpen?: boolean;
+	/** Skeleton variant shown while the page is loading. Defaults to `'table'`. */
+	skeletonVariant?: SkeletonVariant;
+	/** Number of skeleton rows (for `list`/`table` variants). Defaults to `5`. */
+	skeletonRows?: number;
 }
 
 /**
@@ -68,4 +73,10 @@ export interface DetailShellProps {
 	onClose?: () => void;
 	/** Custom content (detail/edit/delete sections). */
 	children?: Snippet<[DetailShellState, (section: DetailAction) => boolean]>;
+	/** Show a skeleton placeholder while the detail content is loading. */
+	loading?: boolean;
+	/** Skeleton variant shown while loading. Defaults to `'list'`. */
+	skeletonVariant?: SkeletonVariant;
+	/** Number of skeleton rows (for `list`/`table` variants). Defaults to `4`. */
+	skeletonRows?: number;
 }

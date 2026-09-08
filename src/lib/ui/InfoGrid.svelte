@@ -8,7 +8,9 @@
 	{#each items as item (item.label)}
 		<div class="info-item">
 			<span class="info-label">{item.label}</span>
-			<span class="info-value">{item.value ?? '—'}</span>
+			<span class="info-value" class:info-value-right={item.align === 'right'}
+				>{item.value ?? '—'}</span
+			>
 		</div>
 	{/each}
 </div>
@@ -36,6 +38,11 @@
 		min-height: 1.75rem;
 		display: flex;
 		align-items: center;
+	}
+
+	.info-value-right {
+		justify-content: flex-end;
+		font-variant-numeric: tabular-nums;
 	}
 
 	@media (max-width: 600px) {
