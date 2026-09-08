@@ -42,23 +42,23 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 
 ## 🧩 Modules
 
-| Module      | Description                                                                                       |
-| ----------- | ------------------------------------------------------------------------------------------------- |
-| `actions`   | CRUD action handlers (`createHandleDetail`)                                                       |
-| `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                              |
-| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                              |
-| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `parseCurrency`)            |
+| Module      | Description                                                                                                            |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `actions`   | CRUD action handlers (`createHandleDetail`)                                                                            |
+| `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                                                   |
+| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                                                   |
+| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `parseCurrency`)                                 |
 | `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `FormActions`) |
-| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`) + currency definitions     |
-| `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                          |
-| `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                               |
-| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                        |
-| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                                             |
-| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                                   |
-| `table`     | Interactive tables (`Table`)                                                                      |
-| `tabs`      | Tab system (`Tabs`)                                                                               |
-| `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                                   |
-| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`, `Skeleton`) |
+| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`) + currency definitions                          |
+| `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                                               |
+| `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                                                    |
+| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                                             |
+| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                                                                  |
+| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                                                        |
+| `table`     | Interactive tables (`Table`)                                                                                           |
+| `tabs`      | Tab system (`Tabs`)                                                                                                    |
+| `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                                                        |
+| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`, `Skeleton`)          |
 
 ### Import styles
 
@@ -94,7 +94,12 @@ props and compose new components on top of the lib's primitives:
 import type { ButtonProps, BadgeProps, FileNode } from '@edujed/jedsvelted-ui/ui';
 import type { TableCol, TableAction } from '@edujed/jedsvelted-ui/table';
 import type { CrudPanelProps } from '@edujed/jedsvelted-ui/container';
-import type { EditFieldProps, SelectOption, CurrencyFieldProps, DateFieldProps } from '@edujed/jedsvelted-ui/forms';
+import type {
+	EditFieldProps,
+	SelectOption,
+	CurrencyFieldProps,
+	DateFieldProps
+} from '@edujed/jedsvelted-ui/forms';
 import type { ChatMessageType, ChatPanelProps } from '@edujed/jedsvelted-ui/chat';
 import type { PageShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
 import type { IconName } from '@edujed/jedsvelted-ui/icons';
@@ -289,6 +294,7 @@ currency symbol, thousands separator, and fixed decimal places.
 ```
 
 Behavior:
+
 - **On focus** — the thousands mask is stripped so the user sees a clean number to edit (e.g. `2.100.000,00` → `2100000,00` in pt-BR).
 - **On input** — the bound `value` updates in real time; the display is not re-formatted while typing.
 - **On blur** — the value is committed and the display is re-formatted with thousands separators and fixed decimals.
@@ -533,28 +539,33 @@ The lib ships a built-in currency registry (`i18n/currencies.ts`) with 11
 global currencies. Each currency has a per-locale symbol and a default
 decimal count:
 
-| Code | Name              | en     | pt-BR  | Decimals |
-| ---- | ----------------- | ------ | ------ | -------- |
-| USD  | US Dollar         | `$`    | `US$`  | 2        |
-| EUR  | Euro              | `€`    | `€`    | 2        |
-| JPY  | Japanese Yen      | `¥`    | `¥`    | 0        |
-| GBP  | British Pound     | `£`    | `£`    | 2        |
-| AUD  | Australian Dollar | `A$`   | `A$`   | 2        |
-| CAD  | Canadian Dollar   | `C$`   | `C$`   | 2        |
-| CHF  | Swiss Franc       | `Fr`   | `CHF`  | 2        |
-| CNY  | Chinese Yuan      | `¥`    | `¥`    | 2        |
-| BRL  | Brazilian Real    | `R$`   | `R$`   | 2        |
-| BTC  | Bitcoin           | `₿`    | `₿`    | 8        |
-| ETH  | Ethereum          | `Ξ`    | `Ξ`    | 6        |
+| Code | Name              | en   | pt-BR | Decimals |
+| ---- | ----------------- | ---- | ----- | -------- |
+| USD  | US Dollar         | `$`  | `US$` | 2        |
+| EUR  | Euro              | `€`  | `€`   | 2        |
+| JPY  | Japanese Yen      | `¥`  | `¥`   | 0        |
+| GBP  | British Pound     | `£`  | `£`   | 2        |
+| AUD  | Australian Dollar | `A$` | `A$`  | 2        |
+| CAD  | Canadian Dollar   | `C$` | `C$`  | 2        |
+| CHF  | Swiss Franc       | `Fr` | `CHF` | 2        |
+| CNY  | Chinese Yuan      | `¥`  | `¥`   | 2        |
+| BRL  | Brazilian Real    | `R$` | `R$`  | 2        |
+| BTC  | Bitcoin           | `₿`  | `₿`   | 8        |
+| ETH  | Ethereum          | `Ξ`  | `Ξ`   | 6        |
 
 ```ts
-import { getCurrencySymbol, getCurrencyDecimals, getSupportedCurrencies, CURRENCIES } from '@edujed/jedsvelted-ui/i18n';
+import {
+	getCurrencySymbol,
+	getCurrencyDecimals,
+	getSupportedCurrencies,
+	CURRENCIES
+} from '@edujed/jedsvelted-ui/i18n';
 import type { CurrencyCode } from '@edujed/jedsvelted-ui/i18n';
 
 getCurrencySymbol('USD', 'pt-BR'); // "US$"
-getCurrencySymbol('USD', 'en');    // "$"
-getCurrencyDecimals('JPY');        // 0
-getSupportedCurrencies();          // [{ code: 'USD', name: 'US Dollar', symbol: '$' }, …]
+getCurrencySymbol('USD', 'en'); // "$"
+getCurrencyDecimals('JPY'); // 0
+getSupportedCurrencies(); // [{ code: 'USD', name: 'US Dollar', symbol: '$' }, …]
 ```
 
 `CurrencyField` and `formatCurrency` both use this registry, so the symbol
@@ -565,20 +576,27 @@ and decimal count stay consistent across the app and react to locale changes.
 Pure functions for locale-aware display formatting (no reactive state):
 
 ```ts
-import { formatCurrency, formatNumber, formatDate, formatDateTime, parseCurrency, stripThousands } from '@edujed/jedsvelted-ui/format';
+import {
+	formatCurrency,
+	formatNumber,
+	formatDate,
+	formatDateTime,
+	parseCurrency,
+	stripThousands
+} from '@edujed/jedsvelted-ui/format';
 import { localeStore } from '@edujed/jedsvelted-ui/i18n';
 
 const locale = $localeStore; // reactive in components
 
-formatCurrency(1234.56, locale);                          // "R$ 1.234,56" (pt-BR) / "$1,234.56" (en)
-formatCurrency(1234.56, locale, { currency: 'USD' });     // "US$ 1.234,56" (pt-BR) / "$ 1,234.56" (en)
-formatCurrency(0.00123456, locale, { currency: 'BTC' });  // "₿ 0,00000012" (pt-BR)
-formatNumber(1234.56, locale, 2);                         // "1.234,56" (pt-BR) / "1,234.56" (en)
-formatDate('2024-03-15', locale);                         // "15/03/2024" (pt-BR) / "3/15/2024" (en)
-formatDateTime('2024-03-15T14:30:00Z', locale);           // "15/03/2024 14:30" (pt-BR)
-parseCurrency('1.234,56');                                // 1234.56
-parseCurrency('1,234.56');                                // 1234.56
-stripThousands('2.100.000,00', 'pt-BR');                  // "2100000,00"
+formatCurrency(1234.56, locale); // "R$ 1.234,56" (pt-BR) / "$1,234.56" (en)
+formatCurrency(1234.56, locale, { currency: 'USD' }); // "US$ 1.234,56" (pt-BR) / "$ 1,234.56" (en)
+formatCurrency(0.00123456, locale, { currency: 'BTC' }); // "₿ 0,00000012" (pt-BR)
+formatNumber(1234.56, locale, 2); // "1.234,56" (pt-BR) / "1,234.56" (en)
+formatDate('2024-03-15', locale); // "15/03/2024" (pt-BR) / "3/15/2024" (en)
+formatDateTime('2024-03-15T14:30:00Z', locale); // "15/03/2024 14:30" (pt-BR)
+parseCurrency('1.234,56'); // 1234.56
+parseCurrency('1,234.56'); // 1234.56
+stripThousands('2.100.000,00', 'pt-BR'); // "2100000,00"
 ```
 
 All functions return `'—'` for `undefined`/`null`/invalid values.
@@ -594,7 +612,12 @@ display:
 
 	const columns = [
 		{ key: 'name', title: 'Name' },
-		{ key: 'budget', title: 'Budget', align: 'right', formatter: (v: number) => formatCurrency(v, $localeStore, { currency: 'BRL' }) },
+		{
+			key: 'budget',
+			title: 'Budget',
+			align: 'right',
+			formatter: (v: number) => formatCurrency(v, $localeStore, { currency: 'BRL' })
+		},
 		{ key: 'hiringDate', title: 'Hired', formatter: (v: string) => formatDate(v, $localeStore) }
 	];
 </script>

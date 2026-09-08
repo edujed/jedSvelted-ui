@@ -38,7 +38,16 @@ export {
 } from './format';
 
 // forms
-export { CurrencyField, DateField, EditField, FormActions, FormField, NumericField, SelectField, SliderField } from './forms';
+export {
+	CurrencyField,
+	DateField,
+	EditField,
+	FormActions,
+	FormField,
+	NumericField,
+	SelectField,
+	SliderField
+} from './forms';
 export type { FormFieldProps } from './forms';
 export type {
 	CurrencyFieldProps,
