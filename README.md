@@ -48,7 +48,7 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 | `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                                                   |
 | `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                                                   |
 | `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `parseCurrency`)                                 |
-| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `FormActions`) |
+| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `SwitchField`, `FormActions`) |
 | `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`) + currency definitions                          |
 | `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                                               |
 | `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                                                    |
@@ -98,7 +98,8 @@ import type {
 	EditFieldProps,
 	SelectOption,
 	CurrencyFieldProps,
-	DateFieldProps
+	DateFieldProps,
+	SwitchFieldProps
 } from '@edujed/jedsvelted-ui/forms';
 import type { ChatMessageType, ChatPanelProps } from '@edujed/jedsvelted-ui/chat';
 import type { PageShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
@@ -232,6 +233,7 @@ single `onAction` event on confirmed mutations only:
 		SliderField,
 		DateField,
 		CurrencyField,
+		SwitchField,
 		FormActions
 	} from '@edujed/jedsvelted-ui/forms';
 </script>
@@ -249,6 +251,7 @@ single `onAction` event on confirmed mutations only:
 <SliderField label="Temperature" bind:value={temp} min={0.1} max={2} step={0.1} decimals={2} />
 <DateField label="Hiring Date" bind:value={hiringDate} />
 <CurrencyField label="Annual Budget" bind:value={budget} currency="BRL" />
+<SwitchField label="Active" bind:value={active} />
 <FormActions onSave={save} onCancel={cancel} />
 ```
 
@@ -291,6 +294,22 @@ currency symbol, thousands separator, and fixed decimal places.
 <CurrencyField label="Annual Budget" bind:value={budget} {currency} />
 <CurrencyField label="Price (USD)" bind:value={price} currency="USD" />
 <CurrencyField label="BTC" bind:value={btc} currency="BTC" />
+```
+
+### SwitchField
+
+A boolean toggle (built on `bits-ui` `Switch`) with a `Yes`/`No` state label
+next to the track. The bound `value` is a plain `boolean`.
+
+```svelte
+<script lang="ts">
+	import { SwitchField } from '@edujed/jedsvelted-ui/forms';
+
+	let active = $state(false);
+</script>
+
+<SwitchField label="Active" bind:value={active} />
+<SwitchField label="Enabled" bind:value={enabled} disabled />
 ```
 
 Behavior:

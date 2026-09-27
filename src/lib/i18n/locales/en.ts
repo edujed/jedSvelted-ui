@@ -61,6 +61,8 @@ export default {
 	theme: 'Theme',
 
 	// Form fields
+	yes: 'Yes',
+	no: 'No',
 	selectPlaceholder: 'Select...',
 	datePlaceholder: 'Select a date...',
 	dateInvalid: 'Invalid date',

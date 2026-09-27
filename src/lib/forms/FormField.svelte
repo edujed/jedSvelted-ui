@@ -59,8 +59,8 @@
 		color: var(--color-error, #ef4444);
 	}
 
-	.field-disabled .field-input,
-	.field-disabled [data-select-trigger] {
+	.field-disabled :global(.field-input),
+	.field-disabled :global([data-select-trigger]) {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}

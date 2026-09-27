@@ -59,6 +59,8 @@ const ptBR: Messages = {
 	theme: 'Tema',
 
 	// Form fields
+	yes: 'Sim',
+	no: 'Não',
 	selectPlaceholder: 'Selecione...',
 	datePlaceholder: 'Selecione uma data...',
 	dateInvalid: 'Data inválida',

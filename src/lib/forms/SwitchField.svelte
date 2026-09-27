@@ -30,7 +30,11 @@
 	{#snippet children(fieldId)}
 		<div class="switch-wrapper">
 			<Switch.Root {id} {disabled} {required} bind:checked={value} onCheckedChange={handleChange}>
-				<Switch.Thumb />
+				{#snippet child({ props })}
+					<button {...props} class="switch-track">
+						<span class="switch-thumb" />
+					</button>
+				{/snippet}
 			</Switch.Root>
 			<span class="switch-state">{stateLabel}</span>
 		</div>
@@ -38,7 +42,14 @@
 </FormField>
 
 <style>
-	.switch-field :global([data-switch-root]) {
+	:global(.switch-wrapper) {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		padding: 4px 0;
+	}
+
+	:global(.switch-track) {
 		position: relative;
 		display: inline-flex;
 		align-items: center;
@@ -52,21 +63,21 @@
 		transition: background var(--transition-fast);
 	}
 
-	.switch-field :global([data-switch-root][data-state='checked']) {
+	:global(.switch-track[data-state='checked']) {
 		background: var(--color-primary);
 	}
 
-	.switch-field :global([data-switch-root][data-disabled]) {
+	:global(.switch-track[disabled]) {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}
 
-	.switch-field :global([data-switch-root]:focus-visible) {
+	:global(.switch-track:focus-visible) {
 		outline: none;
 		box-shadow: 0 0 0 3px var(--color-primary-light);
 	}
 
-	.switch-field :global([data-switch-thumb]) {
+	:global(.switch-thumb) {
 		display: block;
 		width: 18px;
 		height: 18px;
@@ -76,7 +87,12 @@
 		transition: transform var(--transition-fast);
 	}
 
-	.switch-field :global([data-switch-root][data-state='checked'] [data-switch-thumb]) {
+	:global(.switch-track[data-state='checked'] .switch-thumb) {
 		transform: translateX(18px);
+	}
+
+	:global(.switch-state) {
+		font-size: var(--font-size-sm);
+		color: var(--color-on-surface);
 	}
 </style>
