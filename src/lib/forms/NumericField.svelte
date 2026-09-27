@@ -12,11 +12,15 @@
 		max,
 		step = 1,
 		id,
-		colSpan = 4
+		colSpan = 4,
+		disabled = false,
+		required = false,
+		error = '',
+		onValueChange
 	}: NumericFieldProps = $props();
 </script>
 
-<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan} class="numeric-field">
+<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan} {disabled} {required} {error} class="numeric-field">
 	{#snippet children(fieldId)}
 		<div class="field-wrapper">
 			<input
@@ -25,8 +29,10 @@
 				{min}
 				{max}
 				{step}
+				{disabled}
 				class="field-input numeric-input"
 				bind:value
+				oninput={() => onValueChange?.(value)}
 			/>
 		</div>
 	{/snippet}

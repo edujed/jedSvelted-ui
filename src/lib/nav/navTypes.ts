@@ -5,6 +5,7 @@
  * (see `router/HashRouter.ts`), and `MenuItem` is the resolved, renderable
  * form used by `Sidenav`.
  */
+import type { Snippet } from 'svelte';
 import type { HashRouter, RegisteredRouteItem } from '../router';
 
 /**
@@ -35,6 +36,8 @@ export interface NavbarProps {
 	router?: HashRouter;
 	/** Called when the hamburger button is clicked. */
 	onMenuClick?: () => void;
+	/** Show the hamburger button (set to false when the sidenav is fixed). */
+	showHamburguer?: boolean;
 }
 
 /**
@@ -56,17 +59,25 @@ export interface TopbarProps {
 }
 
 /**
- * Props for `Sidenav` — the slide-in navigation menu (overlay).
+ * Props for `Sidenav` — the navigation menu (overlay or fixed).
  */
 export interface SidenavProps {
 	/** Application title shown in the menu header. */
 	title?: string;
 	/** Logo (emoji or short text) shown next to the title. */
 	logo?: string;
-	/** Whether the menu is open (controlled by the parent). */
+	/** Whether the menu is open (controlled by the parent; ignored in fixed mode). */
 	isOpen?: boolean;
-	/** Called when the overlay is clicked (to close the menu). */
+	/** Called when the overlay is clicked (to close the menu; ignored in fixed mode). */
 	onOverlayClick?: () => void;
 	/** Router instance (drives the menu items and active state). */
 	router: HashRouter;
+	/**
+	 * Menu display mode:
+	 * - 'overlay' (default): slide-in panel with backdrop, controlled by `isOpen`.
+	 * - 'fixed': always-visible sidebar (no overlay, no close button).
+	 */
+	mode?: 'overlay' | 'fixed';
+	/** Extra content rendered at the bottom of the menu (e.g. a badge). */
+	footer?: Snippet;
 }

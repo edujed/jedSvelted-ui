@@ -116,8 +116,12 @@ export class HashRouter {
 		if (idx !== -1) this.listeners.splice(idx, 1);
 	}
 
-	/** Triggers all listeners and the matched route's handler. */
-	private emit(): void {
+	/**
+	 * Triggers all listeners and the matched route's handler.
+	 * Public so consumers can force a re-emit when needed (e.g.: after
+	 * registering routes dynamically and the hash is already correct).
+	 */
+	emit(): void {
 		if (this._isEmitting) return; // guards against re-entry
 		try {
 			this._isEmitting = true;
@@ -129,7 +133,20 @@ export class HashRouter {
 
 	private doEmit(): void {
 		// Resolve the current route before emitting
-		this.resolve();
+		const path = this.getCurrentPath();
+		this.currentPath = path;
+
+		// Call the matched route's handler (e.g.: load page data).
+		// Handlers are invoked on every emit — pages that need to guard
+		// against re-entry should do so themselves.
+		const found = this.matchRoute(path);
+		if (found) {
+			const params: Record<string, string> = {};
+			found.route.keys.forEach((key, i) => {
+				params[key] = found.match[i + 1] ?? '';
+			});
+			found.route.handler(params);
+		}
 
 		// Always calls listeners, regardless of whether a route was found
 		this.listeners.forEach((fn) => fn());

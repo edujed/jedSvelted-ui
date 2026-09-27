@@ -38,6 +38,12 @@ export interface FormFieldProps extends FieldHintProps {
 	colSpan?: number;
 	/** Extra classes for the wrapper. */
 	class?: string;
+	/** Whether the field is disabled (DAG). */
+	disabled?: boolean;
+	/** Whether the field is required (DAG). Shows a red asterisk. */
+	required?: boolean;
+	/** Validation error message (shown below the field). */
+	error?: string;
 	/** The field's input/control. */
 	children: Snippet<[id: string]>;
 }
@@ -56,6 +62,14 @@ export interface EditFieldProps extends FieldHintProps {
 	id?: string;
 	/** Grid column span (1-4). */
 	colSpan?: number;
+	/** Whether the field is disabled (DAG). */
+	disabled?: boolean;
+	/** Whether the field is required (DAG). */
+	required?: boolean;
+	/** Validation error message. */
+	error?: string;
+	/** Called when the value changes. */
+	onValueChange?: (value: string) => void;
 }
 
 /**
@@ -90,6 +104,14 @@ export interface NumericFieldProps extends FieldHintProps {
 	id?: string;
 	/** Grid column span (1-4). */
 	colSpan?: number;
+	/** Whether the field is disabled (DAG). */
+	disabled?: boolean;
+	/** Whether the field is required (DAG). */
+	required?: boolean;
+	/** Validation error message. */
+	error?: string;
+	/** Called when the value changes. */
+	onValueChange?: (value: number) => void;
 }
 
 /**
@@ -112,10 +134,35 @@ export interface SelectFieldProps extends FieldHintProps {
 	placeholder?: string;
 	/** Whether the select is disabled. */
 	disabled?: boolean;
+	/** Whether the field is required (DAG). */
+	required?: boolean;
+	/** Validation error message. */
+	error?: string;
 	/** Grid column span (1-4). */
 	colSpan?: number;
 	/** Called when the value changes. */
 	onValueChange?: (value: string) => void;
+}
+
+/**
+ * Props for `SwitchField` — a toggle switch (bits-ui) with label/hint.
+ * The value is a `boolean`.
+ */
+export interface SwitchFieldProps extends FieldHintProps {
+	/** Switch value (bindable). */
+	value?: boolean;
+	/** Input id (generated when omitted). */
+	id?: string;
+	/** Grid column span (1-4). */
+	colSpan?: number;
+	/** Whether the field is disabled (DAG). */
+	disabled?: boolean;
+	/** Whether the field is required (DAG). */
+	required?: boolean;
+	/** Validation error message. */
+	error?: string;
+	/** Called when the value changes. */
+	onValueChange?: (value: boolean) => void;
 }
 
 /**

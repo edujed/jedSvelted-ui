@@ -5,7 +5,7 @@
 	import { IconSort } from '../icons';
 	import Button from '../ui/Button.svelte';
 	import { buildCsv, filterData, sortData } from './tableUtils';
-	import type { SortDirection, TableAction, TableCol } from './tableTypes';
+	import type { SortDirection, TableAction, TableCol, TableConfig } from './tableTypes';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let {
@@ -19,6 +19,7 @@
 		onAdd = () => {},
 		defaultSortKey,
 		defaultSortDirection = 'asc',
+		config = {} as TableConfig,
 		header,
 		footer
 	}: {
@@ -35,6 +36,8 @@
 		defaultSortKey?: string;
 		/** Initial sort direction when defaultSortKey is set. */
 		defaultSortDirection?: Exclude<SortDirection, 'none'>;
+		/** Behavior config (export, sort, filter, pagination). Defaults to native. */
+		config?: TableConfig;
 		header?: Snippet;
 		footer?: Snippet;
 	} = $props();
@@ -52,19 +55,30 @@
 	let sortDirection = $state<SortDirection>(getInitialSortDirection());
 	let filterValues = $state<Record<number, string>>({});
 
-	/** Filtered data (reactive) */
-	let filteredData = $derived.by(() => filterData(data, columns, filterValues)) as Record<
-		string,
-		unknown
-	>[];
+	/** Total de colunas renderizadas (inclui a coluna de ações, se houver). */
+	const totalCols = $derived(columns.length + (actions.length > 0 ? 1 : 0));
 
-	//** Sorted data (reactive) */
-	let sortedData = $derived.by(() =>
-		sortData(filteredData, columns, sortColumnIndex, sortDirection)
-	) as Record<string, unknown>[];
+	/** Filtered data (reactive) — skipped when filterMode is 'wasm' */
+	let filteredData = $derived.by(() => {
+		if (config.filterMode === 'wasm') return data;
+		return filterData(data, columns, filterValues);
+	}) as Record<string, unknown>[];
+
+	//** Sorted data (reactive) — skipped when sortMode is 'wasm' */
+	let sortedData = $derived.by(() => {
+		if (config.sortMode === 'wasm') return filteredData;
+		return sortData(filteredData, columns, sortColumnIndex, sortDirection);
+	}) as Record<string, unknown>[];
 
 	/** Handlers */
 	function handleSort(colIndex: number): void {
+		if (config.sortMode === 'wasm') {
+			const col = columns[colIndex];
+			const newDir = sortDirection === 'asc' ? 'desc' : 'asc';
+			sortDirection = newDir;
+			config.onSortChange?.(String(col.key), newDir);
+			return;
+		}
 		if (sortColumnIndex === colIndex) {
 			if (sortDirection === 'none') sortDirection = 'asc';
 			else if (sortDirection === 'asc') sortDirection = 'desc';
@@ -76,6 +90,11 @@
 	}
 
 	function handleFilter(colIndex: number, value: string): void {
+		if (config.filterMode === 'wasm') {
+			const col = columns[colIndex];
+			config.onFilterChange?.(String(col.key), value);
+			return;
+		}
 		filterValues = { ...filterValues, [colIndex]: value };
 	}
 
@@ -98,7 +117,22 @@
 		<div class="table-caption">
 			<span class="caption-title">{caption}</span>
 			<span class="caption-actions">
-				{#if data.length > 0}
+				{#if config.exportMode === 'wasm' && data.length > 0}
+					<Button
+						variant="secondary"
+						size="sm"
+						icon="download"
+						onclick={() => config.onExport?.('xlsx')}
+						title={LOCALES[$localeStore].exportXlsx}>XLSX</Button
+					>
+					<Button
+						variant="secondary"
+						size="sm"
+						icon="download"
+						onclick={() => config.onExport?.('pdf')}
+						title={LOCALES[$localeStore].exportPdf}>PDF</Button
+					>
+				{:else if data.length > 0}
 					<Button
 						variant="secondary"
 						size="sm"
@@ -126,7 +160,11 @@
 				<tr>
 					{#each columns as col, idx (col.key)}
 						{#if col.title}
-							<th class:col-right={col.align === 'right'} class:col-center={col.align === 'center'}>
+							<th
+								class:col-right={col.align === 'right'}
+								class:col-center={col.align === 'center'}
+								style:width={col.width ? col.width : undefined}
+							>
 								<span class="th-label">{col.title}</span>
 								{#if col.sortable}
 									<button
@@ -141,11 +179,14 @@
 							</th>
 						{/if}
 					{/each}
+					{#if actions.length > 0}
+						<th class="col-actions-cell"></th>
+					{/if}
 				</tr>
 				<tr class="filter-row">
 					{#each columns as col, idx (col.key)}
 						{#if col.filterable !== false}
-							<th>
+							<th style:width={col.width ? col.width : undefined}>
 								<input
 									type="search"
 									placeholder={LOCALES[$localeStore].filter}
@@ -154,9 +195,12 @@
 								/>
 							</th>
 						{:else}
-							<th></th>
+							<th style:width={col.width ? col.width : undefined}></th>
 						{/if}
 					{/each}
+					{#if actions.length > 0}
+						<th class="col-actions-cell"></th>
+					{/if}
 				</tr>
 			</thead>
 
@@ -222,8 +266,25 @@
 
 		<tfoot>
 			<tr>
-				<td class="tfoot-cell" colspan={columns.length}>
+				<td class="tfoot-cell" colspan={totalCols}>
 					<span class="">{LOCALES[$localeStore].rows.replace('{count}', String(data.length))}</span>
+					{#if config.pagination === 'native' && config.onPageChange}
+						<div class="pagination">
+							<Button
+								variant="secondary"
+								size="sm"
+								disabled={(config.page ?? 1) <= 1}
+								onclick={() => config.onPageChange?.((config.page ?? 1) - 1)}
+							>←</Button>
+							<span class="page-info">{config.page} / {Math.ceil((config.total ?? 0) / (config.pageSize ?? 25))}</span>
+							<Button
+								variant="secondary"
+								size="sm"
+								disabled={(config.page ?? 1) >= Math.ceil((config.total ?? 0) / (config.pageSize ?? 25))}
+								onclick={() => config.onPageChange?.((config.page ?? 1) + 1)}
+							>→</Button>
+						</div>
+					{/if}
 					{@render footer?.()}
 				</td>
 			</tr>
@@ -468,6 +529,19 @@
 	.tfoot-cell {
 		justify-content: space-between;
 		align-items: center;
+	}
+
+	.pagination {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+		margin-left: var(--spacing-md);
+	}
+
+	.page-info {
+		font-size: var(--font-size-xs);
+		color: var(--color-on-surface);
+		opacity: 0.7;
 	}
 
 	@media (max-width: 600px) {

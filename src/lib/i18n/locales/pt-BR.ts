@@ -18,6 +18,8 @@ const ptBR: Messages = {
 	// Table
 	exportCsv: 'Exportar CSV',
 	csv: 'CSV',
+	exportXlsx: 'Exportar XLSX',
+	exportPdf: 'Exportar PDF',
 	addNewRecord: 'Adicionar novo registro',
 	sort: 'Ordenar',
 	filter: 'Filtrar...',
@@ -35,6 +37,8 @@ const ptBR: Messages = {
 	confirmDeletion: 'Confirmar Exclusão',
 	deleteMessage: 'Tem certeza de que deseja excluir este registro?',
 	deleteWarning: 'Esta ação não pode ser desfeita.',
+	deleteConfirm: 'Excluir este registro?',
+	deleteError: 'Erro ao excluir: {error}',
 
 	// Toast labels
 	toastSuccess: 'Sucesso',

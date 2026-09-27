@@ -20,6 +20,8 @@ export default {
 	// Table
 	exportCsv: 'Export CSV',
 	csv: 'CSV',
+	exportXlsx: 'Export XLSX',
+	exportPdf: 'Export PDF',
 	addNewRecord: 'Add new record',
 	sort: 'Sort',
 	filter: 'Filter...',
@@ -37,6 +39,8 @@ export default {
 	confirmDeletion: 'Confirm Deletion',
 	deleteMessage: 'Are you sure you want to delete this record?',
 	deleteWarning: 'This action cannot be undone.',
+	deleteConfirm: 'Delete this record?',
+	deleteError: 'Error deleting: {error}',
 
 	// Toast labels
 	toastSuccess: 'Success',

@@ -7,6 +7,7 @@ export { default as FormField } from './FormField.svelte';
 export { default as NumericField } from './NumericField.svelte';
 export { default as SelectField } from './SelectField.svelte';
 export { default as SliderField } from './SliderField.svelte';
+export { default as SwitchField } from './SwitchField.svelte';
 export type {
 	CurrencyFieldProps,
 	DateFieldProps,
@@ -17,5 +18,6 @@ export type {
 	NumericFieldProps,
 	SelectFieldProps,
 	SelectOption,
-	SliderFieldProps
+	SliderFieldProps,
+	SwitchFieldProps
 } from './formsTypes';

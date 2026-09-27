@@ -10,6 +10,9 @@
 		id,
 		colSpan = 4,
 		class: className = '',
+		disabled = false,
+		required = false,
+		error = '',
 		children
 	}: FormFieldProps = $props();
 
@@ -23,14 +26,42 @@
 	class:grid-col-2={colSpan === 2}
 	class:grid-col-3={colSpan === 3}
 	class:grid-col-4={colSpan === 4}
+	class:field-disabled={disabled}
 >
 	{#if label || hasHint}
 		{#if hasHint}
 			<FieldHint {hint} {hintTitle} {hintImpact} {label} labelFor={generatedId} />
 		{:else}
-			<label for={generatedId} class="field-label">{label}</label>
+			<label for={generatedId} class="field-label">
+				{label}
+				{#if required}<span class="required-marker">*</span>{/if}
+			</label>
 		{/if}
 	{/if}
 
 	{@render children(generatedId)}
+
+	{#if error}
+		<span class="field-error">{error}</span>
+	{/if}
 </div>
+
+<style>
+	.required-marker {
+		color: var(--color-error, #ef4444);
+		margin-left: 2px;
+	}
+
+	.field-error {
+		display: block;
+		margin-top: 4px;
+		font-size: var(--font-size-xs);
+		color: var(--color-error, #ef4444);
+	}
+
+	.field-disabled .field-input,
+	.field-disabled [data-select-trigger] {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+</style>

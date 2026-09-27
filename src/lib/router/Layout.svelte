@@ -4,7 +4,14 @@
 	import { HashRouter } from './HashRouter';
 	import type { LayoutProps } from './routerTypes';
 
-	let { children, router = new HashRouter() }: LayoutProps = $props();
+	let {
+		children,
+		router = new HashRouter(),
+		sidenavMode = 'overlay',
+		sidenavTitle,
+		sidenavLogo,
+		sidenavFooter
+	}: LayoutProps = $props();
 
 	let sidenavOpen = $state(false);
 
@@ -13,15 +20,45 @@
 	}
 </script>
 
-<Sidenav isOpen={sidenavOpen} onOverlayClick={closeSidenav} {router} />
+<div class="layout-body">
+	<Sidenav
+		isOpen={sidenavOpen}
+		onOverlayClick={closeSidenav}
+		{router}
+		mode={sidenavMode}
+		title={sidenavTitle}
+		logo={sidenavLogo}
+		footer={sidenavFooter}
+	/>
 
-<Navbar {router} onMenuClick={() => (sidenavOpen = !sidenavOpen)} />
+	<div class="layout-main">
+		<Navbar
+			{router}
+			showHamburguer={sidenavMode !== 'fixed'}
+			onMenuClick={() => (sidenavOpen = !sidenavOpen)}
+		/>
 
-<main class="main-content">
-	{@render children?.()}
-</main>
+		<main class="main-content">
+			{@render children?.()}
+		</main>
+	</div>
+</div>
 
 <style>
+	/* Shell: sidenav (fixed mode) sits in the flex flow; the rest of the
+	   app (topbar + content) occupies the remaining width. */
+	.layout-body {
+		display: flex;
+		min-height: 100vh;
+	}
+
+	.layout-main {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
 	.main-content {
 		flex: 1;
 		padding: var(--spacing-md);
