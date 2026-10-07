@@ -49,6 +49,8 @@
 				? _selectedItem?.id
 					? LOCALES[$localeStore].editTitle.replace('{entity}', entityName)
 					: LOCALES[$localeStore].newTitle.replace('{entity}', entityName)
+				: _mode === 'create'
+					? LOCALES[$localeStore].newTitle.replace('{entity}', entityName)
 				: LOCALES[$localeStore].deleteTitle.replace('{entity}', entityName)
 	);
 

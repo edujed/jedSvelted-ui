@@ -12,8 +12,10 @@ const ptBR: Messages = {
 	clear: 'Limpar',
 	close: 'Fechar',
 	add: 'Adicionar',
+	update: 'Atualizar',
 	loading: 'Carregando...',
 	empty: 'Nada para exibir.',
+	requiredField: 'Campo obrigatório',
 
 	// Table
 	exportCsv: 'Exportar CSV',

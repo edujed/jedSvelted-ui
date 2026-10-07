@@ -14,8 +14,10 @@ export default {
 	clear: 'Clear',
 	close: 'Close',
 	add: 'Add',
+	update: 'Update',
 	loading: 'Loading...',
 	empty: 'Nothing to display.',
+	requiredField: 'Required field',
 
 	// Table
 	exportCsv: 'Export CSV',

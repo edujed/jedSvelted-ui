@@ -9,13 +9,30 @@
 		onSearch = () => {},
 		onClear = () => {},
 		isOpen = $bindable(true),
-		children
+		children,
+		autofocusAfter = 0
 	}: SearchPanelProps = $props();
 
 	const resolvedTitle = $derived(title ?? LOCALES[$localeStore].search);
+
+	// Foco programático no primeiro campo após refresh (autofocusAfter)
+	let panelEl: HTMLDivElement | undefined = $state();
+	let lastToken = 0;
+	$effect(() => {
+		if (!autofocusAfter || autofocusAfter === lastToken) return;
+		lastToken = autofocusAfter;
+		// Usa rAF + timeout para garantir que o DOM está renderizado
+		requestAnimationFrame(() => {
+			setTimeout(() => {
+				const input = panelEl?.querySelector('input, select, textarea');
+				input?.focus();
+			}, 50);
+		});
+	});
 </script>
 
-<Panel title={resolvedTitle} iconName="filter" {isOpen}>
+<div bind:this={panelEl}>
+	<Panel title={resolvedTitle} iconName="filter" {isOpen}>
 	<div class="search-fields grid">
 		{@render children?.()}
 	</div>
@@ -28,7 +45,8 @@
 			>{LOCALES[$localeStore].clear}</Button
 		>
 	</div>
-</Panel>
+	</Panel>
+</div>
 
 <style>
 	.search-fields {

@@ -36,6 +36,12 @@ export interface SearchPanelProps {
 	isOpen?: boolean;
 	/** Filter fields rendered inside the panel. */
 	children?: Snippet;
+	/**
+	 * When set, focuses the first input/select/textarea inside the panel
+	 * after this many milliseconds. Pass a new value (e.g. a counter)
+	 * to re-trigger the focus. `0` or `undefined` disables it.
+	 */
+	autofocusAfter?: number;
 }
 
 /**

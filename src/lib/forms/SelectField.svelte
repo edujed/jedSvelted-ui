@@ -22,8 +22,14 @@
 
 	const resolvedPlaceholder = $derived(placeholder ?? LOCALES[$localeStore].selectPlaceholder);
 
+	// Notifica o pai quando o valor muda por interação do usuário.
+	// Em Svelte 5, usamos $effect com um guard em closure não-reativa.
+	// O _guard.last não é lido por nenhum $derived, então escrevê-lo
+	// não dispara reavaliação do próprio $effect (sem loop).
+	const _guard = { last: value };
 	$effect(() => {
-		if (onValueChange && value) {
+		if (onValueChange && value !== _guard.last) {
+			_guard.last = value;
 			onValueChange(value);
 		}
 	});
