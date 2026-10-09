@@ -28,6 +28,19 @@
 	import IconTree from './IconTree.svelte';
 	import IconBuilding from './IconBuilding.svelte';
 	import IconCalendar from './IconCalendar.svelte';
+	import IconUsers from './IconUsers.svelte';
+	import IconFileText from './IconFileText.svelte';
+	import IconArrowsSwap from './IconArrowsSwap.svelte';
+	import IconMapPin from './IconMapPin.svelte';
+	import IconPieChart from './IconPieChart.svelte';
+	import IconFileSignature from './IconFileSignature.svelte';
+	import IconTag from './IconTag.svelte';
+	import IconCreditCard from './IconCreditCard.svelte';
+	import IconQrCode from './IconQrCode.svelte';
+	import IconShield from './IconShield.svelte';
+	import IconLock from './IconLock.svelte';
+	import IconPhone from './IconPhone.svelte';
+	import IconMap from './IconMap.svelte';
 	import type { IconName } from './iconsTypes';
 
 	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
@@ -39,6 +52,7 @@
 		edit: IconEdit,
 		trash: IconTrash,
 		user: IconUser,
+		users: IconUsers,
 		more: IconMore,
 		'chevron-right': IconChevronRight,
 		check: IconCheck,
@@ -60,7 +74,19 @@
 		'user-alt': IconUserAlt,
 		tree: IconTree,
 		building: IconBuilding,
-		calendar: IconCalendar
+		calendar: IconCalendar,
+		'file-text': IconFileText,
+		'arrows-swap': IconArrowsSwap,
+		'map-pin': IconMapPin,
+		'pie-chart': IconPieChart,
+		'file-signature': IconFileSignature,
+		tag: IconTag,
+		'credit-card': IconCreditCard,
+		'qr-code': IconQrCode,
+		shield: IconShield,
+		lock: IconLock,
+		phone: IconPhone,
+		map: IconMap
 	} as const;
 
 	let {

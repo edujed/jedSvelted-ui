@@ -2,7 +2,7 @@
 	import type { RouteState } from '../router';
 	import type { MenuItem, SidenavProps } from './navTypes';
 	import { cleanPattern, isRouteActive } from './navUtils';
-	import { IconX } from '../icons';
+	import { Icon, IconX } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let {
@@ -120,7 +120,7 @@
 									navigate(item.path);
 								}}
 							>
-								<span class="menu-icon">{item.icon}</span>
+								<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
 								<span class="menu-label">{item.label}</span>
 							</a>
 						</li>
@@ -134,46 +134,46 @@
 				</div>
 			{/if}
 		</aside>
-	{:else}
-		<div class="sidenav-overlay" role="presentation" onclick={close}>
-			<div class="sidenav" role="dialog" aria-label={LOCALES[$localeStore].navigationMenu}>
-				<div class="sidenav-header">
-					<span
-						role="link"
-						tabindex="0"
-						class="sidenav-brand"
-						onclick={() => navigate('/')}
-						onkeydown={(e) => {
-							if (e.key === 'Enter' || e.key === ' ') navigate('/');
-						}}
-					>
-						<span class="sidenav-logo">{logo}</span>
-						<span class="sidenav-title">{title}</span>
-					</span>
-					<button class="sidenav-close" aria-label={LOCALES[$localeStore].closeMenu} onclick={close}>
-						<IconX size={18} />
-					</button>
-				</div>
+		{:else}
+			<div class="sidenav-overlay" role="presentation" onclick={close}>
+				<div class="sidenav" role="dialog" aria-label={LOCALES[$localeStore].navigationMenu}>
+					<div class="sidenav-header">
+						<span
+							role="link"
+							tabindex="0"
+							class="sidenav-brand"
+							onclick={() => navigate('/')}
+							onkeydown={(e) => {
+								if (e.key === 'Enter' || e.key === ' ') navigate('/');
+							}}
+						>
+							<span class="sidenav-logo">{logo}</span>
+							<span class="sidenav-title">{title}</span>
+						</span>
+						<button class="sidenav-close" aria-label={LOCALES[$localeStore].closeMenu} onclick={close}>
+							<IconX size={18} />
+						</button>
+					</div>
 
-				<nav class="sidenav-content">
-					<ul class="menu-list">
-						{#each menuItems as item, i (i)}
-							<li>
-								<a
-									class={'menu-item' + (isRouteActive(item.path, currentPage) ? ' active' : '')}
-									href="#{item.path}"
-									onclick={(e) => {
-										e.preventDefault();
-										navigate(item.path);
-								}}
-								>
-									<span class="menu-icon">{item.icon}</span>
-									<span class="menu-label">{item.label}</span>
-								</a>
-							</li>
-						{/each}
-					</ul>
-				</nav>
+					<nav class="sidenav-content">
+						<ul class="menu-list">
+							{#each menuItems as item, i (i)}
+								<li>
+									<a
+										class={'menu-item' + (isRouteActive(item.path, currentPage) ? ' active' : '')}
+										href="#{item.path}"
+										onclick={(e) => {
+											e.preventDefault();
+											navigate(item.path);
+									}}
+									>
+										<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
+										<span class="menu-label">{item.label}</span>
+									</a>
+								</li>
+							{/each}
+						</ul>
+					</nav>
 			</div>
 		</div>
 	{/if}
@@ -319,6 +319,7 @@
 		width: 24px;
 		text-align: center;
 		flex-shrink: 0;
+		color: var(--color-primary);
 	}
 
 	.menu-label {
