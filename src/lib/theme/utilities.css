@@ -219,3 +219,7 @@
 	opacity: 0.8;
 	margin: 0;
 }
+
+.icon-primary {
+	color: var(--color-primary);
+}

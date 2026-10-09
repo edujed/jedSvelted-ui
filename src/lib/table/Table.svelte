@@ -248,7 +248,7 @@
 														title={action.hint}
 													>
 														{#if action.icon}
-															<Icon name={action.icon} size={16} />
+															<Icon name={action.icon} size={16} class="action-icon" />
 														{/if}
 														<span class="action-text">{action.title}</span>
 													</button>
@@ -389,8 +389,8 @@
 
 	:global(.actions-popover .action-icon) {
 		flex-shrink: 0;
-		color: var(--color-on-surface);
-		opacity: 0.6;
+		color: var(--color-primary);
+		opacity: 0.8;
 		transition: all var(--transition-fast);
 	}
 

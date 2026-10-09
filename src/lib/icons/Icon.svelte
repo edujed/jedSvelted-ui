@@ -101,6 +101,13 @@
 
 	// Selects the icon component based on the name
 	const IconComponent = $derived(ICON_MAP[name] ?? IconEye);
+
 </script>
 
-<IconComponent {size} class={className} />
+<IconComponent {size} class={className}/>
+
+<style>
+	:global(svg) {
+		display: block;
+	}
+</style>
