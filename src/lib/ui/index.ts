@@ -3,6 +3,7 @@ export { default as Badge } from './Badge.svelte';
 export { default as Button } from './Button.svelte';
 export { default as ButtonGroup } from './ButtonGroup.svelte';
 export { default as DeleteConfirm } from './DeleteConfirm.svelte';
+export { default as EmptyState } from './EmptyState.svelte';
 export { default as FileTree } from './FileTree.svelte';
 export { default as InfoGrid } from './InfoGrid.svelte';
 export { default as Skeleton } from './Skeleton.svelte';
@@ -15,6 +16,7 @@ export type {
 	ButtonGroupOption,
 	ButtonGroupProps,
 	DeleteConfirmProps,
+	EmptyStateProps,
 	FileNode,
 	FileTreeProps,
 	InfoGridItem,

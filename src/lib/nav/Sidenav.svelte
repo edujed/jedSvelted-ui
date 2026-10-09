@@ -12,7 +12,8 @@
 		onOverlayClick = () => {},
 		router,
 		mode = 'overlay',
-		footer
+		footer,
+		header
 	}: SidenavProps = $props();
 
 	// Local snapshot of the route state, kept in sync via a router listener
@@ -108,6 +109,12 @@
 				</span>
 			</div>
 
+			{#if header}
+				<div class="sidenav-header-extra">
+					{@render header()}
+				</div>
+			{/if}
+
 			<nav class="sidenav-content">
 				<ul class="menu-list">
 					{#each menuItems as item, i (i)}
@@ -155,6 +162,12 @@
 						</button>
 					</div>
 
+					{#if header}
+						<div class="sidenav-header-extra">
+							{@render header()}
+						</div>
+					{/if}
+
 					<nav class="sidenav-content">
 						<ul class="menu-list">
 							{#each menuItems as item, i (i)}
@@ -165,7 +178,7 @@
 										onclick={(e) => {
 											e.preventDefault();
 											navigate(item.path);
-									}}
+										}}
 									>
 										<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
 										<span class="menu-label">{item.label}</span>
@@ -219,6 +232,12 @@
 	.sidenav-footer {
 		padding: var(--spacing-md);
 		border-top: 1px solid var(--color-border);
+		flex-shrink: 0;
+	}
+
+	.sidenav-header-extra {
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-bottom: 1px solid var(--color-border);
 		flex-shrink: 0;
 	}
 

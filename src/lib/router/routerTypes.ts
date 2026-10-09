@@ -21,4 +21,6 @@ export interface LayoutProps {
 	sidenavLogo?: string;
 	/** Extra content rendered at the bottom of the sidenav. */
 	sidenavFooter?: Snippet;
+	/** Extra content rendered between the sidenav logo and the menu (e.g. user info, logout). */
+	sidenavHeader?: Snippet;
 }

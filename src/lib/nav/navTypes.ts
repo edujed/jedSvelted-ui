@@ -80,4 +80,6 @@ export interface SidenavProps {
 	mode?: 'overlay' | 'fixed';
 	/** Extra content rendered at the bottom of the menu (e.g. a badge). */
 	footer?: Snippet;
+	/** Extra content rendered between the logo/header and the menu (e.g. user info, logout). */
+	header?: Snippet;
 }

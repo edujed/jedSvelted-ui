@@ -10,7 +10,8 @@
 		sidenavMode = 'overlay',
 		sidenavTitle,
 		sidenavLogo,
-		sidenavFooter
+		sidenavFooter,
+		sidenavHeader
 	}: LayoutProps = $props();
 
 	let sidenavOpen = $state(false);
@@ -29,6 +30,7 @@
 		title={sidenavTitle}
 		logo={sidenavLogo}
 		footer={sidenavFooter}
+		header={sidenavHeader}
 	/>
 
 	<div class="layout-main">

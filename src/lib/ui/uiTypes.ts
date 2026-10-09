@@ -151,6 +151,18 @@ export interface InfoGridProps {
 	items: InfoGridItem[];
 }
 
+/**
+ * Props for `EmptyState` — a placeholder shown when there is no content.
+ */
+export interface EmptyStateProps {
+	/** Message to display. */
+	message?: string;
+	/** Optional icon (emoji or string) rendered above the message. */
+	icon?: string | null;
+	/** Extra classes. */
+	class?: string;
+}
+
 /** Skeleton shape variants. */
 export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'list' | 'table';
 
