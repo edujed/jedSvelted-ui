@@ -17,7 +17,7 @@
 		<DropdownMenu.Trigger class="lang-btn">
 			<span class="lang-icon">{localeInfo?.icon ?? '🌐'}</span>
 			<span class="lang-label">{localeInfo?.label ?? 'Language'}</span>
-			<IconChevronDown size={14} class="chevron" />
+			<IconChevronDown size={14} class="chevron" primaryColor="var(--color-navbar-text)" />
 		</DropdownMenu.Trigger>
 
 		<DropdownMenu.Content class="lang-list">

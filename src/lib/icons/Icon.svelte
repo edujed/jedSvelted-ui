@@ -8,6 +8,7 @@
 	import IconUser from './IconUser.svelte';
 	import IconMore from './IconMore.svelte';
 	import IconChevronRight from './IconChevronRight.svelte';
+	import IconChevronLeft from './IconChevronLeft.svelte';
 	import IconCheck from './IconCheck.svelte';
 	import IconX from './IconX.svelte';
 	import IconWallet from './IconWallet.svelte';
@@ -22,6 +23,7 @@
 	import IconChevronDown from './IconChevronDown.svelte';
 	import IconCircle from './IconCircle.svelte';
 	import IconFilter from './IconFilter.svelte';
+	import IconHelp from './IconHelp.svelte';
 	import IconSearch from './IconSearch.svelte';
 	import IconSettings from './IconSettings.svelte';
 	import IconUserAlt from './IconUserAlt.svelte';
@@ -41,7 +43,7 @@
 	import IconLock from './IconLock.svelte';
 	import IconPhone from './IconPhone.svelte';
 	import IconMap from './IconMap.svelte';
-	import type { IconName } from './iconsTypes';
+	import type { IconName, IconProps } from './iconsTypes';
 
 	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
 	const ICON_MAP = {
@@ -55,6 +57,7 @@
 		users: IconUsers,
 		more: IconMore,
 		'chevron-right': IconChevronRight,
+		'chevron-left': IconChevronLeft,
 		check: IconCheck,
 		x: IconX,
 		wallet: IconWallet,
@@ -69,6 +72,7 @@
 		'chevron-down': IconChevronDown,
 		circle: IconCircle,
 		filter: IconFilter,
+		help: IconHelp,
 		search: IconSearch,
 		settings: IconSettings,
 		'user-alt': IconUserAlt,
@@ -92,19 +96,17 @@
 	let {
 		name = 'eye',
 		size = 16,
-		class: className = ''
-	}: {
-		name?: IconName;
-		size?: number;
-		class?: string;
-	} = $props();
+		class: className = '',
+		primaryColor = 'var(--icon-color-primary, currentColor)',
+		secondaryColor = 'var(--icon-color-accent, currentColor)'
+	}: IconProps & { name?: IconName } = $props();
 
 	// Selects the icon component based on the name
 	const IconComponent = $derived(ICON_MAP[name] ?? IconEye);
 
 </script>
 
-<IconComponent {size} class={className}/>
+<IconComponent {size} class={className} {primaryColor} {secondaryColor} />
 
 <style>
 	:global(svg) {

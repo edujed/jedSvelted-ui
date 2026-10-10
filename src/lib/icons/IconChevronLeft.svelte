@@ -21,10 +21,7 @@
 	class={className}
 >
 	<g stroke={primaryColor}>
-		<circle cx="12" cy="12" r="10" />
-	</g>
-	<g stroke={secondaryColor}>
-		<polyline points="12 6 12 12 16 14" />
+		<polyline points="15 18 9 12 15 6" />
 	</g>
 </svg>
 

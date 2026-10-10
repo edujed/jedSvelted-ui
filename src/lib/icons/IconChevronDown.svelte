@@ -1,12 +1,18 @@
 <script lang="ts">
-	let { size = 16, class: className = '' }: { size?: number; class?: string } = $props();
+	import type { IconProps } from './iconsTypes';
+
+	let {
+		size = 16,
+		class: className = '',
+		primaryColor = 'var(--icon-color-primary, currentColor)',
+		secondaryColor = 'var(--icon-color-accent, currentColor)'
+	}: IconProps = $props();
 </script>
 
 <svg
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 24 24"
 	fill="none"
-	stroke="currentColor"
 	stroke-width="2"
 	stroke-linecap="round"
 	stroke-linejoin="round"
@@ -14,7 +20,9 @@
 	height={size}
 	class={className}
 >
-	<path d="M6 9l6 6 6-6" />
+	<g stroke={primaryColor}>
+		<polyline points="6 9 12 15 18 9" />
+	</g>
 </svg>
 
 <style>

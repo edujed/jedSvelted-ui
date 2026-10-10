@@ -62,6 +62,8 @@
 			variant="ghost"
 			icon={currentMode === 'dark' ? 'sun' : 'moon'}
 			iconSize={18}
+			iconPrimaryColor="var(--color-navbar-text)"
+			iconSecondaryColor="var(--color-navbar-text)"
 			aria-label={currentMode === 'dark'
 				? LOCALES[$localeStore].lightMode
 				: LOCALES[$localeStore].darkMode}

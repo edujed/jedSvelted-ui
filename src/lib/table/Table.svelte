@@ -146,6 +146,8 @@
 					size="sm"
 					icon="plus"
 					iconSize={14}
+					iconPrimaryColor="var(--color-on-primary)"
+					iconSecondaryColor="var(--color-on-accent)"
 					onclick={onAdd}
 					title={LOCALES[$localeStore].addNewRecord}>{LOCALES[$localeStore].add}</Button
 				>

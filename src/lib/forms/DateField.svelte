@@ -3,7 +3,7 @@
 	import { Portal } from 'bits-ui';
 	import { CalendarDate } from '@internationalized/date';
 	import FormField from './FormField.svelte';
-	import { IconCalendar } from '../icons';
+	import { IconCalendar, IconChevronLeft, IconChevronRight } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { DateFieldProps } from './formsTypes';
 
@@ -90,33 +90,11 @@
 							{#snippet children({ months, weekdays })}
 								<DatePicker.Header>
 									<DatePicker.PrevButton class="date-nav-btn" aria-label="Previous month">
-										<svg
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											width="14"
-											height="14"
-										>
-											<path d="M15 18l-6-6 6-6" />
-										</svg>
+										<IconChevronLeft size={14} />
 									</DatePicker.PrevButton>
 									<DatePicker.Heading class="date-heading" />
 									<DatePicker.NextButton class="date-nav-btn" aria-label="Next month">
-										<svg
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											width="14"
-											height="14"
-										>
-											<path d="M9 18l6-6-6-6" />
-										</svg>
+										<IconChevronRight size={14} />
 									</DatePicker.NextButton>
 								</DatePicker.Header>
 

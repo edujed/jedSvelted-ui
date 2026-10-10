@@ -1,11 +1,12 @@
 // Barrel file for icons
-export type { IconName } from './iconsTypes';
+export type { IconName, IconProps } from './iconsTypes';
 export { default as Icon } from './Icon.svelte';
 export { default as IconBank } from './IconBank.svelte';
 export { default as IconBuilding } from './IconBuilding.svelte';
 export { default as IconCalendar } from './IconCalendar.svelte';
 export { default as IconCheck } from './IconCheck.svelte';
 export { default as IconChevronDown } from './IconChevronDown.svelte';
+export { default as IconChevronLeft } from './IconChevronLeft.svelte';
 export { default as IconChevronRight } from './IconChevronRight.svelte';
 export { default as IconCircle } from './IconCircle.svelte';
 export { default as IconClock } from './IconClock.svelte';
@@ -15,6 +16,7 @@ export { default as IconEye } from './IconEye.svelte';
 export { default as IconFile } from './IconFile.svelte';
 export { default as IconFilter } from './IconFilter.svelte';
 export { default as IconFolder } from './IconFolder.svelte';
+export { default as IconHelp } from './IconHelp.svelte';
 export { default as IconFolderOpen } from './IconFolderOpen.svelte';
 export { default as IconMenu } from './IconMenu.svelte';
 export { default as IconMoon } from './IconMoon.svelte';

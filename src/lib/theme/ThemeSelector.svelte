@@ -19,7 +19,7 @@
 		<DropdownMenu.Trigger class="theme-btn">
 			<span class="theme-icon">{themeInfo?.icon ?? '🔵'}</span>
 			<span class="theme-label">{themeInfo?.label ?? LOCALES[$localeStore].theme}</span>
-			<IconChevronDown size={14} class="chevron" />
+			<IconChevronDown size={14} class="chevron" primaryColor="var(--color-navbar-text)" />
 		</DropdownMenu.Trigger>
 
 		<DropdownMenu.Content class="theme-list">

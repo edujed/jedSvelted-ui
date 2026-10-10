@@ -6,7 +6,10 @@
 	--color-primary-light: #f1f8e9;
 	--color-primary-dark: #33691e;
 	--color-accent: #8bc34a;
+	--icon-color-primary: var(--color-primary);
+	--icon-color-accent: var(--color-accent);
 	--color-on-primary: #ffffff;
+	--color-on-accent: #ffff00;
 	--color-surface: #f9faf5;
 	--color-background: #e8f5e9;
 	--color-on-surface: #2e4a1e;

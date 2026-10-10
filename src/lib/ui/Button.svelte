@@ -8,6 +8,8 @@
 		icon,
 		iconPosition = 'left',
 		iconSize = 16,
+		iconPrimaryColor,
+		iconSecondaryColor,
 		disabled = false,
 		class: className = '',
 		children,
@@ -17,11 +19,23 @@
 
 <button class="btn btn-{variant} btn-{size} {className}" {disabled} {...restProps}>
 	{#if icon && iconPosition === 'left'}
-		<Icon name={icon} size={iconSize} class="btn-icon" />
+		<Icon
+			name={icon}
+			size={iconSize}
+			class="btn-icon"
+			{...iconPrimaryColor !== undefined ? { primaryColor: iconPrimaryColor } : {}}
+			{...iconSecondaryColor !== undefined ? { secondaryColor: iconSecondaryColor } : {}}
+		/>
 	{/if}
 	{@render children?.()}
 	{#if icon && iconPosition === 'right'}
-		<Icon name={icon} size={iconSize} class="btn-icon" />
+		<Icon
+			name={icon}
+			size={iconSize}
+			class="btn-icon"
+			{...iconPrimaryColor !== undefined ? { primaryColor: iconPrimaryColor } : {}}
+			{...iconSecondaryColor !== undefined ? { secondaryColor: iconSecondaryColor } : {}}
+		/>
 	{/if}
 </button>
 
