@@ -47,18 +47,18 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 | `actions`   | CRUD action handlers (`createHandleDetail`)                                                                            |
 | `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                                                   |
 | `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                                                   |
-| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `parseCurrency`)                                 |
-| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `SwitchField`, `FormActions`) |
+| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `formatDateTime`, `parseCurrency`, `stripThousands`) |
+| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `SwitchField`, `FormField`, `FormActions`) |
 | `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`) + currency definitions                          |
 | `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                                               |
 | `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                                                    |
 | `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                                             |
 | `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                                                                  |
 | `router`    | Routing and app layout (`HashRouter`, `Layout`)                                                                        |
-| `table`     | Interactive tables (`Table`)                                                                                           |
+| `table`     | Interactive tables (`Table`) + pure utilities (`buildCsv`, `filterData`, `sortData`)                                   |
 | `tabs`      | Tab system (`Tabs`)                                                                                                    |
 | `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                                                        |
-| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `FileTree`, `Skeleton`)          |
+| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `EmptyState`, `FileTree`, `Skeleton`) |
 
 ### Import styles
 
@@ -91,15 +91,16 @@ data shapes they work with), so you can build objects for binding/aggregating
 props and compose new components on top of the lib's primitives:
 
 ```ts
-import type { ButtonProps, BadgeProps, FileNode } from '@edujed/jedsvelted-ui/ui';
-import type { TableCol, TableAction } from '@edujed/jedsvelted-ui/table';
+import type { ButtonProps, BadgeProps, FileNode, EmptyStateProps } from '@edujed/jedsvelted-ui/ui';
+import type { TableCol, TableAction, TableConfig } from '@edujed/jedsvelted-ui/table';
 import type { CrudPanelProps } from '@edujed/jedsvelted-ui/container';
 import type {
 	EditFieldProps,
 	SelectOption,
 	CurrencyFieldProps,
 	DateFieldProps,
-	SwitchFieldProps
+	SwitchFieldProps,
+	FormFieldProps
 } from '@edujed/jedsvelted-ui/forms';
 import type { ChatMessageType, ChatPanelProps } from '@edujed/jedsvelted-ui/chat';
 import type { PageShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
@@ -148,8 +149,15 @@ route is typed as `RegisteredRouteItem` (exported by both `router` and `nav`).
 
 <Button variant="primary" icon="plus">Add</Button>
 <Button variant="danger" icon="trash">Delete</Button>
+<Button variant="secondary" size="sm" icon="search" iconPosition="right" iconSize={14}>Search</Button>
 <Badge variant="primary" dismissible onDismiss={() => {}}>label</Badge>
 ```
+
+`Button` also accepts `iconPosition` (`'left'` | `'right'`), `iconSize` (px),
+and `iconPrimaryColor` / `iconSecondaryColor` — both default to `currentColor`,
+so the icon inherits the button's text color and follows the variant
+automatically. Pass an explicit value (e.g. `var(--color-on-primary)`) when
+the inherited color would clash with the background.
 
 ### Panels
 
@@ -163,11 +171,21 @@ route is typed as `RegisteredRouteItem` (exported by both `router` and `nav`).
 	<!-- content -->
 </Panel>
 
+<!-- Search preset (filter fields + search/clear buttons) -->
+<SearchPanel title="Filters" onSearch={search} onClear={clear} bind:isOpen>
+	<!-- filter fields -->
+</SearchPanel>
+
 <!-- Slide-in detail panel -->
 <DetailPanel show={true} title="Details" onClose={() => (show = false)}>
 	<!-- content -->
 </DetailPanel>
 ```
+
+`SearchPanel` is a `Panel` preset with search/clear actions. Its
+`autofocusAfter` prop focuses the first input/select/textarea inside the
+panel after the given delay (pass a new value, e.g. a counter, to re-trigger;
+`0`/`undefined` disables it).
 
 ### CRUD panel
 
@@ -191,10 +209,18 @@ single `onAction` event on confirmed mutations only:
 		<!-- form fields -->
 		<FormActions onSave={() => save(onComplete)} onCancel={() => cancel(onComplete)} />
 	{/snippet}
+	{#snippet renderView(row)}
+		<!-- read-only view of the selected row -->
+	{/snippet}
 </CrudPanel>
 ```
 
 `onAction` receives `(action: 'create' | 'update' | 'delete', item)`.
+
+Other props: `inline` (render in place instead of inside a `DetailPanel`),
+`autoOpenId` (record ID to open automatically — deep-link),
+`onAutoOpenError(id)` (called when `autoOpenId` is set but the record is not
+found in `data`), and `onClose` (overlay mode only).
 
 ### Table
 
@@ -219,7 +245,54 @@ single `onAction` event on confirmed mutations only:
 	rowKey="id"
 	csvFileName="users.csv"
 	onAdd={handleAdd}
+	defaultSortKey="name"
+	defaultSortDirection="asc"
 />
+```
+
+`Table` also accepts `header` and `footer` snippets (rendered in the caption /
+table footer) and a `config` prop (`TableConfig`) to switch each feature
+between `'native'` (handled internally in JS) and `'wasm'` (delegated to your
+callbacks, e.g. a WASM bridge):
+
+```svelte
+<script lang="ts">
+	import { Table } from '@edujed/jedsvelted-ui/table';
+	import type { TableConfig } from '@edujed/jedsvelted-ui/table';
+
+	const config: TableConfig = {
+		// export: 'native' (CSV via JS, default) | 'wasm' (delegates to onExport)
+		exportMode: 'native',
+		onExport: (format) => exportViaWasm(format), // format: 'csv' | 'xlsx' | 'pdf'
+
+		// sort: 'native' (default) | 'wasm' (delegates to onSortChange)
+		sortMode: 'native',
+		onSortChange: (column, direction) => sortViaWasm(column, direction),
+
+		// filter: 'native' (default) | 'wasm' (delegates to onFilterChange)
+		filterMode: 'native',
+		onFilterChange: (column, value) => filterViaWasm(column, value),
+
+		// pagination: 'native' (footer with page controls) | 'off' (default)
+		pagination: 'native',
+		page: 1,
+		pageSize: 25,
+		total: 120,
+		onPageChange: (page) => loadPage(page)
+	};
+</script>
+
+<Table {config} {columns} {data} />
+```
+
+The table's pure logic is also exported for custom use (no reactive state):
+
+```ts
+import { buildCsv, filterData, sortData } from '@edujed/jedsvelted-ui/table';
+
+const csv = buildCsv(columns, rows); // ';' separated, skips exportable === false
+const filtered = filterData(rows, columns, { 0: 'john' });
+const sorted = sortData(rows, columns, 0, 'asc');
 ```
 
 ### Forms
@@ -253,6 +326,27 @@ single `onAction` event on confirmed mutations only:
 <CurrencyField label="Annual Budget" bind:value={budget} currency="BRL" />
 <SwitchField label="Active" bind:value={active} />
 <FormActions onSave={save} onCancel={cancel} />
+```
+
+All fields share the same vocabulary (`FieldHintProps`): `label`, `hint`,
+`hintTitle`, `hintImpact`, `labelFor`, plus `colSpan` (1-4), `disabled`,
+`required` (shows a red asterisk), `error` (validation message below the
+field) and `onValueChange`.
+
+`FormField` is the shared wrapper behind every field — it owns the
+label/hint header, the generated input id, and the grid column span. Use it
+directly to wrap a custom control:
+
+```svelte
+<script lang="ts">
+	import { FormField } from '@edujed/jedsvelted-ui/forms';
+</script>
+
+<FormField label="Custom" hint="A custom control" colSpan={2} required>
+	{(id) =>
+		<input id={id} type="text" />
+	}
+</FormField>
 ```
 
 ### DateField
@@ -312,7 +406,7 @@ next to the track. The bound `value` is a plain `boolean`.
 <SwitchField label="Enabled" bind:value={enabled} disabled />
 ```
 
-Behavior:
+### CurrencyField behavior
 
 - **On focus** — the thousands mask is stripped so the user sees a clean number to edit (e.g. `2.100.000,00` → `2100000,00` in pt-BR).
 - **On input** — the bound `value` updates in real time; the display is not re-formatted while typing.
@@ -398,15 +492,19 @@ The hint renders as a `?` icon next to the label. On hover (desktop) or click (m
 />
 ```
 
-### Toasts
+### Toasts & messages
 
 ```svelte
 <script lang="ts">
-	import { toast, ToastContainer } from '@edujed/jedsvelted-ui/info';
+	import { toast, ToastContainer, Message } from '@edujed/jedsvelted-ui/info';
 </script>
 
 <!-- render once in App -->
 <ToastContainer />
+
+<Message variant="warning" title="Heads up" dismissible onDismiss={() => {}}>
+	Something needs your attention.
+</Message>
 ```
 
 ```ts
@@ -415,7 +513,10 @@ toast.warning('Item deleted');
 toast.error('Something went wrong');
 ```
 
-`FieldHint` renders a label with a `?` popover hint (used internally by form fields):
+`Message` is an inline status/alert box (`variant`: `info` | `success` |
+`warning` | `error`, optional `title`, `dismissible`). Toasts share the same
+four variants. `FieldHint` renders a label with a `?` popover hint (used
+internally by form fields):
 
 ```svelte
 <FieldHint label="Temperature" hint="Sampling temperature" labelFor="temp" />
@@ -444,6 +545,22 @@ toast.error('Something went wrong');
 `Navbar` wraps `Topbar` (title from the router, theme/lang selectors, mode
 toggle) and receives the `router` instance. `Sidenav` renders the menu from
 routes registered with `showInMenu: true`.
+
+`Sidenav` supports two display modes via `mode`:
+
+- `'overlay'` (default) — slide-in panel with backdrop, controlled by `isOpen`.
+- `'fixed'` — always-visible sidebar (no overlay, no close button).
+
+It also accepts `title` / `logo` for the header, a `footer` snippet (bottom of
+the menu) and a `header` snippet (between the logo and the menu — e.g. user
+info, logout). `Layout` exposes the same options as `sidenavMode`,
+`sidenavTitle`, `sidenavLogo`, `sidenavFooter` and `sidenavHeader`:
+
+```svelte
+<Layout {router} sidenavMode="fixed" sidenavTitle="My App" sidenavLogo="🚀">
+	<!-- page content -->
+</Layout>
+```
 
 ### Page shells
 
@@ -505,6 +622,18 @@ A placeholder block shown while content is loading. Supports five variants:
 All variants support `width`, `height`, `rows` (for `list`/`table`),
 `circular`, `animated` (default: `true`), and `class`.
 
+### Empty state
+
+A centered placeholder shown when a list has no content:
+
+```svelte
+<script lang="ts">
+	import { EmptyState } from '@edujed/jedsvelted-ui/ui';
+</script>
+
+<EmptyState icon="📭" message="No records found" />
+```
+
 ### Tabs
 
 ```svelte
@@ -548,9 +677,18 @@ t('rows', { count: 5 }); // parameterized
 setLocale('pt-BR'); // runtime switch — UI reacts automatically
 ```
 
-`t()` reads `localeStore` on every call, so it stays in sync with the current
-locale (components that render `t(...)` inside `$derived`/templates re-evaluate
-on locale change).
+`t()` reads `localeStore` on every call, so it always returns the text for the
+current locale — but the call itself is **not reactive**. Inside components,
+read the store so the UI re-renders on locale change:
+
+```svelte
+<script lang="ts">
+	import { localeStore, LOCALES } from '@edujed/jedsvelted-ui/i18n';
+</script>
+
+<!-- reactive: re-renders when the locale changes -->
+<button>{LOCALES[$localeStore].add}</button>
+```
 
 ### Currencies
 
@@ -676,13 +814,21 @@ and fires the appropriate toast. `createHandleDetail` also returns
 <IconCheck size={16} />
 ```
 
-`Icon` accepts a `name` from the registry (`user`, `trash`, `edit`, `eye`,
-`plus`, `search`, `settings`, `sun`, `moon`, `filter`, `sort`, `download`,
-`menu`, `more`, `check`, `x`, `wallet`, `bank`, `clock`, `file`, `folder`,
-`folder-open`, `chevron-right`, `chevron-down`, `circle`, `user-alt`,
-`calendar`).
+`Icon` accepts a `name` from the registry (`user`, `users`, `user-alt`,
+`trash`, `edit`, `eye`, `plus`, `search`, `settings`, `sun`, `moon`, `filter`,
+`sort`, `download`, `menu`, `more`, `check`, `x`, `wallet`, `bank`, `clock`,
+`file`, `file-text`, `folder`, `folder-open`, `chevron-right`,
+`chevron-left`, `chevron-down`, `circle`, `calendar`, `tree`, `building`,
+`arrows-swap`, `map-pin`, `map`, `pie-chart`, `file-signature`, `tag`,
+`credit-card`, `qr-code`, `shield`, `lock`, `phone`, `help`).
 Individual icon components are also exported (`IconCheck`, `IconTrash`,
-`IconCalendar`, …).
+`IconCalendar`, `IconUsers`, `IconCreditCard`, …).
+
+Every icon component accepts `size` (px), `class`, and two color props —
+`primaryColor` (outline/structure) and `secondaryColor` (accent/detail) —
+which default to the active theme's `--icon-color-primary` /
+`--icon-color-accent` (falling back to `currentColor`), so icons follow the
+current theme automatically.
 
 ## 🛠 Local development
 
@@ -714,7 +860,7 @@ git clone https://github.com/edujed/jedSvelted-demo-app.git
 
 ## 📄 License
 
-This project is licensed under the [GNU General Public License v3](./LICENSE).
+This project is licensed under the [GNU Lesser General Public License v3](./LICENSE).
 
 ---
 
