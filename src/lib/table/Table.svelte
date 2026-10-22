@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { ContextMenu, Popover } from 'bits-ui';
+	import { Popover } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
 	import { IconSort } from '../icons';
 	import Button from '../ui/Button.svelte';
+	import ActionMenu from '../ui/ActionMenu.svelte';
+	import type { ActionMenuItem } from '../ui/uiTypes';
 	import { buildCsv, filterData, sortData } from './tableUtils';
 	import type {
 		ExportCompression,
@@ -188,42 +190,33 @@
 							>{LOCALES[$localeStore][exportFormats[0]]}</Button
 						>
 					{:else if exportFormats.length > 1}
-						<ContextMenu.Root>
-							<ContextMenu.Trigger class="btn btn-secondary btn-sm">
-								<span>{LOCALES[$localeStore].export}</span>
-								<Icon name="download" size={14} class="btn-icon" />
-							</ContextMenu.Trigger>
-							<ContextMenu.Content class="actions-popover" side="bottom" align="end" sideOffset={4}>
-								{#each exportFormats as format (format)}
-									{#if COMPRESSIBLE_FORMATS.includes(format)}
-										<ContextMenu.Sub>
-											<ContextMenu.SubTrigger class="action-item">
-												<Icon name={EXPORT_ICONS[format]} size={16} class="action-icon" />
-												<span class="action-text">{LOCALES[$localeStore][format]}</span>
-											</ContextMenu.SubTrigger>
-											<ContextMenu.SubContent class="actions-popover" side="right" align="start" sideOffset={4}>
-												{#each COMPRESSIONS as comp (comp)}
-													<ContextMenu.Item
-														class="action-item"
-														onselect={() => config.onExport?.(format, comp)}
-													>
-														{comp === 'none' ? LOCALES[$localeStore].noCompression : LOCALES[$localeStore][comp]}
-													</ContextMenu.Item>
-												{/each}
-											</ContextMenu.SubContent>
-										</ContextMenu.Sub>
-									{:else}
-										<ContextMenu.Item
-											class="action-item"
-											onselect={() => config.onExport?.(format)}
-										>
-											<Icon name={EXPORT_ICONS[format]} size={16} class="action-icon" />
-											<span class="action-text">{LOCALES[$localeStore][format]}</span>
-										</ContextMenu.Item>
-									{/if}
-								{/each}
-							</ContextMenu.Content>
-						</ContextMenu.Root>
+						{@const exportItems = exportFormats.map((format) => {
+							if (COMPRESSIBLE_FORMATS.includes(format)) {
+								return {
+									value: format,
+									label: LOCALES[$localeStore][format],
+									icon: EXPORT_ICONS[format],
+									subItems: COMPRESSIONS.map((comp) => ({
+										value: `${format}:${comp}`,
+										label: comp === 'none' ? LOCALES[$localeStore].noCompression : LOCALES[$localeStore][comp]
+									}))
+								};
+							}
+							return {
+								value: format,
+								label: LOCALES[$localeStore][format],
+								icon: EXPORT_ICONS[format]
+							};
+						})}
+						<ActionMenu
+							label={LOCALES[$localeStore].export}
+							icon="download"
+							items={exportItems}
+							onSelect={(item: ActionMenuItem) => {
+								const [format, comp] = item.value.split(':') as [ExportFormat, ExportCompression?];
+								config.onExport?.(format, comp);
+							}}
+						/>
 					{/if}
 				{:else if data.length > 0}
 					<Button

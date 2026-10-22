@@ -181,8 +181,10 @@ export {
 export type { Mode, Theme, ThemeId } from './theme';
 
 // ui
-export { Badge, Button, ButtonGroup, DeleteConfirm, FileTree, InfoGrid, Skeleton } from './ui';
+export { ActionMenu, Badge, Button, ButtonGroup, DeleteConfirm, FileTree, InfoGrid, Skeleton } from './ui';
 export type {
+	ActionMenuItem,
+	ActionMenuProps,
 	BadgeProps,
 	BadgeVariant,
 	ButtonGroupOption,

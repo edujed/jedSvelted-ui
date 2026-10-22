@@ -176,6 +176,56 @@ export interface EmptyStateProps {
 	class?: string;
 }
 
+/**
+ * A single item in an `ActionMenu`.
+ */
+export interface ActionMenuItem {
+	/** Unique identifier for the item (used as key in `#each`). */
+	value: string;
+	/** Display label. */
+	label: string;
+	/** Optional icon name (rendered via the `Icon` component). */
+	icon?: IconName;
+	/** Optional sub-items (creates a submenu). */
+	subItems?: ActionMenuItem[];
+	/** Optional tooltip/hint. */
+	hint?: string;
+}
+
+/**
+ * Props for `ActionMenu` — a context-menu-style dropdown with optional submenus.
+ */
+export interface ActionMenuProps {
+	/** Label for the trigger button. */
+	label?: string;
+	/** Icon name for the trigger button. */
+	icon?: IconName;
+	/** List of menu items. */
+	items?: ActionMenuItem[];
+	/** Side of the trigger to render the menu. */
+	side?: 'top' | 'right' | 'bottom' | 'left';
+	/** Alignment relative to the trigger. */
+	align?: 'start' | 'center' | 'end';
+	/** Offset from the trigger (px). */
+	sideOffset?: number;
+	/** Side of the sub-trigger to render the submenu. */
+	subSide?: 'top' | 'right' | 'bottom' | 'left';
+	/** Alignment of the submenu relative to the sub-trigger. */
+	subAlign?: 'start' | 'center' | 'end';
+	/** Offset of the submenu from the sub-trigger (px). */
+	subSideOffset?: number;
+	/** Extra classes for the trigger. */
+	class?: string;
+	/** Called when an item is selected. */
+	onSelect?: (item: ActionMenuItem) => void;
+	/** Custom trigger content (overrides label/icon). */
+	trigger?: Snippet;
+	/** Custom menu content (overrides items). */
+	children?: Snippet;
+	/** Whether the menu is open (bindable). */
+	open?: boolean;
+}
+
 /** Skeleton shape variants. */
 export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'list' | 'table';
 
