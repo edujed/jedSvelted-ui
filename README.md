@@ -42,23 +42,23 @@ Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 
 ## 🧩 Modules
 
-| Module      | Description                                                                                                            |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `actions`   | CRUD action handlers (`createHandleDetail`)                                                                            |
-| `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                                                   |
-| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                                                   |
-| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `formatDateTime`, `parseCurrency`, `stripThousands`) |
-| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `SwitchField`, `FormField`, `FormActions`) |
-| `i18n`      | Built-in translations (`initI18n`, `t`, `localeStore`, `LangSelector`) + currency definitions                          |
-| `icons`     | SVG icons (`Icon`, `IconCheck`, `ChevronDownIcon`, etc.)                                                               |
-| `info`      | Visual feedback (`ToastContainer`, `toast`, `Message`, `FieldHint`)                                                    |
-| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`)                                                                             |
-| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                                                                  |
-| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                                                        |
-| `table`     | Interactive tables (`Table`) + pure utilities (`buildCsv`, `filterData`, `sortData`)                                   |
-| `tabs`      | Tab system (`Tabs`)                                                                                                    |
-| `theme`     | Theme management (`initTheme`, `ThemeSelector`)                                                                        |
-| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `InfoGrid`, `DeleteConfirm`, `EmptyState`, `FileTree`, `Skeleton`) |
+| Module      | Description                                                                                                                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `actions`   | CRUD action handlers (`createHandleDetail`)                                                                                                                                                  |
+| `chat`      | Chat UI (`ChatPanel`, `ChatMessage`)                                                                                                                                                         |
+| `container` | Panels and CRUD (`Panel`, `SearchPanel`, `DetailPanel`, `CrudPanel`)                                                                                                                         |
+| `format`    | Formatting utilities (`formatCurrency`, `formatNumber`, `formatDate`, `formatDateTime`, `parseCurrency`, `stripThousands`)                                                                   |
+| `forms`     | Form controls (`EditField`, `NumericField`, `SelectField`, `SliderField`, `DateField`, `CurrencyField`, `SwitchField`, `FormField`, `FormActions`)                                           |
+| `i18n`      | Built-in translations (`initI18n`, `t`, `setLocale`, `localeStore`, `LangSelector`) + currency registry (`CURRENCIES`, `getCurrencySymbol`, `getCurrencyDecimals`, `getSupportedCurrencies`) |
+| `icons`     | SVG icons — `Icon` (registry of 44 names) plus 43 individual components (`IconCheck`, `IconChevronDown`, `IconTrash`, …)                                                                     |
+| `info`      | Visual feedback (`ToastContainer`, `Toast`, `toast`, `addToast`, `removeToast`, `toasts`, `Message`, `FieldHint`)                                                                            |
+| `nav`       | Navigation (`Navbar`, `Topbar`, `Sidenav`) + route helpers (`cleanPattern`, `isRouteActive`)                                                                                                 |
+| `pages`     | Page shells (`PageShell`, `DetailShell`, `PageState`)                                                                                                                                        |
+| `router`    | Routing and app layout (`HashRouter`, `Layout`)                                                                                                                                              |
+| `table`     | Interactive tables (`Table`) + pure utilities (`buildCsv`, `filterData`, `sortData`)                                                                                                         |
+| `tabs`      | Tab system (`Tabs`)                                                                                                                                                                          |
+| `theme`     | Theme management (`initTheme`, `applyTheme`, `applyMode`, `toggleMode`, `themeStore`, `modeStore`, `ThemeSelector`)                                                                          |
+| `ui`        | General UI components (`Button`, `ButtonGroup`, `Badge`, `ActionMenu`, `InfoGrid`, `DeleteConfirm`, `FileTree`, `Skeleton`)                                                                  |
 
 ### Import styles
 
@@ -91,9 +91,25 @@ data shapes they work with), so you can build objects for binding/aggregating
 props and compose new components on top of the lib's primitives:
 
 ```ts
-import type { ButtonProps, BadgeProps, FileNode, EmptyStateProps } from '@edujed/jedsvelted-ui/ui';
+import type {
+	ButtonProps,
+	BadgeProps,
+	FileNode,
+	ActionMenuProps,
+	ButtonGroupProps,
+	DeleteConfirmProps,
+	InfoGridProps,
+	SkeletonProps,
+	SkeletonVariant
+} from '@edujed/jedsvelted-ui/ui';
 import type { TableCol, TableAction, TableConfig } from '@edujed/jedsvelted-ui/table';
-import type { CrudPanelProps } from '@edujed/jedsvelted-ui/container';
+import type {
+	CrudPanelProps,
+	PanelProps,
+	DetailPanelProps,
+	SearchPanelProps,
+	Row
+} from '@edujed/jedsvelted-ui/container';
 import type {
 	EditFieldProps,
 	SelectOption,
@@ -103,10 +119,11 @@ import type {
 	FormFieldProps
 } from '@edujed/jedsvelted-ui/forms';
 import type { ChatMessageType, ChatPanelProps } from '@edujed/jedsvelted-ui/chat';
-import type { PageShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
-import type { IconName } from '@edujed/jedsvelted-ui/icons';
-import type { CurrencyCode, CurrencyDef } from '@edujed/jedsvelted-ui/i18n';
-import type { SkeletonProps, SkeletonVariant } from '@edujed/jedsvelted-ui/ui';
+import type { PageShellProps, DetailShellProps, DetailAction } from '@edujed/jedsvelted-ui/pages';
+import type { IconName, IconProps } from '@edujed/jedsvelted-ui/icons';
+import type { CurrencyCode, CurrencyDef, Locale, MessageKey } from '@edujed/jedsvelted-ui/i18n';
+import type { ThemeId, Mode } from '@edujed/jedsvelted-ui/theme';
+import type { Route, RouteState, RouteMetadata } from '@edujed/jedsvelted-ui/router';
 ```
 
 Each module's types live in a dedicated file (`uiTypes`, `formsTypes`,
@@ -149,7 +166,9 @@ route is typed as `RegisteredRouteItem` (exported by both `router` and `nav`).
 
 <Button variant="primary" icon="plus">Add</Button>
 <Button variant="danger" icon="trash">Delete</Button>
-<Button variant="secondary" size="sm" icon="search" iconPosition="right" iconSize={14}>Search</Button>
+<Button variant="secondary" size="sm" icon="search" iconPosition="right" iconSize={14}
+	>Search</Button
+>
 <Badge variant="primary" dismissible onDismiss={() => {}}>label</Badge>
 ```
 
@@ -158,6 +177,108 @@ and `iconPrimaryColor` / `iconSecondaryColor` — both default to `currentColor`
 so the icon inherits the button's text color and follows the variant
 automatically. Pass an explicit value (e.g. `var(--color-on-primary)`) when
 the inherited color would clash with the background.
+
+### Button group
+
+`ButtonGroup` is a segmented set of toggle buttons — useful for view modes,
+filters, or any single-choice control:
+
+```svelte
+<script lang="ts">
+	import { ButtonGroup } from '@edujed/jedsvelted-ui/ui';
+	import type { ButtonGroupOption } from '@edujed/jedsvelted-ui/ui';
+
+	const options: ButtonGroupOption[] = [
+		{ value: 'day', label: 'Day' },
+		{ value: 'week', label: 'Week' },
+		{ value: 'month', label: 'Month', disabled: true }
+	];
+	let range = 'day';
+</script>
+
+<ButtonGroup {options} bind:value={range} onchange={(v) => console.log(v)} />
+```
+
+Props: `options` (when empty, the `children` snippet is rendered instead),
+`value` (bindable), `size` (`'sm'` | `'md'` | `'lg'`), `onchange(value)`.
+
+### Action menu
+
+`ActionMenu` is a context-menu-style dropdown (built on `bits-ui` ContextMenu)
+with optional submenus. It opens on left-click and positions itself at the
+click point:
+
+```svelte
+<script lang="ts">
+	import { ActionMenu } from '@edujed/jedsvelted-ui/ui';
+	import type { ActionMenuItem } from '@edujed/jedsvelted-ui/ui';
+
+	const items: ActionMenuItem[] = [
+		{ value: 'view', label: 'View', icon: 'eye' },
+		{ value: 'edit', label: 'Edit', icon: 'edit' },
+		{
+			value: 'export',
+			label: 'Export',
+			icon: 'download',
+			subItems: [
+				{ value: 'csv', label: 'CSV' },
+				{ value: 'xlsx', label: 'Excel' }
+			]
+		},
+		{ value: 'delete', label: 'Delete', icon: 'trash' }
+	];
+</script>
+
+<ActionMenu {items} onSelect={(item) => console.log(item.value)} />
+```
+
+Props: `label`, `icon` (default `'more'`), `items`, `side` / `align` /
+`sideOffset` (menu placement), `subSide` / `subAlign` / `subSideOffset`
+(submenu placement), `onSelect(item)`, `open` (bindable), `trigger` (custom
+trigger snippet) and `children` (custom menu content, overrides `items`).
+
+### Info grid
+
+`InfoGrid` renders a responsive grid of label/value pairs — ideal for detail
+views:
+
+```svelte
+<script lang="ts">
+	import { InfoGrid } from '@edujed/jedsvelted-ui/ui';
+	import type { InfoGridItem } from '@edujed/jedsvelted-ui/ui';
+
+	const items: InfoGridItem[] = [
+		{ label: 'Name', value: 'Acme Corp' },
+		{ label: 'Plan', value: 'Enterprise' },
+		{ label: 'MRR', value: 'R$ 1,250.00', align: 'right' }
+	];
+</script>
+
+<InfoGrid {items} />
+```
+
+`align: 'right'` right-aligns the value and enables tabular numerals — use it
+for numbers, dates and currency.
+
+### Delete confirmation
+
+`DeleteConfirm` is the body of a delete-confirmation dialog (icon, title,
+record preview, message, warning and confirm/cancel buttons). Text defaults
+to the active locale's `confirmDeletion` / `deleteMessage` / `deleteWarning`
+keys:
+
+```svelte
+<script lang="ts">
+	import { DeleteConfirm } from '@edujed/jedsvelted-ui/ui';
+</script>
+
+<DeleteConfirm onConfirm={confirmDelete} onCancel={closeDialog}>
+	<InfoGrid items={[{ label: 'Name', value: record.name }]} />
+</DeleteConfirm>
+```
+
+Props: `message`, `warning`, `title` (all optional — localized defaults),
+`onConfirm`, `onCancel`, `children` (the record being deleted).
 
 ### Panels
 
@@ -252,8 +373,8 @@ found in `data`), and `onClose` (overlay mode only).
 
 `Table` also accepts `header` and `footer` snippets (rendered in the caption /
 table footer) and a `config` prop (`TableConfig`) to switch each feature
-between `'native'` (handled internally in JS) and `'wasm'` (delegated to your
-callbacks, e.g. a WASM bridge):
+between `'internal'` (handled internally in JS) and `'custom'` (delegated to
+your callbacks, e.g. a WASM bridge or backend):
 
 ```svelte
 <script lang="ts">
@@ -261,20 +382,24 @@ callbacks, e.g. a WASM bridge):
 	import type { TableConfig } from '@edujed/jedsvelted-ui/table';
 
 	const config: TableConfig = {
-		// export: 'native' (CSV via JS, default) | 'wasm' (delegates to onExport)
-		exportMode: 'native',
-		onExport: (format) => exportViaWasm(format), // format: 'csv' | 'xlsx' | 'pdf'
+		// export: 'internal' (CSV via JS, default) | 'custom' (delegates to onExport)
+		exportMode: 'custom',
+		// formats offered by the export UI (custom mode):
+		// one format → single button, more than one → "Export" popover
+		// default: ['csv', 'xlsx', 'pdf']
+		exportFormats: ['csv', 'xlsx', 'pdf', 'parquet', 'feather', 'dbf'],
+		onExport: (format) => exportViaBackend(format), // format: 'csv' | 'xlsx' | 'pdf' | 'parquet' | 'feather' | 'dbf'
 
-		// sort: 'native' (default) | 'wasm' (delegates to onSortChange)
-		sortMode: 'native',
+		// sort: 'internal' (default) | 'custom' (delegates to onSortChange)
+		sortMode: 'internal',
 		onSortChange: (column, direction) => sortViaWasm(column, direction),
 
-		// filter: 'native' (default) | 'wasm' (delegates to onFilterChange)
-		filterMode: 'native',
+		// filter: 'internal' (default) | 'custom' (delegates to onFilterChange)
+		filterMode: 'internal',
 		onFilterChange: (column, value) => filterViaWasm(column, value),
 
-		// pagination: 'native' (footer with page controls) | 'off' (default)
-		pagination: 'native',
+		// pagination: 'off' (default) | 'internal' (table slices data) | 'custom' (consumer controls)
+		pagination: 'custom',
 		page: 1,
 		pageSize: 25,
 		total: 120,
@@ -628,11 +753,14 @@ A centered placeholder shown when a list has no content:
 
 ```svelte
 <script lang="ts">
-	import { EmptyState } from '@edujed/jedsvelted-ui/ui';
+	import { EmptyState } from '@edujed/jedsvelted-ui/ui/EmptyState';
 </script>
 
 <EmptyState icon="📭" message="No records found" />
 ```
+
+> **Note:** `EmptyState` is not yet re-exported from the `ui` barrel — import
+> it from the individual file path shown above.
 
 ### Tabs
 
@@ -814,15 +942,16 @@ and fires the appropriate toast. `createHandleDetail` also returns
 <IconCheck size={16} />
 ```
 
-`Icon` accepts a `name` from the registry (`user`, `users`, `user-alt`,
-`trash`, `edit`, `eye`, `plus`, `search`, `settings`, `sun`, `moon`, `filter`,
-`sort`, `download`, `menu`, `more`, `check`, `x`, `wallet`, `bank`, `clock`,
-`file`, `file-text`, `folder`, `folder-open`, `chevron-right`,
-`chevron-left`, `chevron-down`, `circle`, `calendar`, `tree`, `building`,
-`arrows-swap`, `map-pin`, `map`, `pie-chart`, `file-signature`, `tag`,
-`credit-card`, `qr-code`, `shield`, `lock`, `phone`, `help`).
+`Icon` accepts a `name` from the registry — 44 names: `eye`, `file`,
+`folder`, `folder-open`, `edit`, `trash`, `user`, `users`, `more`,
+`chevron-right`, `chevron-left`, `chevron-down`, `check`, `x`, `wallet`,
+`bank`, `clock`, `menu`, `download`, `sun`, `moon`, `sort`, `plus`,
+`circle`, `filter`, `help`, `search`, `settings`, `user-alt`, `tree`,
+`building`, `calendar`, `file-text`, `arrows-swap`, `map-pin`, `map`,
+`pie-chart`, `file-signature`, `tag`, `credit-card`, `qr-code`, `shield`,
+`lock`, `phone`, `database`.
 Individual icon components are also exported (`IconCheck`, `IconTrash`,
-`IconCalendar`, `IconUsers`, `IconCreditCard`, …).
+`IconChevronDown`, `IconCalendar`, `IconUsers`, `IconCreditCard`, …).
 
 Every icon component accepts `size` (px), `class`, and two color props —
 `primaryColor` (outline/structure) and `secondaryColor` (accent/detail) —
