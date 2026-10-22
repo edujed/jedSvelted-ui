@@ -90,6 +90,7 @@ export {
 	IconChevronRight,
 	IconCalendar,
 	IconCircle,
+	IconDatabase,
 	IconClock,
 	IconDownload,
 	IconEdit,

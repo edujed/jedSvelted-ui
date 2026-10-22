@@ -45,7 +45,9 @@
 	// Sync internal `calValue` (CalendarDate) → external `value` (Date)
 	$effect(() => {
 		const converted = toDate(calValue);
-		if (JSON.stringify(converted?.toISOString()) !== JSON.stringify(value?.toISOString())) {
+		const convertedISO = converted?.toISOString() ?? null;
+		const valueISO = value instanceof Date ? value.toISOString() : null;
+		if (convertedISO !== valueISO) {
 			value = converted;
 		}
 	});

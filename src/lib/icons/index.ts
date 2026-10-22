@@ -45,3 +45,4 @@ export { default as IconShield } from './IconShield.svelte';
 export { default as IconLock } from './IconLock.svelte';
 export { default as IconPhone } from './IconPhone.svelte';
 export { default as IconMap } from './IconMap.svelte';
+export { default as IconDatabase } from './IconDatabase.svelte';

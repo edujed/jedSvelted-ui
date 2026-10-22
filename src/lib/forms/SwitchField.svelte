@@ -32,7 +32,7 @@
 			<Switch.Root {id} {disabled} {required} bind:checked={value} onCheckedChange={handleChange}>
 				{#snippet child({ props })}
 					<button {...props} class="switch-track">
-						<span class="switch-thumb" />
+						<span class="switch-thumb"></span>
 					</button>
 				{/snippet}
 			</Switch.Root>

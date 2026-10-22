@@ -76,4 +76,5 @@ export type IconName =
 	| 'shield'
 	| 'lock'
 	| 'phone'
-	| 'map';
+	| 'map'
+	| 'database';

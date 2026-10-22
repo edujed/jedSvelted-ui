@@ -1,11 +1,18 @@
 <script lang="ts">
-	import { Popover } from 'bits-ui';
+	import { ContextMenu, Popover } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import Icon from '../icons/Icon.svelte';
 	import { IconSort } from '../icons';
 	import Button from '../ui/Button.svelte';
 	import { buildCsv, filterData, sortData } from './tableUtils';
-	import type { SortDirection, TableAction, TableCol, TableConfig } from './tableTypes';
+	import type {
+		ExportCompression,
+		ExportFormat,
+		SortDirection,
+		TableAction,
+		TableCol,
+		TableConfig
+	} from './tableTypes';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let {
@@ -36,7 +43,7 @@
 		defaultSortKey?: string;
 		/** Initial sort direction when defaultSortKey is set. */
 		defaultSortDirection?: Exclude<SortDirection, 'none'>;
-		/** Behavior config (export, sort, filter, pagination). Defaults to native. */
+		/** Behavior config (export, sort, filter, pagination). Defaults to internal. */
 		config?: TableConfig;
 		header?: Snippet;
 		footer?: Snippet;
@@ -58,21 +65,49 @@
 	/** Total de colunas renderizadas (inclui a coluna de ações, se houver). */
 	const totalCols = $derived(columns.length + (actions.length > 0 ? 1 : 0));
 
-	/** Filtered data (reactive) — skipped when filterMode is 'wasm' */
+	/** Filtered data (reactive) — skipped when filterMode is 'custom' */
 	let filteredData = $derived.by(() => {
-		if (config.filterMode === 'wasm') return data;
+		if (config.filterMode === 'custom') return data;
 		return filterData(data, columns, filterValues);
 	}) as Record<string, unknown>[];
 
-	//** Sorted data (reactive) — skipped when sortMode is 'wasm' */
+	//** Sorted data (reactive) — skipped when sortMode is 'custom' */
 	let sortedData = $derived.by(() => {
-		if (config.sortMode === 'wasm') return filteredData;
+		if (config.sortMode === 'custom') return filteredData;
 		return sortData(filteredData, columns, sortColumnIndex, sortDirection);
 	}) as Record<string, unknown>[];
 
+	// ─── Pagination ──────────────────────────────────────────────────────
+	/** Internal page state (used when pagination === 'internal'). */
+	let internalPage = $state(1);
+	const internalPageSize = $derived(config.pageSize ?? 25);
+	const internalTotalPages = $derived(Math.max(1, Math.ceil(sortedData.length / internalPageSize)));
+
+	/** Sync initial page from config; clamp when data shrinks (e.g. filter reduces rows). */
+	$effect(() => {
+		if (config.pagination !== 'internal') return;
+		if (internalPage === 1 && (config.page ?? 1) !== 1) internalPage = config.page ?? 1;
+		if (internalPage > internalTotalPages) internalPage = internalTotalPages;
+	});
+
+	/** Paginated data — sliced when pagination === 'internal', passthrough otherwise. */
+	let paginatedData = $derived.by(() => {
+		if (config.pagination !== 'internal') return sortedData;
+		const start = (internalPage - 1) * internalPageSize;
+		return sortedData.slice(start, start + internalPageSize);
+	}) as Record<string, unknown>[];
+
+	/** Row count shown in the footer. */
+	const footerCount = $derived(config.pagination === 'internal' ? sortedData.length : data.length);
+
+	function handleInternalPageChange(newPage: number): void {
+		internalPage = newPage;
+		config.onPageChange?.(newPage);
+	}
+
 	/** Handlers */
 	function handleSort(colIndex: number): void {
-		if (config.sortMode === 'wasm') {
+		if (config.sortMode === 'custom') {
 			const col = columns[colIndex];
 			const newDir = sortDirection === 'asc' ? 'desc' : 'asc';
 			sortDirection = newDir;
@@ -90,7 +125,7 @@
 	}
 
 	function handleFilter(colIndex: number, value: string): void {
-		if (config.filterMode === 'wasm') {
+		if (config.filterMode === 'custom') {
 			const col = columns[colIndex];
 			config.onFilterChange?.(String(col.key), value);
 			return;
@@ -98,7 +133,7 @@
 		filterValues = { ...filterValues, [colIndex]: value };
 	}
 
-	/** Exports data as a CSV file. */
+	/** Exports data as a csv file. */
 	function exportCSV(): void {
 		if (columns.length === 0 || filteredData.length === 0) return;
 		const csv = buildCsv(columns, filteredData);
@@ -110,6 +145,31 @@
 		link.click();
 		URL.revokeObjectURL(url);
 	}
+
+	/** Export formats offered by the delegated UI (exportMode 'custom'). */
+	const exportFormats = $derived.by<ExportFormat[]>(() => {
+		if (config.exportFormats && config.exportFormats.length > 0) return config.exportFormats;
+		if (config.exportMode === 'custom') return ['csv', 'xlsx', 'pdf'];
+		return [];
+	});
+
+	/** Icon per export format (used by the export button / popover items). */
+	const EXPORT_ICONS: Record<ExportFormat, 'file' | 'file-text' | 'download' | 'database'> = {
+		csv: 'file',
+		xlsx: 'file-text',
+		pdf: 'file-text',
+		parquet: 'database',
+		feather: 'database',
+		dbf: 'database'
+	};
+
+	/**
+	 * Formats that are not natively compressed — the export UI offers a
+	 * compression choice for these (parquet/xlsx/pdf are self-compressing).
+	 */
+	const COMPRESSIBLE_FORMATS: ExportFormat[] = ['csv', 'dbf', 'feather'];
+	const COMPRESSIONS: ExportCompression[] = ['none', 'lz4', 'zstd', 'gzip'];
+
 </script>
 
 <div class="table-wrapper">
@@ -117,21 +177,54 @@
 		<div class="table-caption">
 			<span class="caption-title">{caption}</span>
 			<span class="caption-actions">
-				{#if config.exportMode === 'wasm' && data.length > 0}
-					<Button
-						variant="secondary"
-						size="sm"
-						icon="download"
-						onclick={() => config.onExport?.('xlsx')}
-						title={LOCALES[$localeStore].exportXlsx}>XLSX</Button
-					>
-					<Button
-						variant="secondary"
-						size="sm"
-						icon="download"
-						onclick={() => config.onExport?.('pdf')}
-						title={LOCALES[$localeStore].exportPdf}>PDF</Button
-					>
+				{#if config.exportMode === 'custom' && data.length > 0}
+					{#if exportFormats.length === 1}
+						<Button
+							variant="secondary"
+							size="sm"
+							icon={EXPORT_ICONS[exportFormats[0]]}
+							onclick={() => config.onExport?.(exportFormats[0])}
+							title={LOCALES[$localeStore][exportFormats[0]]}
+							>{LOCALES[$localeStore][exportFormats[0]]}</Button
+						>
+					{:else if exportFormats.length > 1}
+						<ContextMenu.Root>
+							<ContextMenu.Trigger class="btn btn-secondary btn-sm">
+								<span>{LOCALES[$localeStore].export}</span>
+								<Icon name="download" size={14} class="btn-icon" />
+							</ContextMenu.Trigger>
+							<ContextMenu.Content class="actions-popover" side="bottom" align="end" sideOffset={4}>
+								{#each exportFormats as format (format)}
+									{#if COMPRESSIBLE_FORMATS.includes(format)}
+										<ContextMenu.Sub>
+											<ContextMenu.SubTrigger class="action-item">
+												<Icon name={EXPORT_ICONS[format]} size={16} class="action-icon" />
+												<span class="action-text">{LOCALES[$localeStore][format]}</span>
+											</ContextMenu.SubTrigger>
+											<ContextMenu.SubContent class="actions-popover" side="right" align="start" sideOffset={4}>
+												{#each COMPRESSIONS as comp (comp)}
+													<ContextMenu.Item
+														class="action-item"
+														onselect={() => config.onExport?.(format, comp)}
+													>
+														{comp === 'none' ? LOCALES[$localeStore].noCompression : LOCALES[$localeStore][comp]}
+													</ContextMenu.Item>
+												{/each}
+											</ContextMenu.SubContent>
+										</ContextMenu.Sub>
+									{:else}
+										<ContextMenu.Item
+											class="action-item"
+											onselect={() => config.onExport?.(format)}
+										>
+											<Icon name={EXPORT_ICONS[format]} size={16} class="action-icon" />
+											<span class="action-text">{LOCALES[$localeStore][format]}</span>
+										</ContextMenu.Item>
+									{/if}
+								{/each}
+							</ContextMenu.Content>
+						</ContextMenu.Root>
+					{/if}
 				{:else if data.length > 0}
 					<Button
 						variant="secondary"
@@ -206,9 +299,9 @@
 				</tr>
 			</thead>
 
-			{#if data.length > 0}
+			{#if paginatedData.length > 0}
 				<tbody>
-					{#each sortedData as row, line (rowKey ? String(row[rowKey]) : String(line))}
+					{#each paginatedData as row, line (rowKey ? String(row[rowKey]) : String(line))}
 						<tr data-row={rowKey ? row[rowKey as string] : line}>
 							{#each columns as col, idx (col.key ?? idx)}
 								{#if col.title}
@@ -269,22 +362,41 @@
 		<tfoot>
 			<tr>
 				<td class="tfoot-cell" colspan={totalCols}>
-					<span class="">{LOCALES[$localeStore].rows.replace('{count}', String(data.length))}</span>
-					{#if config.pagination === 'native' && config.onPageChange}
+					<span class="">{LOCALES[$localeStore].rows.replace('{count}', String(footerCount))}</span>
+					{#if config.pagination === 'internal'}
+						<div class="pagination">
+							<Button
+								variant="secondary"
+								size="sm"
+								disabled={internalPage <= 1}
+								onclick={() => handleInternalPageChange(internalPage - 1)}>←</Button
+							>
+							<span class="page-info">{internalPage} / {internalTotalPages}</span>
+							<Button
+								variant="secondary"
+								size="sm"
+								disabled={internalPage >= internalTotalPages}
+								onclick={() => handleInternalPageChange(internalPage + 1)}>→</Button
+							>
+						</div>
+					{:else if config.pagination === 'custom' && config.onPageChange}
 						<div class="pagination">
 							<Button
 								variant="secondary"
 								size="sm"
 								disabled={(config.page ?? 1) <= 1}
-								onclick={() => config.onPageChange?.((config.page ?? 1) - 1)}
-							>←</Button>
-							<span class="page-info">{config.page} / {Math.ceil((config.total ?? 0) / (config.pageSize ?? 25))}</span>
+								onclick={() => config.onPageChange?.((config.page ?? 1) - 1)}>←</Button
+							>
+							<span class="page-info"
+								>{config.page} / {Math.ceil((config.total ?? 0) / (config.pageSize ?? 25))}</span
+							>
 							<Button
 								variant="secondary"
 								size="sm"
-								disabled={(config.page ?? 1) >= Math.ceil((config.total ?? 0) / (config.pageSize ?? 25))}
-								onclick={() => config.onPageChange?.((config.page ?? 1) + 1)}
-							>→</Button>
+								disabled={(config.page ?? 1) >=
+									Math.ceil((config.total ?? 0) / (config.pageSize ?? 25))}
+								onclick={() => config.onPageChange?.((config.page ?? 1) + 1)}>→</Button
+							>
 						</div>
 					{/if}
 					{@render footer?.()}
@@ -363,7 +475,7 @@
 		border-radius: var(--radius-md);
 		box-shadow: 0 4px 20px var(--color-shadow);
 		padding: var(--spacing-xs);
-		min-width: 160px;
+		min-width: 180px;
 		z-index: 100;
 	}
 
@@ -404,6 +516,8 @@
 	:global(.actions-popover .action-text) {
 		flex: 1;
 	}
+
+
 
 	thead {
 		background: var(--color-background);

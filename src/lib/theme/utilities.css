@@ -124,24 +124,6 @@
 	color: var(--color-on-surface);
 }
 
-/* --- Botão fechar (X) --- */
-.btn-close {
-	background: transparent;
-	border: none;
-	color: var(--color-on-surface);
-	opacity: 0.6;
-	cursor: pointer;
-	padding: var(--spacing-xs);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: opacity var(--transition-fast);
-}
-
-.btn-close:hover {
-	opacity: 1;
-}
-
 /* --- Overlay de formulário modal --- */
 .form-overlay {
 	position: fixed;

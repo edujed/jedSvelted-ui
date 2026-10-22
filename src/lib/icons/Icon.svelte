@@ -43,6 +43,7 @@
 	import IconLock from './IconLock.svelte';
 	import IconPhone from './IconPhone.svelte';
 	import IconMap from './IconMap.svelte';
+	import IconDatabase from './IconDatabase.svelte';
 	import type { IconName, IconProps } from './iconsTypes';
 
 	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
@@ -90,7 +91,8 @@
 		shield: IconShield,
 		lock: IconLock,
 		phone: IconPhone,
-		map: IconMap
+		map: IconMap,
+		database: IconDatabase
 	} as const;
 
 	let {

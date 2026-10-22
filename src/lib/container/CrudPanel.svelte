@@ -133,7 +133,7 @@
 		</header>
 		<main class="crud-content">
 			<Table
-				id={csvFileName.replace('.csv', '')}
+				id={csvFileName.replace('.CSV', '')}
 				caption={title}
 				{data}
 				{columns}

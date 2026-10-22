@@ -10,14 +10,16 @@
 	// A listener keeps a local snapshot of the route state in sync with
 	// hash changes (mirrors the demo-app pattern) — without it the title
 	// would only update on locale changes.
-	let routeState = $state(router?.getState() ?? null);
+	let routeState = $state(null);
 	$effect(() => {
-		if (!router) return;
+		const r = router;
+		if (!r) return;
 		const listener = () => {
-			routeState = router.getState();
+			routeState = r.getState();
 		};
-		router.addRouterListener(listener);
-		return () => router.removeRouterListener(listener);
+		routeState = r.getState();
+		r.addRouterListener(listener);
+		return () => r.removeRouterListener(listener);
 	});
 
 	const currentTitle = $derived.by(() => {

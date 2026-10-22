@@ -6,6 +6,7 @@
 
 /* Base reset & typography (applied to <html>/<body>) */
 @import './base.css';
+@import './buttons.css';
 
 /* Themes (variables) */
 @import './themes/material-blue.css';

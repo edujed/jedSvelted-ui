@@ -19,14 +19,16 @@
 	// Local snapshot of the route state, kept in sync via a router listener
 	// (mirrors the demo-app pattern) — a plain $derived would not re-evaluate
 	// on hash changes, leaving the active item stale.
-	let routeState: RouteState = $state(router?.getState() ?? {});
+	let routeState: RouteState = $state({});
 	$effect(() => {
-		if (!router) return;
+		const r = router;
+		if (!r) return;
 		const listener = () => {
-			routeState = router.getState();
+			routeState = r.getState();
 		};
-		router.addRouterListener(listener);
-		return () => router.removeRouterListener(listener);
+		routeState = r.getState();
+		r.addRouterListener(listener);
+		return () => r.removeRouterListener(listener);
 	});
 	let opened = $state(false);
 
