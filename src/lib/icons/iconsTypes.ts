@@ -18,20 +18,25 @@ export interface IconProps {
 	class?: string;
 
 	/**
-	 * Cor principal — contorno/estrutura do ícone (grupos `<g stroke={primaryColor}>`).
-	 * Padrão: `var(--icon-color-primary, currentColor)` — segue a paleta do tema ativo
-	 * (cada tema define `--icon-color-primary`), com fallback para `currentColor`.
+	 * Primary color — icon outline/structure (`<g stroke={primaryColor}>` groups).
+	 * Default: `var(--icon-color-primary, currentColor)` — follows the active
+	 * theme's palette (each theme defines `--icon-color-primary`), falling back
+	 * to `currentColor`.
 	 */
 	primaryColor?: string;
 	/**
-	 * Cor de destaque — detalhes/acento do ícone (grupos `<g stroke={secondaryColor}>`).
-	 * Padrão: `var(--icon-color-accent, currentColor)` — segue a paleta do tema ativo
-	 * (cada tema define `--icon-color-accent`), com fallback para `currentColor`.
+	 * Secondary color — icon accent/detail (`<g stroke={secondaryColor}>` groups).
+	 * Default: `var(--icon-color-accent, currentColor)` — follows the active
+	 * theme's palette (each theme defines `--icon-color-accent`), falling back
+	 * to `currentColor`.
 	 */
 	secondaryColor?: string;
 }
 
-/** Icon names supported by the `Icon` component. */
+/**
+ * Icon names supported by the `Icon` component.
+ * Keep in sync with the `ICON_MAP` registry in `Icon.svelte`.
+ */
 export type IconName =
 	| 'eye'
 	| 'file'

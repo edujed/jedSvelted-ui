@@ -46,7 +46,7 @@
 	import IconDatabase from './IconDatabase.svelte';
 	import type { IconName, IconProps } from './iconsTypes';
 
-	/** Icon registry — add new icons here (and in `iconsTypes.ts`) */
+	/** Icon registry — add new icons here (and in `iconsTypes.ts`). */
 	const ICON_MAP = {
 		eye: IconEye,
 		file: IconFile,

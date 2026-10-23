@@ -1,6 +1,8 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
+import type { MessageVariant } from './infoTypes';
 
-export type ToastType = 'success' | 'error' | 'info' | 'warning';
+/** Toast type — mirrors `MessageVariant` (toasts reuse the same four states). */
+export type ToastType = MessageVariant;
 
 export interface Toast {
 	id: string;
@@ -87,15 +89,8 @@ export const toast = {
 };
 
 /** Getter for retrieving the current list of toasts (useful for testing). */
-// We use subscribe here because Svelte stores do not expose .get() directly.
-// The callback receives the initial value synchronously on the first subscription.
 export function getToasts(): Toast[] {
-	let current: Toast[] | undefined;
-	const unsub = toasts.subscribe((val) => {
-		current = val;
-	});
-	unsub(); // unsubscribe immediately — we only want the snapshot
-	return current ?? [];
+	return get(toasts);
 }
 
 //** Clears internal timestamp cache — useful for test isolation. */

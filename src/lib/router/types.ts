@@ -1,3 +1,5 @@
+import type { IconName } from '../icons';
+
 /** Optional metadata associated with a registered route. */
 export interface RouteMetadata {
 	/**
@@ -9,7 +11,7 @@ export interface RouteMetadata {
 	/** Identifier of the corresponding module/page */
 	moduleName?: string;
 	/** Visual icon (emoji or name) used in the side menu */
-	icon?: string;
+	icon?: IconName;
 	/** If true, the route appears in the side menu (Sidenav). Defaults to false — only explicitly registered routes are shown. */
 	showInMenu?: boolean;
 }
@@ -29,7 +31,7 @@ export interface RegisteredRouteItem {
 	/** Identifier of the corresponding module/page */
 	moduleName?: string;
 	/** Optional icon for rendering in the menu */
-	icon?: string;
+	icon?: IconName;
 }
 
 /** Complete state of a route — useful for grouping everything together in the App */

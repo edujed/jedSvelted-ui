@@ -73,22 +73,6 @@ export interface EditFieldProps extends FieldHintProps {
 }
 
 /**
- * Props for `FormField` — the shared wrapper that owns the label/hint
- * header, the generated input id, and the grid column span for every
- * field component (EditField, NumericField, SelectField, SliderField).
- */
-export interface FormFieldProps extends FieldHintProps {
-	/** Input id (generated when omitted). */
-	id?: string;
-	/** Grid column span (1-4). */
-	colSpan?: number;
-	/** Extra classes for the wrapper. */
-	class?: string;
-	/** The field's input/control. */
-	children: Snippet<[id: string]>;
-}
-
-/**
  * Props for `NumericField` — a number input with label/hint.
  */
 export interface NumericFieldProps extends FieldHintProps {

@@ -9,7 +9,7 @@ import type { SkeletonVariant } from '../ui/uiTypes';
 import type { PageState } from './PageState';
 
 /** Detail-panel mode. */
-export type DetailAction = 'detail' | 'edit' | 'delete';
+export type DetailAction = 'detail' | 'edit' | 'delete' | 'create';
 
 /**
  * State exposed by `DetailShell` to its content snippet.

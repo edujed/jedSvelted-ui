@@ -10,8 +10,6 @@
 		label = '',
 		labelFor = ''
 	}: FieldHintProps = $props();
-
-	/** Whether the hint is "rich" (has title or impact sections). */
 </script>
 
 <div class="field-header">

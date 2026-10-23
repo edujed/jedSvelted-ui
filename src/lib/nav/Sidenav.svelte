@@ -19,7 +19,7 @@
 	// Local snapshot of the route state, kept in sync via a router listener
 	// (mirrors the demo-app pattern) — a plain $derived would not re-evaluate
 	// on hash changes, leaving the active item stale.
-	let routeState: RouteState = $state({});
+	let routeState: RouteState = $state({} as RouteState);
 	$effect(() => {
 		const r = router;
 		if (!r) return;
@@ -82,7 +82,7 @@
 				title: resolvedTitle,
 				moduleName: r.moduleName,
 				label: resolvedTitle,
-				icon: r.icon ?? ''
+				icon: r.icon
 			};
 		});
 	});
@@ -92,6 +92,28 @@
 		close();
 	}
 </script>
+
+{#snippet menuList()}
+	<nav class="sidenav-content">
+		<ul class="menu-list">
+			{#each menuItems as item, i (i)}
+				<li>
+					<a
+						class={'menu-item' + (isRouteActive(item.path, currentPage) ? ' active' : '')}
+						href="#{item.path}"
+						onclick={(e) => {
+							e.preventDefault();
+							navigate(item.path);
+						}}
+					>
+						<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
+						<span class="menu-label">{item.label}</span>
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</nav>
+{/snippet}
 
 {#if visible}
 	{#if mode === 'fixed'}
@@ -117,25 +139,7 @@
 				</div>
 			{/if}
 
-			<nav class="sidenav-content">
-				<ul class="menu-list">
-					{#each menuItems as item, i (i)}
-						<li>
-							<a
-								class={'menu-item' + (isRouteActive(item.path, currentPage) ? ' active' : '')}
-								href="#{item.path}"
-								onclick={(e) => {
-									e.preventDefault();
-									navigate(item.path);
-								}}
-							>
-								<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
-								<span class="menu-label">{item.label}</span>
-							</a>
-						</li>
-					{/each}
-				</ul>
-			</nav>
+			{@render menuList()}
 
 			{#if footer}
 				<div class="sidenav-footer">
@@ -174,25 +178,7 @@
 					</div>
 				{/if}
 
-				<nav class="sidenav-content">
-					<ul class="menu-list">
-						{#each menuItems as item, i (i)}
-							<li>
-								<a
-									class={'menu-item' + (isRouteActive(item.path, currentPage) ? ' active' : '')}
-									href="#{item.path}"
-									onclick={(e) => {
-										e.preventDefault();
-										navigate(item.path);
-									}}
-								>
-									<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
-									<span class="menu-label">{item.label}</span>
-								</a>
-							</li>
-						{/each}
-					</ul>
-				</nav>
+				{@render menuList()}
 			</div>
 		</div>
 	{/if}

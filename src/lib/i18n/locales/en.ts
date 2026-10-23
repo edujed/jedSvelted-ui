@@ -29,6 +29,7 @@ export default {
 	parquet: 'Parquet',
 	feather: 'Feather v2',
 	dbf: 'DBF',
+	jsonl: 'JSONL',
 	export: 'Export',
 	compression: 'Compression',
 	noCompression: 'No compression',

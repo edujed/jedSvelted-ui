@@ -21,8 +21,9 @@
  * <span>{t('rows', { count: 5 })}</span>
  * ```
  *
- * `t()` is reactive — it reads `localeStore` internally, so the UI
- * updates automatically when the locale changes.
+ * `t()` is NOT reactive — it reads the store via `get()` and returns a
+ * plain string. For reactive translations in components, use `$localeStore`
+ * in the template: `{LOCALES[$localeStore].add}`.
  */
 
 import { writable, get } from 'svelte/store';
@@ -57,12 +58,12 @@ export const localeStore = writable<Locale>(DEFAULT_LOCALE);
  * E.g.: `setI18nKeyPrefix('app2')` → uses `app2-locale`
  */
 export function setI18nKeyPrefix(prefix?: string): void {
-	setPrefix(prefix);
+	setPrefix('i18n', prefix);
 }
 
 /** Returns the current localStorage key name. Useful for internal tests. */
 export function getLocaleKey(): string {
-	return buildKey('locale');
+	return buildKey('i18n', 'locale');
 }
 
 function getStoredLocale(fallback: Locale): Locale {

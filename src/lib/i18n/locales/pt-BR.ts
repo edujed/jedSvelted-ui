@@ -27,6 +27,7 @@ const ptBR: Messages = {
 	parquet: 'Parquet',
 	feather: 'Feather v2',
 	dbf: 'DBF',
+	jsonl: 'JSONL',
 	export: 'Exportar',
 	compression: 'Compressão',
 	noCompression: 'Sem compressão',

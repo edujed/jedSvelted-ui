@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Topbar from './Topbar.svelte';
 	import { localeStore } from '../i18n';
+	import type { RouteState } from '../router';
 	import type { NavbarProps } from './navTypes';
 
 	let { router, onMenuClick = () => {}, showHamburguer = true }: NavbarProps = $props();
@@ -10,7 +11,7 @@
 	// A listener keeps a local snapshot of the route state in sync with
 	// hash changes (mirrors the demo-app pattern) — without it the title
 	// would only update on locale changes.
-	let routeState = $state(null);
+	let routeState: RouteState | null = $state(null);
 	$effect(() => {
 		const r = router;
 		if (!r) return;

@@ -25,7 +25,7 @@
 		requestAnimationFrame(() => {
 			setTimeout(() => {
 				const input = panelEl?.querySelector('input, select, textarea');
-				input?.focus();
+				(input as HTMLInputElement | null)?.focus();
 			}, 50);
 		});
 	});

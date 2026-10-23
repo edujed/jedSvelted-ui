@@ -62,20 +62,20 @@
 	}
 	let sortColumnIndex = $state(getInitialSortIndex());
 	let sortDirection = $state<SortDirection>(getInitialSortDirection());
-	let filterValues = $state<Record<number, string>>({});
+	let filterValues = $state<Record<string, string>>({});
 
 	/** Total de colunas renderizadas (inclui a coluna de ações, se houver). */
 	const totalCols = $derived(columns.length + (actions.length > 0 ? 1 : 0));
 
-	/** Filtered data (reactive) — skipped when filterMode is 'custom' */
+	/** Filtered data (reactive) — skipped when `onFilterChange` takes over. */
 	let filteredData = $derived.by(() => {
-		if (config.filterMode === 'custom') return data;
+		if (config.onFilterChange) return data;
 		return filterData(data, columns, filterValues);
 	}) as Record<string, unknown>[];
 
-	//** Sorted data (reactive) — skipped when sortMode is 'custom' */
+	//** Sorted data (reactive) — skipped when `onSortChange` takes over. */
 	let sortedData = $derived.by(() => {
-		if (config.sortMode === 'custom') return filteredData;
+		if (config.onSortChange) return filteredData;
 		return sortData(filteredData, columns, sortColumnIndex, sortDirection);
 	}) as Record<string, unknown>[];
 
@@ -108,18 +108,21 @@
 	}
 
 	/** Handlers */
+	/** Resolves the row's unique id (falls back to the row index). */
+	function getRowId(row: Record<string, unknown>, line: number): string | number {
+		return rowKey ? (row[rowKey] as string | number) : line;
+	}
+
 	function handleSort(colIndex: number): void {
-		if (config.sortMode === 'custom') {
-			const col = columns[colIndex];
+		const col = columns[colIndex];
+		if (config.onSortChange) {
 			const newDir = sortDirection === 'asc' ? 'desc' : 'asc';
 			sortDirection = newDir;
-			config.onSortChange?.(String(col.key), newDir);
+			config.onSortChange(String(col.key), newDir);
 			return;
 		}
 		if (sortColumnIndex === colIndex) {
-			if (sortDirection === 'none') sortDirection = 'asc';
-			else if (sortDirection === 'asc') sortDirection = 'desc';
-			else sortDirection = 'none';
+			sortDirection = sortDirection === 'none' ? 'asc' : sortDirection === 'asc' ? 'desc' : 'none';
 		} else {
 			sortColumnIndex = colIndex;
 			sortDirection = 'asc';
@@ -127,12 +130,12 @@
 	}
 
 	function handleFilter(colIndex: number, value: string): void {
-		if (config.filterMode === 'custom') {
-			const col = columns[colIndex];
-			config.onFilterChange?.(String(col.key), value);
+		const col = columns[colIndex];
+		if (config.onFilterChange) {
+			config.onFilterChange(String(col.key), value);
 			return;
 		}
-		filterValues = { ...filterValues, [colIndex]: value };
+		filterValues = { ...filterValues, [String(col.key)]: value };
 	}
 
 	/** Exports data as a csv file. */
@@ -148,10 +151,10 @@
 		URL.revokeObjectURL(url);
 	}
 
-	/** Export formats offered by the delegated UI (exportMode 'custom'). */
+	/** Export formats offered by the delegated UI (when `onExport` is set). */
 	const exportFormats = $derived.by<ExportFormat[]>(() => {
 		if (config.exportFormats && config.exportFormats.length > 0) return config.exportFormats;
-		if (config.exportMode === 'custom') return ['csv', 'xlsx', 'pdf'];
+		if (config.onExport) return ['csv', 'xlsx', 'pdf'];
 		return [];
 	});
 
@@ -162,7 +165,8 @@
 		pdf: 'file-text',
 		parquet: 'database',
 		feather: 'database',
-		dbf: 'database'
+		dbf: 'database',
+		jsonl: 'file'
 	};
 
 	/**
@@ -178,7 +182,7 @@
 		<div class="table-caption">
 			<span class="caption-title">{caption}</span>
 			<span class="caption-actions">
-				{#if config.exportMode === 'custom' && data.length > 0}
+				{#if config.onExport && data.length > 0}
 					{#if exportFormats.length === 1}
 						<Button
 							variant="secondary"
@@ -296,8 +300,8 @@
 
 			{#if paginatedData.length > 0}
 				<tbody>
-					{#each paginatedData as row, line (rowKey ? String(row[rowKey]) : String(line))}
-						<tr data-row={rowKey ? row[rowKey as string] : line}>
+					{#each paginatedData as row, line (String(getRowId(row, line)))}
+						<tr data-row={getRowId(row, line)}>
 							{#each columns as col, idx (col.key ?? idx)}
 								{#if col.title}
 									<td
@@ -599,7 +603,7 @@
 		align-items: center;
 	}
 
-	:global(.actions-trigger button.rounded-input) {
+	:global(.actions-trigger button) {
 		border-radius: var(--radius-md);
 		color: var(--color-primary-dark);
 		border: 0px;

@@ -187,6 +187,7 @@ export {
 	Button,
 	ButtonGroup,
 	DeleteConfirm,
+	EmptyState,
 	FileTree,
 	InfoGrid,
 	Skeleton
@@ -202,6 +203,7 @@ export type {
 	ButtonSize,
 	ButtonVariant,
 	DeleteConfirmProps,
+	EmptyStateProps,
 	FileNode,
 	FileTreeProps,
 	InfoGridItem,

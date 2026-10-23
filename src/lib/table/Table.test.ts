@@ -13,7 +13,7 @@ const rows = [
 	{ id: 2, name: 'Bob', age: 25 }
 ];
 
-describe('Table — onExport delegation (exportMode: custom)', () => {
+describe('Table — onExport delegation', () => {
 	beforeEach(() => {
 		cleanup();
 		vi.clearAllMocks();
@@ -24,7 +24,7 @@ describe('Table — onExport delegation (exportMode: custom)', () => {
 	});
 
 	it('renders a single export button when one format is configured', () => {
-		const config: TableConfig = { exportMode: 'custom', exportFormats: ['csv'], onExport: vi.fn() };
+		const config: TableConfig = { exportFormats: ['csv'], onExport: vi.fn() };
 		render(Table, { data: rows, columns, config });
 
 		const button = screen.getByRole('button', { name: 'CSV' });
@@ -33,7 +33,7 @@ describe('Table — onExport delegation (exportMode: custom)', () => {
 
 	it('calls onExport(format) when the single export button is clicked', async () => {
 		const onExport = vi.fn();
-		const config: TableConfig = { exportMode: 'custom', exportFormats: ['csv'], onExport };
+		const config: TableConfig = { exportFormats: ['csv'], onExport };
 
 		render(Table, { data: rows, columns, config });
 
@@ -47,7 +47,6 @@ describe('Table — onExport delegation (exportMode: custom)', () => {
 		// Note: the ActionMenu (bits-ui ContextMenu) uses setContext which is
 		// not fully supported in jsdom, so we only verify the trigger renders.
 		const config: TableConfig = {
-			exportMode: 'custom',
 			exportFormats: ['csv', 'xlsx', 'pdf'],
 			onExport: vi.fn()
 		};
@@ -68,13 +67,12 @@ describe('Table — onExport delegation (exportMode: custom)', () => {
 			expect(exportMenu).toBeTruthy();
 		} else {
 			// Verify the config is correctly wired for onExport delegation.
-			expect(config.exportMode).toBe('custom');
 			expect(config.exportFormats).toEqual(['csv', 'xlsx', 'pdf']);
 			expect(typeof config.onExport).toBe('function');
 		}
 	});
 
-	it('does not render the custom export UI when exportMode is internal (default)', () => {
+	it('renders the internal CSV button when no onExport is set', () => {
 		const config: TableConfig = {};
 		render(Table, { data: rows, columns, config });
 
@@ -83,13 +81,13 @@ describe('Table — onExport delegation (exportMode: custom)', () => {
 		expect(internalBtn).toBeTruthy();
 		expect((internalBtn as HTMLElement).getAttribute('title')).toBe('Export CSV');
 
-		// No "Export" menu button (that only appears in custom mode with >1 format).
+		// No "Export" menu button (that only appears when onExport is set with >1 format).
 		expect(screen.queryByRole('button', { name: 'Export' })).toBeNull();
 	});
 
 	it('does not render any export button when data is empty', () => {
 		const onExport = vi.fn();
-		const config: TableConfig = { exportMode: 'custom', exportFormats: ['csv'], onExport };
+		const config: TableConfig = { exportFormats: ['csv'], onExport };
 		render(Table, { data: [], columns, config });
 
 		expect(screen.queryByRole('button', { name: 'CSV' })).toBeNull();

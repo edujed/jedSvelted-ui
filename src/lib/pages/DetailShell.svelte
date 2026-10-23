@@ -37,7 +37,7 @@
 	// show it (via {#if renderDetail}). The close button simply notifies the
 	// parent via onClose, which sets PageState.showDetail = false, causing the
 	// PageShell to unmount this component. No internal _show state is needed.
-	function wrappedOnClose() {
+	function handleClose() {
 		onClose?.();
 	}
 
@@ -54,10 +54,6 @@
 					: LOCALES[$localeStore].deleteTitle.replace('{entity}', entityName)
 	);
 
-	function handleCancel() {
-		wrappedOnClose();
-	}
-
 	// State exposed to parent via snippet
 	const detailState: DetailShellState = {
 		get mode() {
@@ -69,7 +65,7 @@
 		get title() {
 			return title;
 		},
-		onCancel: handleCancel
+		onCancel: handleClose
 	};
 
 	// Helper to check current mode (used in snippet)
@@ -78,7 +74,7 @@
 	}
 </script>
 
-<DetailPanel show={!!item} {title} onClose={wrappedOnClose}>
+<DetailPanel show={!!item} {title} onClose={handleClose}>
 	{#if loading}
 		<div class="detail-loading">
 			<Skeleton variant={skeletonVariant} rows={skeletonRows} />

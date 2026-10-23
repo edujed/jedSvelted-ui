@@ -124,29 +124,9 @@
 	}
 
 	.currency-input {
-		width: 100%;
-		padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-		background: var(--color-input-bg);
-		border: 1px solid var(--color-input-border);
-		border-radius: var(--radius-sm);
-		color: var(--color-on-surface);
-		font-size: var(--font-size-sm);
-		font-family: inherit;
-		font-variant-numeric: tabular-nums;
 		text-align: right;
-		outline: none;
-		transition:
-			border-color var(--transition-fast),
-			box-shadow var(--transition-fast);
-	}
-
-	.currency-input:hover {
-		border-color: var(--color-input-focus);
-	}
-
-	.currency-input:focus-visible {
-		border-color: var(--color-input-focus);
-		box-shadow: 0 0 0 3px var(--color-primary-light);
+		padding-left: 2.25rem;
+		font-variant-numeric: tabular-nums;
 	}
 
 	.currency-input:disabled {

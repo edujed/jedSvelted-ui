@@ -5,7 +5,7 @@
 </script>
 
 <div class="info-grid">
-	{#each items as item (item.label)}
+	{#each items as item, i (i)}
 		<div class="info-item">
 			<span class="info-label">{item.label}</span>
 			<span class="info-value" class:info-value-right={item.align === 'right'}

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Icon from '../icons/Icon.svelte';
+	import ChatRoleBadge from './ChatRoleBadge.svelte';
+	import ChatMsgActions from './ChatMsgActions.svelte';
 	import Badge from '../ui/Badge.svelte';
 	import { LOCALES, localeStore } from '../i18n';
 	import type { ChatMessageProps } from './chatTypes';
 
 	let { msg, renderContent, onFork, onDelete, index }: ChatMessageProps = $props();
 
-	// Derived para garantir reatividade
 	let contentHtml = $derived.by(() => {
 		if (msg.textHtml) return msg.textHtml;
 		if (renderContent) return renderContent(msg);
@@ -19,143 +19,80 @@
 		return msg.thoughtContent;
 	});
 
-	const roleLabels: Record<string, string> = $derived(LOCALES[$localeStore]);
+	const t = $derived(LOCALES[$localeStore]);
+
+	const roleIcon = $derived(
+		msg.role === 'assistant' || msg.role === 'user'
+			? ('user' as const)
+			: msg.role === 'error'
+				? ('x' as const)
+				: ('settings' as const)
+	);
 </script>
 
-{#if msg.role === 'assistant'}
-	<div class="chat-msg assistant">
-		<div class="chat-msg-header">
-			<span class="chat-role-badge assistant">
-				<Icon name="user" size={14} />
-				{roleLabels.assistant}
-			</span>
-			<div class="chat-msg-actions">
-				{#if onFork}
-					<button class="chat-action-btn" title={roleLabels.fork} onclick={() => onFork(index)}>
-						<Icon name="more" size={14} />
-					</button>
+<div class="chat-msg {msg.role}">
+	<div class="chat-msg-header">
+		<ChatRoleBadge
+			icon={roleIcon}
+			label={t[msg.role]}
+			variant={msg.role}
+			toolName={msg.toolName}
+		/>
+		<ChatMsgActions {onFork} {onDelete} {index} forkLabel={t.fork} deleteLabel={t.delete} />
+	</div>
+
+	{#if msg.role === 'assistant' && msg.thoughtContent}
+		<details class="chat-thought" open={true}>
+			<summary class="chat-thought-summary">
+				💭 {t.thought}
+				{#if msg.isStreaming}
+					<span class="thinking-dots">
+						<span class="dot"></span>
+						<span class="dot"></span>
+						<span class="dot"></span>
+					</span>
 				{/if}
-				{#if onDelete}
-					<button class="chat-action-btn" title={roleLabels.delete} onclick={() => onDelete(index)}>
-						<Icon name="trash" size={14} />
-					</button>
-				{/if}
+			</summary>
+			<div class="chat-thought-content">
+				{@html thoughtHtml}
 			</div>
+		</details>
+	{/if}
+
+	{#if msg.role === 'user' && msg.attachedFiles && msg.attachedFiles.length > 0}
+		<div class="chat-attached">
+			{#each msg.attachedFiles as file (file)}
+				<Badge variant="secondary">{file}</Badge>
+			{/each}
 		</div>
+	{/if}
 
-		{#if msg.thoughtContent}
-			<details class="chat-thought" open={true}>
-				<summary class="chat-thought-summary">
-					💭 {roleLabels.thought}
-					{#if msg.isStreaming}
-						<span class="thinking-dots">
-							<span class="dot"></span>
-							<span class="dot"></span>
-							<span class="dot"></span>
-						</span>
-					{/if}
-				</summary>
-				<div class="chat-thought-content">
-					{@html thoughtHtml}
-				</div>
-			</details>
-		{/if}
-
-		<div class="chat-msg-content">
-			{#if msg.isStreaming}
-				{#if msg.textHtml}
-					{@html msg.textHtml}
-				{:else}
-					<span class="streaming-cursor">|</span>
-				{/if}
+	<div class="chat-msg-content">
+		{#if msg.role === 'assistant' && msg.isStreaming}
+			{#if msg.textHtml}
+				{@html msg.textHtml}
 			{:else}
-				{@html contentHtml}
+				<span class="streaming-cursor">|</span>
+			{/if}
+		{:else}
+			{@html contentHtml}
+		{/if}
+	</div>
+
+	{#if msg.role === 'assistant' && msg.metrics}
+		<div class="chat-metrics">
+			{#if msg.metrics.total_tokens}
+				<span>📊 {msg.metrics.total_tokens} tokens</span>
+			{/if}
+			{#if msg.metrics.total_time_ms}
+				<span>⏱️ {(msg.metrics.total_time_ms / 1000).toFixed(1)}s</span>
+			{/if}
+			{#if msg.metrics.token_speed}
+				<span>🚀 {msg.metrics.token_speed.toFixed(1)} tok/s</span>
 			{/if}
 		</div>
-
-		{#if msg.metrics}
-			<div class="chat-metrics">
-				{#if msg.metrics.total_tokens}
-					<span>📊 {msg.metrics.total_tokens} tokens</span>
-				{/if}
-				{#if msg.metrics.total_time_ms}
-					<span>⏱️ {(msg.metrics.total_time_ms / 1000).toFixed(1)}s</span>
-				{/if}
-				{#if msg.metrics.token_speed}
-					<span>🚀 {msg.metrics.token_speed.toFixed(1)} tok/s</span>
-				{/if}
-			</div>
-		{/if}
-	</div>
-{:else if msg.role === 'tool'}
-	<div class="chat-msg tool">
-		<div class="chat-msg-header">
-			<span class="chat-role-badge tool">
-				<Icon name="settings" size={14} />
-				{roleLabels.tool}
-				{#if msg.toolName}<span class="tool-name">{msg.toolName}</span>{/if}
-			</span>
-		</div>
-		<div class="chat-msg-content">
-			{@html contentHtml}
-		</div>
-	</div>
-{:else if msg.role === 'system'}
-	<div class="chat-msg system">
-		<div class="chat-msg-header">
-			<span class="chat-role-badge system">
-				<Icon name="settings" size={14} />
-				{roleLabels.system}
-			</span>
-		</div>
-		<div class="chat-msg-content">
-			{@html contentHtml}
-		</div>
-	</div>
-{:else if msg.role === 'error'}
-	<div class="chat-msg error">
-		<div class="chat-msg-header">
-			<span class="chat-role-badge error">
-				<Icon name="x" size={14} />
-				{roleLabels.error}
-			</span>
-		</div>
-		<div class="chat-msg-content">
-			{@html contentHtml}
-		</div>
-	</div>
-{:else}
-	<div class="chat-msg user">
-		<div class="chat-msg-header">
-			<span class="chat-role-badge user">
-				<Icon name="user" size={14} />
-				{roleLabels.user}
-			</span>
-			<div class="chat-msg-actions">
-				{#if onFork}
-					<button class="chat-action-btn" title={roleLabels.fork} onclick={() => onFork(index)}>
-						<Icon name="more" size={14} />
-					</button>
-				{/if}
-				{#if onDelete}
-					<button class="chat-action-btn" title={roleLabels.delete} onclick={() => onDelete(index)}>
-						<Icon name="trash" size={14} />
-					</button>
-				{/if}
-			</div>
-		</div>
-		{#if msg.attachedFiles && msg.attachedFiles.length > 0}
-			<div class="chat-attached">
-				{#each msg.attachedFiles as file (file)}
-					<Badge variant="secondary">{file}</Badge>
-				{/each}
-			</div>
-		{/if}
-		<div class="chat-msg-content">
-			{@html contentHtml}
-		</div>
-	</div>
-{/if}
+	{/if}
+</div>
 
 <style>
 	.chat-msg {
@@ -203,72 +140,12 @@
 		font-size: var(--font-size-sm);
 	}
 
-	.chat-role-badge.system {
-		color: var(--color-primary);
-	}
-
 	.chat-msg-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		margin-bottom: var(--spacing-xs);
 		gap: var(--spacing-xs);
-	}
-
-	.chat-role-badge {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--spacing-xxs);
-		font-size: var(--font-size-xs);
-		font-weight: 600;
-	}
-
-	.chat-role-badge.user {
-		color: var(--color-on-primary);
-		opacity: 0.9;
-	}
-
-	.chat-role-badge.assistant {
-		color: var(--color-primary);
-	}
-
-	.chat-role-badge.tool {
-		color: var(--color-success);
-	}
-
-	.chat-role-badge.error {
-		color: var(--color-error);
-	}
-
-	.tool-name {
-		font-weight: 400;
-		opacity: 0.8;
-	}
-
-	.chat-msg-actions {
-		display: flex;
-		gap: var(--spacing-xxs);
-	}
-
-	.chat-action-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		background: none;
-		border: none;
-		color: inherit;
-		opacity: 0.5;
-		cursor: pointer;
-		padding: var(--spacing-xxs);
-		border-radius: var(--radius-sm);
-		transition:
-			opacity var(--transition-fast),
-			background var(--transition-fast);
-	}
-
-	.chat-action-btn:hover {
-		opacity: 1;
-		background: color-mix(in srgb, currentColor 10%, transparent);
 	}
 
 	.chat-attached {

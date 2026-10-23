@@ -34,8 +34,9 @@ initI18n(); // reads localStorage (s-locale), default 'en'
 ```
 
 Both accept an optional prefix to support multiple lib instances on the same
-page: `initTheme('app1')` → `app1-theme` / `app1-mode`, `initI18n('app1')`
-→ `app1-locale`.
+page: `initTheme('app1')` → `app1-theme` / `app1-mode`, `initI18n('app2')`
+→ `app2-locale`. Prefixes are independent per module — `initTheme('app1')`
+and `initI18n('app2')` can coexist without collision.
 
 Available themes: `material-blue` (default), `humanity`, `rose`, `relax`,
 `office`, `candy`. Mode: `light` / `dark`.
@@ -341,7 +342,9 @@ single `onAction` event on confirmed mutations only:
 Other props: `inline` (render in place instead of inside a `DetailPanel`),
 `autoOpenId` (record ID to open automatically — deep-link),
 `onAutoOpenError(id)` (called when `autoOpenId` is set but the record is not
-found in `data`), and `onClose` (overlay mode only).
+found in `data`), and `onClose` (overlay mode only). In overlay mode, the
+`renderForm` snippet is only rendered when the form is active (add/edit),
+matching the inline behavior.
 
 ### Table
 
@@ -372,9 +375,11 @@ found in `data`), and `onClose` (overlay mode only).
 ```
 
 `Table` also accepts `header` and `footer` snippets (rendered in the caption /
-table footer) and a `config` prop (`TableConfig`) to switch each feature
-between `'internal'` (handled internally in JS) and `'custom'` (delegated to
-your callbacks, e.g. a backend):
+table footer) and a `config` prop (`TableConfig`). Sorting, filtering and
+exporting are handled internally by default; each can be overridden by
+providing the corresponding callback, which takes over from the internal
+behavior (e.g. to delegate to a backend). Internal filter values are keyed by
+column **key** (not index), so they survive column reordering:
 
 ```svelte
 <script lang="ts">
@@ -382,20 +387,19 @@ your callbacks, e.g. a backend):
 	import type { TableConfig } from '@edujed/jedsvelted-ui/table';
 
 	const config: TableConfig = {
-		// export: 'internal' (CSV via JS, default) | 'custom' (delegates to onExport)
-		exportMode: 'custom',
-		// formats offered by the export UI (custom mode):
-		// one format → single button, more than one → "Export" popover
-		// default: ['csv', 'xlsx', 'pdf']
+		// Export override: when set, the table renders the export UI and
+		// delegates to this callback instead of the internal CSV export.
+		// Formats from exportFormats: one → single button, more than one →
+		// "Export" menu. Default formats: ['csv', 'xlsx', 'pdf']
+		onExport: (format, compression) => exportViaBackend(format, compression),
 		exportFormats: ['csv', 'xlsx', 'pdf', 'parquet', 'feather', 'dbf', 'jsonl'],
-		onExport: (format) => exportViaBackend(format), // format: 'csv' | 'xlsx' | 'pdf' | 'parquet' | 'feather' | 'dbf'
 
-		// sort: 'internal' (default) | 'custom' (delegates to onSortChange)
-		sortMode: 'internal',
+		// Sort override: when set, the table stops sorting internally and
+		// delegates to this callback (return the data already sorted).
 		onSortChange: (column, direction) => sortViaBackend(column, direction),
 
-		// filter: 'internal' (default) | 'custom' (delegates to onFilterChange)
-		filterMode: 'internal',
+		// Filter override: when set, the table stops filtering internally
+		// and delegates to this callback (return the data already filtered).
 		onFilterChange: (column, value) => filterViaBackend(column, value),
 
 		// pagination: 'off' (default) | 'internal' (table slices data) | 'custom' (consumer controls)
@@ -416,7 +420,7 @@ The table's pure logic is also exported for custom use (no reactive state):
 import { buildCsv, filterData, sortData } from '@edujed/jedsvelted-ui/table';
 
 const csv = buildCsv(columns, rows); // ';' separated, skips exportable === false
-const filtered = filterData(rows, columns, { 0: 'john' });
+const filtered = filterData(rows, columns, { name: 'john' }); // keyed by column key (not index)
 const sorted = sortData(rows, columns, 0, 'asc');
 ```
 
@@ -594,6 +598,11 @@ The hint renders as a `?` icon next to the label. On hover (desktop) or click (m
 }
 ```
 
+`ChatMessage` is composed of two internal sub-components: `ChatRoleBadge`
+(role icon + label + optional tool name) and `ChatMsgActions` (fork/delete
+buttons). Both are internal — consumers interact only through `ChatPanel`
+and `ChatMessage` props.
+
 ### FileTree
 
 ```svelte
@@ -638,6 +647,9 @@ toast.warning('Item deleted');
 toast.error('Something went wrong');
 ```
 
+Toasts auto-dismiss after their `duration` (default 4s) or when the user
+clicks the ✕ button. Hovering does **not** pause or extend the timer.
+
 `Message` is an inline status/alert box (`variant`: `info` | `success` |
 `warning` | `error`, optional `title`, `dismissible`). Toasts share the same
 four variants. `FieldHint` renders a label with a `?` popover hint (used
@@ -678,7 +690,8 @@ routes registered with `showInMenu: true`.
 
 It also accepts `title` / `logo` for the header, a `footer` snippet (bottom of
 the menu) and a `header` snippet (between the logo and the menu — e.g. user
-info, logout). `Layout` exposes the same options as `sidenavMode`,
+info, logout). The menu list is rendered via an internal `{#snippet menuList()}`
+shared between both modes. `Layout` exposes the same options as `sidenavMode`,
 `sidenavTitle`, `sidenavLogo`, `sidenavFooter` and `sidenavHeader`:
 
 ```svelte
@@ -873,7 +886,7 @@ import { localeStore } from '@edujed/jedsvelted-ui/i18n';
 
 const locale = $localeStore; // reactive in components
 
-formatCurrency(1234.56, locale); // "R$ 1.234,56" (pt-BR) / "$1,234.56" (en)
+formatCurrency(1234.56, locale); // "R$ 1.234,56" (pt-BR) / "$ 1,234.56" (en)
 formatCurrency(1234.56, locale, { currency: 'USD' }); // "US$ 1.234,56" (pt-BR) / "$ 1,234.56" (en)
 formatCurrency(0.00123456, locale, { currency: 'BTC' }); // "₿ 0,00000012" (pt-BR)
 formatNumber(1234.56, locale, 2); // "1.234,56" (pt-BR) / "1,234.56" (en)

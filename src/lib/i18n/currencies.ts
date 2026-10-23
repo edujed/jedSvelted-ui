@@ -106,16 +106,14 @@ export const CURRENCIES: Record<CurrencyCode, CurrencyDef> = {
  * Falls back to the English symbol if the locale is not found.
  */
 export function getCurrencySymbol(code: CurrencyCode, locale: string): string {
-	const currency = CURRENCIES[code];
-	if (!currency) return code;
-	return currency.symbols[locale] ?? currency.symbols.en ?? code;
+	return CURRENCIES[code].symbols[locale] ?? CURRENCIES[code].symbols.en;
 }
 
 /**
  * Returns the default number of decimal places for a currency.
  */
 export function getCurrencyDecimals(code: CurrencyCode): number {
-	return CURRENCIES[code]?.decimals ?? 2;
+	return CURRENCIES[code].decimals;
 }
 
 /**

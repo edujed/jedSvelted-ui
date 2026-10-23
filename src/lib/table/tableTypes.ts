@@ -25,14 +25,7 @@ export interface TableColBase<T = unknown> {
 	width?: string;
 }
 
-/**
- * Behavior mode for table features.
- * - `'internal'`: the table handles it internally (JS).
- * - `'custom'`: the consumer takes over via callbacks (`onExport` / `onSortChange` / `onFilterChange`).
- */
-export type TableMode = 'internal' | 'custom';
-
-/** File formats available for delegated export (`exportMode: 'custom'`). */
+/** File formats available for delegated export (`onExport`). */
 export type ExportFormat = 'csv' | 'xlsx' | 'pdf' | 'parquet' | 'feather' | 'dbf' | 'jsonl';
 
 /**
@@ -48,32 +41,32 @@ export type ExportCompression = 'none' | 'lz4' | 'zstd' | 'gzip';
  */
 export interface TableConfig {
 	/**
-	 * Export mode.
-	 * - `'internal'` (default): CSV via JS.
-	 * - `'custom'`: delegates to `onExport` (formats from `exportFormats`, default `['csv', 'xlsx', 'pdf']`).
+	 * Export override. When provided, the table renders the export UI
+	 * (formats from `exportFormats`) and delegates to this callback instead
+	 * of the internal CSV export. `compression` is only provided for formats
+	 * that are not natively compressed (csv, dbf, feather); it is `undefined`
+	 * for parquet/xlsx/pdf.
 	 */
-	exportMode?: TableMode;
+	onExport?: (format: ExportFormat, compression?: ExportCompression) => void;
 	/**
-	 * Formats offered by the export UI when `exportMode` is `'custom'`.
+	 * Formats offered by the export UI when `onExport` is set.
 	 * One format → single button; more than one → "Export" popover.
 	 * Default: `['csv', 'xlsx', 'pdf']`.
 	 */
 	exportFormats?: ExportFormat[];
-	/**
-	 * Called when export is delegated (exportMode === 'custom').
-	 * `compression` is only provided for formats that are not natively
-	 * compressed (csv, dbf, feather); it is `undefined` for parquet/xlsx/pdf.
-	 */
-	onExport?: (format: ExportFormat, compression?: ExportCompression) => void;
 
-	/** Sort mode. `'internal'` = internal sort (default). `'custom'` = delegates to `onSortChange`. */
-	sortMode?: TableMode;
-	/** Called when sort is delegated (sortMode === 'custom'). */
+	/**
+	 * Sort override. When provided, the table stops sorting internally and
+	 * delegates to this callback (the consumer is expected to return the
+	 * data already sorted, e.g. from a backend).
+	 */
 	onSortChange?: (column: string, direction: 'asc' | 'desc') => void;
 
-	/** Filter mode. `'internal'` = internal filter (default). `'custom'` = delegates to `onFilterChange`. */
-	filterMode?: TableMode;
-	/** Called when filter is delegated (filterMode === 'custom'). */
+	/**
+	 * Filter override. When provided, the table stops filtering internally
+	 * and delegates to this callback (the consumer is expected to return
+	 * the data already filtered, e.g. from a backend).
+	 */
 	onFilterChange?: (column: string, value: string) => void;
 
 	/**

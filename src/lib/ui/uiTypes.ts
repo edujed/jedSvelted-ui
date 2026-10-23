@@ -49,16 +49,16 @@ export interface ButtonProps {
 	/** Icon size in px. */
 	iconSize?: number;
 	/**
-	 * Cor principal do ícone (contorno/estrutura).
-	 * Padrão: `currentColor` — herda a cor do texto do botão, então o ícone
-	 * acompanha automaticamente o variant (ex.: `on-primary` em botões primary).
-	 * Passe um valor explícito (ex.: `var(--color-navbar-text)`) para
-	 * contextos onde a cor herdada conflita com o fundo.
+	 * Primary icon color (outline/structure).
+	 * Default: `currentColor` — inherits the button's text color, so the icon
+	 * follows the variant automatically (e.g. `on-primary` on primary buttons).
+	 * Pass an explicit value (e.g. `var(--color-navbar-text)`) for contexts
+	 * where the inherited color conflicts with the background.
 	 */
 	iconPrimaryColor?: string;
 	/**
-	 * Cor de destaque do ícone (detalhe/acento).
-	 * Padrão: `currentColor` — mesmo comportamento de `iconPrimaryColor`.
+	 * Secondary icon color (accent/detail).
+	 * Default: `currentColor` — same behavior as `iconPrimaryColor`.
 	 */
 	iconSecondaryColor?: string;
 	/** Whether the button is disabled. */

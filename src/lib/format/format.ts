@@ -36,14 +36,18 @@ export function formatCurrency(
 	}
 
 	// For fiat currencies, use Intl.NumberFormat with currency style
-	const formatted = value.toLocaleString(localeStr, {
+	let formatted = value.toLocaleString(localeStr, {
 		style: 'currency',
 		currency,
 		minimumFractionDigits: decimals,
 		maximumFractionDigits: decimals
 	});
-	// Ensure a space between the currency symbol and the number (en-US doesn't add one)
-	return formatted.replace(/([A-Z$€£])(\d)/, '$1 $2');
+	// en-US doesn't add a space between symbol and number (e.g. "$1,234.56") —
+	// insert one for visual consistency with pt-BR ("R$ 1.234,56").
+	if (localeStr === 'en-US') {
+		formatted = formatted.replace(/([A-Z$€£])(\d)/, '$1 $2');
+	}
+	return formatted;
 }
 
 /**
@@ -114,17 +118,9 @@ export function parseCurrency(str: string | undefined | null): number {
 		decimalSep = ',';
 		thousandsSep = '.';
 	} else {
-		// Only one type of separator present — assume it's decimal
-		if (lastDot >= 0) {
-			decimalSep = '.';
-			thousandsSep = ',';
-		} else if (lastComma >= 0) {
-			decimalSep = ',';
-			thousandsSep = '.';
-		} else {
-			decimalSep = '.';
-			thousandsSep = ',';
-		}
+		// Only one type of separator present (or none) — assume dot decimal.
+		decimalSep = '.';
+		thousandsSep = ',';
 	}
 	// Remove thousands separators and convert decimal to dot
 	cleaned = cleaned.split(thousandsSep).join('');

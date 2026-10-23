@@ -90,23 +90,6 @@
 	.detail-header:hover {
 		background: color-mix(in srgb, var(--color-primary-light) 85%, var(--color-primary) 15%);
 	}
-	:global(.btn-back) {
-		background: transparent;
-		border: none;
-		color: var(--color-on-surface);
-		cursor: pointer;
-		padding: var(--spacing-sm);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: var(--radius-sm);
-		transition: background var(--transition-fast);
-	}
-
-	:global(.btn-back:hover) {
-		background: var(--color-sidenav-hover);
-	}
-
 	.detail-title {
 		margin: 0;
 		margin-left: var(--spacing-md);

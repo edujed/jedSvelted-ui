@@ -35,13 +35,13 @@ export type Mode = 'light' | 'dark';
  * E.g.: `setThemeKeyPrefix('app2')` → uses `app2-theme` / `app2-mode`
  */
 export function setThemeKeyPrefix(prefix?: string): void {
-	setPrefix(prefix);
+	setPrefix('theme', prefix);
 }
 
 /** Returns object with current key names. Useful for internal tests. */
 export const getKeys = (): { THEME_KEY: string; MODE_KEY: string } => ({
-	THEME_KEY: buildKey('theme'),
-	MODE_KEY: buildKey('mode')
+	THEME_KEY: buildKey('theme', 'theme'),
+	MODE_KEY: buildKey('theme', 'mode')
 });
 
 /** Reactive store for current theme */
@@ -89,7 +89,6 @@ export function initTheme(prefix?: string): { theme: ThemeId; mode: Mode } {
 		: 'material-blue';
 	const mode = (getStored(keys.MODE_KEY, 'light') as Mode) || 'light';
 	applyTheme(theme);
-	themeStore.set(theme);
 	applyMode(mode);
 	return { theme, mode };
 }

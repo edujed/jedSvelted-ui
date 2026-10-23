@@ -5,9 +5,9 @@
 	import type { DeleteConfirmProps } from './uiTypes';
 
 	let {
-		message = 'Are you sure you want to delete this record?',
-		warning = 'This action cannot be undone.',
-		title = 'Confirm Deletion',
+		message,
+		warning,
+		title,
 		onConfirm,
 		onCancel,
 		children

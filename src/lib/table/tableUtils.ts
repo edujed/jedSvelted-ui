@@ -12,41 +12,26 @@ import type { SortDirection, TableCol } from './tableTypes';
 export function filterData(
 	data: Record<string, unknown>[],
 	columns: TableCol<Record<string, unknown>>[],
-	filterValues: Record<number, string>,
-	filterFn?: (
-		row: Record<string, unknown>,
-		filterValues: Record<number, string>,
-		columns: TableCol<Record<string, unknown>>[]
-	) => boolean
+	filterValues: Record<string, string>
 ): unknown[] {
 	if (columns.length === 0) return [];
 
 	if (filterValues && Object.keys(filterValues).length > 0) {
 		return data.filter((row) => {
-			// Custom filterFn always runs first — allows filtering without relying on individual columns.
-			if (filterFn !== undefined) {
-				if (filterFn(row, filterValues, columns) === false) return false;
-			} else if (columns.length > 0) {
-				// If there is no custom filter, applies per-column text.
-				let hasAnyFilter = false;
-				for (const idx in filterValues) {
-					const col = columns[Number(idx)];
-					if (!col || !col.filterable) continue;
+			// Per-column case-insensitive text filter (keyed by column key).
+			for (const key in filterValues) {
+				const col = columns.find((c) => String(c.key) === key);
+				if (!col || !col.filterable) continue;
 
-					const filterText = filterValues[idx]?.toLowerCase();
-					if (!filterText) continue;
-					hasAnyFilter = true;
+				const filterText = filterValues[key]?.toLowerCase();
+				if (!filterText) continue;
 
-					// Default filter: case-insensitive search on the column value
-					const value = String(
-						col.key != null ? ((row as Record<string, unknown>)?.[String(col.key)] ?? '') : ''
-					).toLowerCase();
-					if (!value.includes(filterText)) {
-						return false;
-					}
+				const value = String(
+					col.key != null ? ((row as Record<string, unknown>)?.[String(col.key)] ?? '') : ''
+				).toLowerCase();
+				if (!value.includes(filterText)) {
+					return false;
 				}
-				// If no column had an active filter AND there is no global filter → keeps the list.
-				if (!hasAnyFilter && filterFn === undefined) return true;
 			}
 			return true;
 		});
@@ -62,13 +47,7 @@ export function sortData(
 	data: Record<string, unknown>[],
 	columns: TableCol<Record<string, unknown>>[],
 	sortColumnIndex: number,
-	sortDirection: SortDirection,
-	sortFn?: (
-		a: Record<string, unknown>,
-		b: Record<string, unknown>,
-		column: TableCol<Record<string, unknown>>,
-		direction: SortDirection
-	) => number
+	sortDirection: SortDirection
 ): unknown[] {
 	if (sortColumnIndex < 0 || sortDirection === 'none') return data;
 
@@ -78,11 +57,6 @@ export function sortData(
 	const direction = sortDirection === 'asc' ? 1 : -1;
 
 	return [...data].sort((a, b) => {
-		// Uses the custom function if provided
-		if (sortFn) {
-			return sortFn(a, b, col, sortDirection);
-		}
-
 		const aVal =
 			typeof col.key === 'number'
 				? (a as Record<number | string, unknown>)[col.key]

@@ -18,17 +18,6 @@
 		warning: LOCALES[$localeStore].toastWarning
 	});
 
-	let pauseTimer: ReturnType<typeof setTimeout> | null = null;
-
-	function handleMouseEnter() {
-		if (pauseTimer) clearTimeout(pauseTimer);
-	}
-
-	function handleMouseLeave() {
-		if (onClose) {
-			pauseTimer = setTimeout(() => onClose(toast.id), 300);
-		}
-	}
 </script>
 
 <div
@@ -38,8 +27,6 @@
 	class:toast-error={toast.type === 'error'}
 	class:toast-info={toast.type === 'info'}
 	class:toast-warning={toast.type === 'warning'}
-	onmouseenter={handleMouseEnter}
-	onmouseleave={handleMouseLeave}
 >
 	<span class="toast-icon">{icons[toast.type]}</span>
 	<div class="toast-content">

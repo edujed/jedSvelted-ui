@@ -185,38 +185,14 @@
 				{csvFileName}
 				onAdd={handleAdd}
 			/>
-			{@render renderForm(_onFormComplete)}
+			{#if showForm && renderForm}
+				{@render renderForm(_onFormComplete)}
+			{/if}
 		</main>
 	</DetailPanel>
 {/if}
 
 <style>
-	:global(.view-fields) {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-md);
-	}
-
-	:global(.view-row) {
-		display: flex;
-		align-items: baseline;
-		gap: var(--spacing-sm);
-		padding: var(--spacing-xs) 0;
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	:global(.view-label) {
-		font-weight: 600;
-		min-width: 140px;
-		color: var(--color-on-surface);
-	}
-
-	:global(.view-value) {
-		color: var(--color-on-surface);
-		opacity: 0.85;
-		flex: 1;
-	}
-
 	.crud-panel.inline-mode {
 		width: 100%;
 		max-width: none;

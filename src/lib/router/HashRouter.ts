@@ -96,11 +96,7 @@ export class HashRouter {
 		const found = this.matchRoute(path);
 		if (!found) return null;
 
-		const params: Record<string, string> = {};
-		found.route.keys.forEach((key, i) => {
-			params[key] = found.match[i + 1] ?? '';
-		});
-		return params;
+		return this.extractParams(found.route, found.match);
 	}
 
 	/** Registers a change listener for route changes. */
@@ -141,15 +137,20 @@ export class HashRouter {
 		// against re-entry should do so themselves.
 		const found = this.matchRoute(path);
 		if (found) {
-			const params: Record<string, string> = {};
-			found.route.keys.forEach((key, i) => {
-				params[key] = found.match[i + 1] ?? '';
-			});
-			found.route.handler(params);
+			found.route.handler(this.extractParams(found.route, found.match));
 		}
 
 		// Always calls listeners, regardless of whether a route was found
 		this.listeners.forEach((fn) => fn());
+	}
+
+	/** Builds the params object from a route's keys and a regex match. */
+	private extractParams(route: Route, match: RegExpMatchArray): Record<string, string> {
+		const params: Record<string, string> = {};
+		route.keys.forEach((key, i) => {
+			params[key] = match[i + 1] ?? '';
+		});
+		return params;
 	}
 
 	private register(event: string) {
