@@ -11,10 +11,10 @@
 </script>
 
 <IconSvg {size} class={className} {primaryColor} {secondaryColor}>
-	<slot name="primary">
+	{#snippet primary()}
 		<rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-	</slot>
-	<slot name="secondary">
+	{/snippet}
+	{#snippet secondary()}
 		<line x1="1" y1="10" x2="23" y2="10" />
-	</slot>
+	{/snippet}
 </IconSvg>

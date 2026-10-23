@@ -31,6 +31,8 @@
 				variant="ghost"
 				icon="menu"
 				iconSize={22}
+				iconPrimaryColor="var(--color-navbar-text)"
+				iconSecondaryColor="var(--color-navbar-text)"
 				aria-label={LOCALES[$localeStore].openSideMenu}
 				onclick={() => onMenuClick()}
 			/>

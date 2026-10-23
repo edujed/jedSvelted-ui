@@ -11,7 +11,7 @@
 </script>
 
 <IconSvg {size} class={className} {primaryColor} {secondaryColor}>
-	<slot name="primary">
+	{#snippet primary()}
 		<circle cx="12" cy="12" r="10" />
-	</slot>
+	{/snippet}
 </IconSvg>

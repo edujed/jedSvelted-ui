@@ -21,11 +21,13 @@ export type { RegisteredRouteItem };
 /**
  * A resolved menu item ready to render (title/label already resolved to strings).
  */
-export interface MenuItem extends RegisteredRouteItem {
+export interface MenuItem extends Omit<RegisteredRouteItem, 'icon'> {
 	/** Clean version of the pattern (no parameters/wildcard). */
 	path: string;
 	/** Resolved label (same as the resolved title). */
 	label: string;
+	/** Optional icon for rendering in the menu (emoji or icon name). */
+	icon?: string;
 }
 
 /**

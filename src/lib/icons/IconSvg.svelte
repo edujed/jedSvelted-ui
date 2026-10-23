@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import type { IconProps } from './iconsTypes';
 
 	/**
@@ -6,7 +7,7 @@
 	 *
 	 * Centralizes the `<svg>` element, its attributes, and the two color
 	 * groups (`primary` / `secondary`). Individual icons only provide the
-	 * path content via named slots.
+	 * path content via named snippets.
 	 *
 	 * - `secondaryOpacity` is optional (used by `IconSort` for its faded
 	 *   secondary group). When omitted, the secondary group renders at full
@@ -17,8 +18,14 @@
 		class: className = '',
 		primaryColor = 'var(--icon-color-primary, currentColor)',
 		secondaryColor = 'var(--icon-color-accent, currentColor)',
-		secondaryOpacity
-	}: IconProps & { secondaryOpacity?: string } = $props();
+		secondaryOpacity,
+		primary,
+		secondary
+	}: IconProps & {
+		secondaryOpacity?: string;
+		primary?: Snippet;
+		secondary?: Snippet;
+	} = $props();
 </script>
 
 <svg
@@ -33,10 +40,10 @@
 	class={className}
 >
 	<g stroke={primaryColor}>
-		<slot name="primary" />
+		{@render primary?.()}
 	</g>
 	<g stroke={secondaryColor} {...secondaryOpacity ? { opacity: secondaryOpacity } : {}}>
-		<slot name="secondary" />
+		{@render secondary?.()}
 	</g>
 </svg>
 

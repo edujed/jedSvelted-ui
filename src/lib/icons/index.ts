@@ -1,5 +1,6 @@
 // Barrel file for icons
 export type { IconName, IconProps } from './iconsTypes';
+export { ICON_MAP } from './iconMap';
 export { default as Icon } from './Icon.svelte';
 export { default as IconBank } from './IconBank.svelte';
 export { default as IconBuilding } from './IconBuilding.svelte';

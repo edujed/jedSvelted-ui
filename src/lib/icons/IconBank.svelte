@@ -11,13 +11,13 @@
 </script>
 
 <IconSvg {size} class={className} {primaryColor} {secondaryColor}>
-	<slot name="primary">
+	{#snippet primary()}
 		<path d="M3 21h18" />
 		<path d="M5 21V7l8-4 8 4v14" />
-	</slot>
-	<slot name="secondary">
+	{/snippet}
+	{#snippet secondary()}
 		<path d="M17 9h-4v4h-2v-4H7V9" />
 		<path d="M9 12h2v2h-2z" />
 		<path d="M13 12h2v2h-2z" />
-	</slot>
+	{/snippet}
 </IconSvg>

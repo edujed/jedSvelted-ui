@@ -2,7 +2,8 @@
 	import type { RouteState } from '../router';
 	import type { MenuItem, SidenavProps } from './navTypes';
 	import { cleanPattern, isRouteActive } from './navUtils';
-	import { Icon, IconX } from '../icons';
+	import { Icon, IconX, ICON_MAP } from '../icons';
+	import type { IconName } from '../icons';
 	import { LOCALES, localeStore } from '../i18n';
 
 	let {
@@ -106,7 +107,7 @@
 							navigate(item.path);
 						}}
 					>
-						<span class="menu-icon"><Icon name={item.icon} size={18} /></span>
+						<span class="menu-icon">{#if item.icon && (item.icon as IconName) in ICON_MAP}<Icon name={item.icon as IconName} size={18} />{:else if item.icon}{item.icon}{/if}</span>
 						<span class="menu-label">{item.label}</span>
 					</a>
 				</li>

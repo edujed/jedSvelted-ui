@@ -11,10 +11,10 @@
 </script>
 
 <IconSvg {size} class={className} {primaryColor} {secondaryColor}>
-	<slot name="primary">
+	{#snippet primary()}
 		<circle cx="12" cy="12" r="10" />
-	</slot>
-	<slot name="secondary">
+	{/snippet}
+	{#snippet secondary()}
 		<polyline points="12 6 12 12 16 14" />
-	</slot>
+	{/snippet}
 </IconSvg>

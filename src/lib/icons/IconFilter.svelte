@@ -11,7 +11,7 @@
 </script>
 
 <IconSvg {size} class={className} {primaryColor} {secondaryColor}>
-	<slot name="primary">
+	{#snippet primary()}
 		<path d="M6 9l6 6 6-6" />
-	</slot>
+	{/snippet}
 </IconSvg>

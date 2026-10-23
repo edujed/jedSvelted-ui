@@ -11,7 +11,7 @@
 </script>
 
 <IconSvg {size} class={className} {primaryColor} {secondaryColor}>
-	<slot name="primary">
+	{#snippet primary()}
 		<polyline points="9 18 15 12 9 6" />
-	</slot>
+	{/snippet}
 </IconSvg>
