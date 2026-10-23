@@ -33,18 +33,24 @@
 
 <div bind:this={panelEl}>
 	<Panel title={resolvedTitle} iconName="filter" {isOpen}>
-	<div class="search-fields grid">
-		{@render children?.()}
-	</div>
+		<div class="search-fields grid">
+			{@render children?.()}
+		</div>
 
-	<div class="search-actions">
-		<Button variant="search" size="md" icon="search" iconSize={14} iconPrimaryColor="var(--color-on-primary)" iconSecondaryColor="var(--color-on-accent)" onclick={onSearch}
-			>{LOCALES[$localeStore].search}</Button
-		>
-		<Button variant="clear" size="md" icon="x" iconSize={14} onclick={onClear}
-			>{LOCALES[$localeStore].clear}</Button
-		>
-	</div>
+		<div class="search-actions">
+			<Button
+				variant="search"
+				size="md"
+				icon="search"
+				iconSize={14}
+				iconPrimaryColor="var(--color-on-primary)"
+				iconSecondaryColor="var(--color-on-accent)"
+				onclick={onSearch}>{LOCALES[$localeStore].search}</Button
+			>
+			<Button variant="clear" size="md" icon="x" iconSize={14} onclick={onClear}
+				>{LOCALES[$localeStore].clear}</Button
+			>
+		</div>
 	</Panel>
 </div>
 

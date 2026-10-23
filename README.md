@@ -16,7 +16,7 @@ yarn add @edujed/jedsvelted-ui
 
 - Node.js >= 18
 - npm/pnpm/yarn
-- Peer dependencies (automatic): `svelte ^5`, `bits-ui ^2.19`
+- Peer dependencies (automatic): `svelte ^5`, `bits-ui ^2.20`
 
 ## 🚀 Setup
 
@@ -374,7 +374,7 @@ found in `data`), and `onClose` (overlay mode only).
 `Table` also accepts `header` and `footer` snippets (rendered in the caption /
 table footer) and a `config` prop (`TableConfig`) to switch each feature
 between `'internal'` (handled internally in JS) and `'custom'` (delegated to
-your callbacks, e.g. a WASM bridge or backend):
+your callbacks, e.g. a backend):
 
 ```svelte
 <script lang="ts">
@@ -387,16 +387,16 @@ your callbacks, e.g. a WASM bridge or backend):
 		// formats offered by the export UI (custom mode):
 		// one format → single button, more than one → "Export" popover
 		// default: ['csv', 'xlsx', 'pdf']
-		exportFormats: ['csv', 'xlsx', 'pdf', 'parquet', 'feather', 'dbf'],
+		exportFormats: ['csv', 'xlsx', 'pdf', 'parquet', 'feather', 'dbf', 'jsonl'],
 		onExport: (format) => exportViaBackend(format), // format: 'csv' | 'xlsx' | 'pdf' | 'parquet' | 'feather' | 'dbf'
 
 		// sort: 'internal' (default) | 'custom' (delegates to onSortChange)
 		sortMode: 'internal',
-		onSortChange: (column, direction) => sortViaWasm(column, direction),
+		onSortChange: (column, direction) => sortViaBackend(column, direction),
 
 		// filter: 'internal' (default) | 'custom' (delegates to onFilterChange)
 		filterMode: 'internal',
-		onFilterChange: (column, value) => filterViaWasm(column, value),
+		onFilterChange: (column, value) => filterViaBackend(column, value),
 
 		// pagination: 'off' (default) | 'internal' (table slices data) | 'custom' (consumer controls)
 		pagination: 'custom',

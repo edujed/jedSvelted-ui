@@ -3,8 +3,7 @@
 
 	let {
 		size = 16,
-		class
-: className = '',
+		class: className = '',
 		primaryColor = 'var(--icon-color-primary, currentColor)',
 		secondaryColor = 'var(--icon-color-accent, currentColor)'
 	}: IconProps = $props();

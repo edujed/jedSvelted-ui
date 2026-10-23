@@ -32,4 +32,4 @@
 	});
 </script>
 
-<Topbar title={currentTitle || 'DemoApp'} showQuickSearch showHamburguer={showHamburguer} {onMenuClick} />
+<Topbar title={currentTitle || 'DemoApp'} showQuickSearch {showHamburguer} {onMenuClick} />

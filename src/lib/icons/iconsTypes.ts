@@ -15,9 +15,9 @@ export interface IconProps {
 	/** Rendered width/height in px. */
 	size?: number;
 	/** Extra classes applied to the root `<svg>`. */
-  class?: string;
+	class?: string;
 
-  	/**
+	/**
 	 * Cor principal — contorno/estrutura do ícone (grupos `<g stroke={primaryColor}>`).
 	 * Padrão: `var(--icon-color-primary, currentColor)` — segue a paleta do tema ativo
 	 * (cada tema define `--icon-color-primary`), com fallback para `currentColor`.

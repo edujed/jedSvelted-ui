@@ -33,7 +33,7 @@ export interface TableColBase<T = unknown> {
 export type TableMode = 'internal' | 'custom';
 
 /** File formats available for delegated export (`exportMode: 'custom'`). */
-export type ExportFormat = 'csv' | 'xlsx' | 'pdf' | 'parquet' | 'feather' | 'dbf';
+export type ExportFormat = 'csv' | 'xlsx' | 'pdf' | 'parquet' | 'feather' | 'dbf' | 'jsonl';
 
 /**
  * Compression method for export payloads that are not natively compressed.

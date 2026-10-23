@@ -35,7 +35,17 @@
 	});
 </script>
 
-<FormField {label} {hint} {hintTitle} {hintImpact} {colSpan} {disabled} {required} {error} class="select-field">
+<FormField
+	{label}
+	{hint}
+	{hintTitle}
+	{hintImpact}
+	{colSpan}
+	{disabled}
+	{required}
+	{error}
+	class="select-field"
+>
 	{#snippet children(fieldId)}
 		<Select.Root type="single" bind:value>
 			<div class="select-trigger-wrapper" id={fieldId}>

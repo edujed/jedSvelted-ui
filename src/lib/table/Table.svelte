@@ -169,9 +169,8 @@
 	 * Formats that are not natively compressed — the export UI offers a
 	 * compression choice for these (parquet/xlsx/pdf are self-compressing).
 	 */
-	const COMPRESSIBLE_FORMATS: ExportFormat[] = ['csv', 'dbf', 'feather'];
+	const COMPRESSIBLE_FORMATS: ExportFormat[] = ['csv', 'dbf', 'feather', 'jsonl'];
 	const COMPRESSIONS: ExportCompression[] = ['none', 'lz4', 'zstd', 'gzip'];
-
 </script>
 
 <div class="table-wrapper">
@@ -198,7 +197,10 @@
 									icon: EXPORT_ICONS[format],
 									subItems: COMPRESSIONS.map((comp) => ({
 										value: `${format}:${comp}`,
-										label: comp === 'none' ? LOCALES[$localeStore].noCompression : LOCALES[$localeStore][comp]
+										label:
+											comp === 'none'
+												? LOCALES[$localeStore].noCompression
+												: LOCALES[$localeStore][comp]
 									}))
 								};
 							}
@@ -509,8 +511,6 @@
 	:global(.actions-popover .action-text) {
 		flex: 1;
 	}
-
-
 
 	thead {
 		background: var(--color-background);

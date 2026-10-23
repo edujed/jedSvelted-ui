@@ -26,7 +26,18 @@
 	}
 </script>
 
-<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan} {disabled} {required} {error} class="switch-field">
+<FormField
+	{label}
+	{hint}
+	{hintTitle}
+	{hintImpact}
+	{id}
+	{colSpan}
+	{disabled}
+	{required}
+	{error}
+	class="switch-field"
+>
 	{#snippet children(fieldId)}
 		<div class="switch-wrapper">
 			<Switch.Root {id} {disabled} {required} bind:checked={value} onCheckedChange={handleChange}>

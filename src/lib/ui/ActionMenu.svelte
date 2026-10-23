@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { ContextMenu } from 'bits-ui';
 	import Icon from '../icons/Icon.svelte';
-	import type { IconName } from '../icons';
 	import type { ActionMenuItem, ActionMenuProps } from './uiTypes';
 
 	let {
@@ -21,21 +20,6 @@
 		open = $bindable(false)
 	}: ActionMenuProps = $props();
 
-	/** Icon per item (fallback to 'file' if not specified). */
-	function itemIcon(item: ActionMenuItem): IconName {
-		return item.icon ?? 'file';
-	}
-
-	/** Whether an item has sub-items (submenu). */
-	function hasSubItems(item: ActionMenuItem): boolean {
-		return !!item.subItems && item.subItems.length > 0;
-	}
-
-	/** Handle item selection. */
-	function handleSelect(item: ActionMenuItem): void {
-		onSelect?.(item);
-	}
-
 	/**
 	 * The ContextMenu.Trigger uses a virtual element anchored at {x: 0, y: 0}
 	 * that is only updated on `contextmenu` (right-click). For left-click
@@ -54,15 +38,10 @@
 		if (e.button !== 0) return;
 		e.preventDefault();
 		open = !open;
-		// After the menu opens, update the virtual element so the
-		// floating content repositions to the click location.
 		if (open && lastClickPoint) {
 			requestAnimationFrame(() => {
 				const triggerEl = document.querySelector('[data-context-menu-trigger]');
 				if (!triggerEl) return;
-				// The virtual element is stored on the trigger's Svelte component.
-				// We access it via the element's __svelte_meta or by dispatching
-				// a synthetic contextmenu event with the captured coordinates.
 				const syntheticEvent = new MouseEvent('contextmenu', {
 					bubbles: true,
 					cancelable: true,
@@ -76,43 +55,32 @@
 </script>
 
 <ContextMenu.Root bind:open>
-	{#if trigger}
-		<ContextMenu.Trigger
-			class="btn btn-secondary btn-sm action-menu-trigger {className}"
-			onpointerdown={handlePointerDown}
-			onclick={handleClick}
-		>
+	<ContextMenu.Trigger
+		class="btn btn-secondary btn-sm action-menu-trigger {className}"
+		onpointerdown={handlePointerDown}
+		onclick={handleClick}
+	>
+		{#if trigger}
 			{@render trigger()}
-		</ContextMenu.Trigger>
-	{:else}
-		<ContextMenu.Trigger
-			class="btn btn-secondary btn-sm action-menu-trigger {className}"
-			onpointerdown={handlePointerDown}
-			onclick={handleClick}
-		>
+		{:else}
 			{#if icon}
 				<Icon name={icon} size={14} class="action-menu-icon" />
 			{/if}
 			{#if label}
 				<span class="action-menu-label">{label}</span>
 			{/if}
-		</ContextMenu.Trigger>
-	{/if}
+		{/if}
+	</ContextMenu.Trigger>
 
-	<ContextMenu.Content
-		class="action-menu-content"
-		{side}
-		{align}
-		{sideOffset}
-	>
+	<ContextMenu.Content class="action-menu-content" {side} {align} {sideOffset}>
 		{#if children}
 			{@render children()}
 		{:else}
 			{#each items as item (item.value)}
-				{#if hasSubItems(item)}
+				{#if item.subItems?.length}
 					<ContextMenu.Sub>
 						<ContextMenu.SubTrigger class="action-menu-item">
-							<Icon name={itemIcon(item)} size={16} class="action-menu-item-icon" />
+							<Icon name={item.icon ?? 'file'} size={16} class="action-menu-item-icon" />
 							<span class="action-menu-item-text">{item.label}</span>
 							<Icon name="chevron-right" size={14} class="action-menu-item-chevron" />
 						</ContextMenu.SubTrigger>
@@ -123,10 +91,7 @@
 							sideOffset={subSideOffset}
 						>
 							{#each item.subItems as subItem (subItem.value)}
-								<ContextMenu.Item
-									class="action-menu-item"
-									onselect={() => handleSelect(subItem)}
-								>
+								<ContextMenu.Item class="action-menu-item" onselect={() => onSelect?.(subItem)}>
 									{#if subItem.icon}
 										<Icon name={subItem.icon} size={16} class="action-menu-item-icon" />
 									{/if}
@@ -136,11 +101,8 @@
 						</ContextMenu.SubContent>
 					</ContextMenu.Sub>
 				{:else}
-					<ContextMenu.Item
-						class="action-menu-item"
-						onselect={() => handleSelect(item)}
-					>
-						<Icon name={itemIcon(item)} size={16} class="action-menu-item-icon" />
+					<ContextMenu.Item class="action-menu-item" onselect={() => onSelect?.(item)}>
+						<Icon name={item.icon ?? 'file'} size={16} class="action-menu-item-icon" />
 						<span class="action-menu-item-text">{item.label}</span>
 					</ContextMenu.Item>
 				{/if}

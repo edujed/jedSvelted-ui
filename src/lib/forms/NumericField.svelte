@@ -20,7 +20,18 @@
 	}: NumericFieldProps = $props();
 </script>
 
-<FormField {label} {hint} {hintTitle} {hintImpact} {id} {colSpan} {disabled} {required} {error} class="numeric-field">
+<FormField
+	{label}
+	{hint}
+	{hintTitle}
+	{hintImpact}
+	{id}
+	{colSpan}
+	{disabled}
+	{required}
+	{error}
+	class="numeric-field"
+>
 	{#snippet children(fieldId)}
 		<div class="field-wrapper">
 			<input
